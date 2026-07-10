@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion";
 import { useRef } from "react";
 
@@ -193,9 +193,18 @@ function Nav() {
           <a href="#dashboard" className="hover:text-foreground transition">Studio</a>
           <a href="#pricing" className="hover:text-foreground transition">Pricing</a>
         </div>
-        <a href="#pricing" className="btn-kinetic relative rounded-xl px-4 py-2 text-sm font-semibold">
-          <span className="relative z-10">Launch app</span>
-        </a>
+          <Link
+            to="/login"
+            className="hidden items-center gap-1 text-sm text-muted-foreground transition hover:text-foreground md:flex"
+          >
+            Sign in
+          </Link>
+          <Link
+            to="/signup"
+            className="btn-kinetic relative rounded-xl px-4 py-2 text-sm font-semibold"
+          >
+            <span className="relative z-10">Launch app</span>
+          </Link>
       </div>
     </motion.nav>
   );
