@@ -94,14 +94,11 @@ function DashboardPage() {
             Studio · Dashboard
           </div>
           <h1 className="mt-4 font-display text-4xl font-bold tracking-tight sm:text-6xl">
-            Welcome back,{" "}
-            <span className="text-gradient">
-              {user.email?.split("@")[0] ?? "builder"}
-            </span>
-            .
+            Welcome to the{" "}
+            <span className="text-gradient">CV &amp; Portfolio Builder.</span>
           </h1>
           <p className="mt-4 max-w-lg text-base text-muted-foreground">
-            Your AI career studio is ready. Choose a path to start generating.
+            Your AI-powered career studio is ready. Choose a path to start building.
           </p>
         </motion.div>
 
@@ -115,6 +112,7 @@ function DashboardPage() {
               desc: "Upload a document or paste your LinkedIn URL to generate an ATS-optimised CV.",
               cta: "Open CV Studio →",
               hue: "300",
+              href: "/cv-studio" as const,
             },
             {
               id: "card-portfolio",
@@ -123,6 +121,7 @@ function DashboardPage() {
               desc: "Let the agent design, write copy, and deploy your portfolio to the cloud.",
               cta: "Start building →",
               hue: "210",
+              href: "/portfolio-builder" as const,
             },
             {
               id: "card-settings",
@@ -131,41 +130,47 @@ function DashboardPage() {
               desc: "Manage your subscription, exports, and personal data.",
               cta: "Go to settings →",
               hue: "275",
+              href: "/settings" as const,
             },
           ].map((card, i) => (
-            <motion.div
+            <Link
               key={card.id}
-              id={card.id}
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.15 + i * 0.1, duration: 0.6 }}
-              whileHover={{ y: -6 }}
-              className="glass-strong group cursor-pointer rounded-3xl p-8 transition"
+              to={card.href}
+              className="block"
             >
-              <span
-                className="inline-block rounded-full border px-3 py-1 text-xs uppercase tracking-widest text-muted-foreground"
-                style={{ borderColor: `oklch(0.75 0.22 ${card.hue} / 0.3)` }}
+              <motion.div
+                id={card.id}
+                initial={{ opacity: 0, y: 40 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.15 + i * 0.1, duration: 0.6 }}
+                whileHover={{ y: -6 }}
+                className="glass-strong group cursor-pointer rounded-3xl p-8 transition"
               >
-                {card.tag}
-              </span>
-              <h2
-                className="mt-5 font-display text-2xl font-semibold tracking-tight"
-                style={{
-                  background: `linear-gradient(135deg, oklch(0.95 0.05 ${card.hue}), oklch(0.75 0.22 ${card.hue}))`,
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                }}
-              >
-                {card.title}
-              </h2>
-              <p className="mt-3 text-sm text-muted-foreground">{card.desc}</p>
-              <div
-                className="mt-6 text-sm font-semibold transition group-hover:translate-x-1"
-                style={{ color: `oklch(0.85 0.18 ${card.hue})` }}
-              >
-                {card.cta}
-              </div>
-            </motion.div>
+                <span
+                  className="inline-block rounded-full border px-3 py-1 text-xs uppercase tracking-widest text-muted-foreground"
+                  style={{ borderColor: `oklch(0.75 0.22 ${card.hue} / 0.3)` }}
+                >
+                  {card.tag}
+                </span>
+                <h2
+                  className="mt-5 font-display text-2xl font-semibold tracking-tight"
+                  style={{
+                    background: `linear-gradient(135deg, oklch(0.95 0.05 ${card.hue}), oklch(0.75 0.22 ${card.hue}))`,
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                  }}
+                >
+                  {card.title}
+                </h2>
+                <p className="mt-3 text-sm text-muted-foreground">{card.desc}</p>
+                <div
+                  className="mt-6 text-sm font-semibold transition group-hover:translate-x-1"
+                  style={{ color: `oklch(0.85 0.18 ${card.hue})` }}
+                >
+                  {card.cta}
+                </div>
+              </motion.div>
+            </Link>
           ))}
         </div>
       </section>
