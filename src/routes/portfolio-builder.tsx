@@ -23,11 +23,36 @@ const NAV = [
 
 /* ── Templates ── */
 const TEMPLATES = [
-  { id: "modern", label: "Modern Minimal", hue: "300" },
-  { id: "dark", label: "Dark Mode", hue: "240" },
-  { id: "creative", label: "Creative Studio", hue: "340" },
-  { id: "terminal", label: "Developer Terminal", hue: "150" },
-  { id: "classic", label: "Professional Classic", hue: "210" },
+  {
+    id: "3d-artist",
+    label: "3D Artist & Animator",
+    tag: "Dark theme, renders",
+    img: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=600&auto=format&fit=crop",
+  },
+  {
+    id: "architecture",
+    label: "Architecture Firm",
+    tag: "Minimalist, structural",
+    img: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=600&auto=format&fit=crop",
+  },
+  {
+    id: "ux-case-study",
+    label: "UX Case Study",
+    tag: "Story-driven, stats",
+    img: "https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?q=80&w=600&auto=format&fit=crop",
+  },
+  {
+    id: "developer",
+    label: "Developer Portfolio",
+    tag: "Terminal aesthetic",
+    img: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=600&auto=format&fit=crop",
+  },
+  {
+    id: "freelance",
+    label: "Freelance Creative",
+    tag: "Vibrant, branding",
+    img: "https://images.unsplash.com/photo-1561070791-2526d30994b5?q=80&w=600&auto=format&fit=crop",
+  },
 ];
 
 /* ────────────────────────────────────────────────────────── */
@@ -244,35 +269,39 @@ function StepTemplates({ selected, setSelected }: { selected: string; setSelecte
               <button
                 key={t.id}
                 onClick={() => setSelected(t.id)}
-                className={`relative flex-1 rounded-xl border p-0 transition-all duration-200 overflow-hidden ${
+                className={`group relative flex-1 rounded-xl border p-0 transition-all duration-200 overflow-hidden ${
                   isSel
-                    ? "border-purple-500 shadow-[0_0_18px_rgba(168,85,247,0.35)]"
+                    ? "border-purple-500 shadow-[0_0_18px_rgba(168,85,247,0.4)]"
                     : "border-slate-700/60 hover:border-slate-600"
                 }`}
               >
-                {/* Selected badge */}
+                {/* Selected checkmark badge */}
                 {isSel && (
-                  <span className="absolute right-1.5 top-1.5 z-10 flex h-5 w-5 items-center justify-center rounded-full bg-purple-500 text-white">
+                  <span className="absolute right-1.5 top-1.5 z-20 flex h-5 w-5 items-center justify-center rounded-full bg-purple-500 shadow-md shadow-purple-900/60 text-white">
                     <Check size={11} />
                   </span>
                 )}
 
-                {/* Mock preview block */}
-                <div
-                  className="h-28 w-full"
-                  style={{
-                    background: `linear-gradient(135deg, oklch(0.18 0.04 ${t.hue}) 0%, oklch(0.12 0.06 ${t.hue}) 100%)`,
-                  }}
-                >
-                  <div className="flex h-full flex-col items-start justify-end gap-1 p-2.5">
-                    <div className="h-1.5 w-3/4 rounded-full opacity-60"
-                      style={{ background: `oklch(0.72 0.22 ${t.hue})` }} />
-                    <div className="h-1 w-1/2 rounded-full opacity-30 bg-white" />
-                    <div className="h-1 w-2/3 rounded-full opacity-20 bg-white" />
-                  </div>
+                {/* Image thumbnail with zoom on hover */}
+                <div className="relative h-28 w-full overflow-hidden">
+                  <img
+                    src={t.img}
+                    alt={t.label}
+                    className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
+                  {/* Dark gradient overlay so label stays readable */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                  {/* Tag pill over the image */}
+                  <span className="absolute bottom-2 left-2 z-10 rounded-md bg-black/50 px-1.5 py-0.5 text-[9px] text-slate-300 backdrop-blur-sm">
+                    {t.tag}
+                  </span>
                 </div>
-                <div className="bg-slate-900 px-2 py-1.5">
-                  <p className="text-[10px] font-semibold text-slate-300 text-left">{t.label}</p>
+
+                {/* Label footer */}
+                <div className={`px-2 py-1.5 transition-colors ${isSel ? "bg-violet-950/40" : "bg-slate-900"}`}>
+                  <p className={`text-[10px] font-semibold text-left transition-colors ${isSel ? "text-violet-300" : "text-slate-300"}`}>
+                    {t.label}
+                  </p>
                 </div>
               </button>
             );
