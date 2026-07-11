@@ -9,38 +9,227 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SignupRouteImport } from './routes/signup'
+import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as PortfolioBuilderRouteImport } from './routes/portfolio-builder'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as CvStudioRouteImport } from './routes/cv-studio'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as TemplatesVogueRouteImport } from './routes/templates/vogue'
+import { Route as TemplatesSterlingRouteImport } from './routes/templates/sterling'
+import { Route as TemplatesLuminaRouteImport } from './routes/templates/lumina'
+import { Route as TemplatesBiotechRouteImport } from './routes/templates/biotech'
+import { Route as TemplatesArchitectRouteImport } from './routes/templates/architect'
 
+const SignupRoute = SignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PortfolioBuilderRoute = PortfolioBuilderRouteImport.update({
+  id: '/portfolio-builder',
+  path: '/portfolio-builder',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CvStudioRoute = CvStudioRouteImport.update({
+  id: '/cv-studio',
+  path: '/cv-studio',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TemplatesVogueRoute = TemplatesVogueRouteImport.update({
+  id: '/templates/vogue',
+  path: '/templates/vogue',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TemplatesSterlingRoute = TemplatesSterlingRouteImport.update({
+  id: '/templates/sterling',
+  path: '/templates/sterling',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TemplatesLuminaRoute = TemplatesLuminaRouteImport.update({
+  id: '/templates/lumina',
+  path: '/templates/lumina',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TemplatesBiotechRoute = TemplatesBiotechRouteImport.update({
+  id: '/templates/biotech',
+  path: '/templates/biotech',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TemplatesArchitectRoute = TemplatesArchitectRouteImport.update({
+  id: '/templates/architect',
+  path: '/templates/architect',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/cv-studio': typeof CvStudioRoute
+  '/dashboard': typeof DashboardRoute
+  '/login': typeof LoginRoute
+  '/portfolio-builder': typeof PortfolioBuilderRoute
+  '/settings': typeof SettingsRoute
+  '/signup': typeof SignupRoute
+  '/templates/architect': typeof TemplatesArchitectRoute
+  '/templates/biotech': typeof TemplatesBiotechRoute
+  '/templates/lumina': typeof TemplatesLuminaRoute
+  '/templates/sterling': typeof TemplatesSterlingRoute
+  '/templates/vogue': typeof TemplatesVogueRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/cv-studio': typeof CvStudioRoute
+  '/dashboard': typeof DashboardRoute
+  '/login': typeof LoginRoute
+  '/portfolio-builder': typeof PortfolioBuilderRoute
+  '/settings': typeof SettingsRoute
+  '/signup': typeof SignupRoute
+  '/templates/architect': typeof TemplatesArchitectRoute
+  '/templates/biotech': typeof TemplatesBiotechRoute
+  '/templates/lumina': typeof TemplatesLuminaRoute
+  '/templates/sterling': typeof TemplatesSterlingRoute
+  '/templates/vogue': typeof TemplatesVogueRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/cv-studio': typeof CvStudioRoute
+  '/dashboard': typeof DashboardRoute
+  '/login': typeof LoginRoute
+  '/portfolio-builder': typeof PortfolioBuilderRoute
+  '/settings': typeof SettingsRoute
+  '/signup': typeof SignupRoute
+  '/templates/architect': typeof TemplatesArchitectRoute
+  '/templates/biotech': typeof TemplatesBiotechRoute
+  '/templates/lumina': typeof TemplatesLuminaRoute
+  '/templates/sterling': typeof TemplatesSterlingRoute
+  '/templates/vogue': typeof TemplatesVogueRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/cv-studio'
+    | '/dashboard'
+    | '/login'
+    | '/portfolio-builder'
+    | '/settings'
+    | '/signup'
+    | '/templates/architect'
+    | '/templates/biotech'
+    | '/templates/lumina'
+    | '/templates/sterling'
+    | '/templates/vogue'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/cv-studio'
+    | '/dashboard'
+    | '/login'
+    | '/portfolio-builder'
+    | '/settings'
+    | '/signup'
+    | '/templates/architect'
+    | '/templates/biotech'
+    | '/templates/lumina'
+    | '/templates/sterling'
+    | '/templates/vogue'
+  id:
+    | '__root__'
+    | '/'
+    | '/cv-studio'
+    | '/dashboard'
+    | '/login'
+    | '/portfolio-builder'
+    | '/settings'
+    | '/signup'
+    | '/templates/architect'
+    | '/templates/biotech'
+    | '/templates/lumina'
+    | '/templates/sterling'
+    | '/templates/vogue'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CvStudioRoute: typeof CvStudioRoute
+  DashboardRoute: typeof DashboardRoute
+  LoginRoute: typeof LoginRoute
+  PortfolioBuilderRoute: typeof PortfolioBuilderRoute
+  SettingsRoute: typeof SettingsRoute
+  SignupRoute: typeof SignupRoute
+  TemplatesArchitectRoute: typeof TemplatesArchitectRoute
+  TemplatesBiotechRoute: typeof TemplatesBiotechRoute
+  TemplatesLuminaRoute: typeof TemplatesLuminaRoute
+  TemplatesSterlingRoute: typeof TemplatesSterlingRoute
+  TemplatesVogueRoute: typeof TemplatesVogueRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/signup': {
+      id: '/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/portfolio-builder': {
+      id: '/portfolio-builder'
+      path: '/portfolio-builder'
+      fullPath: '/portfolio-builder'
+      preLoaderRoute: typeof PortfolioBuilderRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cv-studio': {
+      id: '/cv-studio'
+      path: '/cv-studio'
+      fullPath: '/cv-studio'
+      preLoaderRoute: typeof CvStudioRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,11 +237,57 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/templates/vogue': {
+      id: '/templates/vogue'
+      path: '/templates/vogue'
+      fullPath: '/templates/vogue'
+      preLoaderRoute: typeof TemplatesVogueRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/templates/sterling': {
+      id: '/templates/sterling'
+      path: '/templates/sterling'
+      fullPath: '/templates/sterling'
+      preLoaderRoute: typeof TemplatesSterlingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/templates/lumina': {
+      id: '/templates/lumina'
+      path: '/templates/lumina'
+      fullPath: '/templates/lumina'
+      preLoaderRoute: typeof TemplatesLuminaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/templates/biotech': {
+      id: '/templates/biotech'
+      path: '/templates/biotech'
+      fullPath: '/templates/biotech'
+      preLoaderRoute: typeof TemplatesBiotechRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/templates/architect': {
+      id: '/templates/architect'
+      path: '/templates/architect'
+      fullPath: '/templates/architect'
+      preLoaderRoute: typeof TemplatesArchitectRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CvStudioRoute: CvStudioRoute,
+  DashboardRoute: DashboardRoute,
+  LoginRoute: LoginRoute,
+  PortfolioBuilderRoute: PortfolioBuilderRoute,
+  SettingsRoute: SettingsRoute,
+  SignupRoute: SignupRoute,
+  TemplatesArchitectRoute: TemplatesArchitectRoute,
+  TemplatesBiotechRoute: TemplatesBiotechRoute,
+  TemplatesLuminaRoute: TemplatesLuminaRoute,
+  TemplatesSterlingRoute: TemplatesSterlingRoute,
+  TemplatesVogueRoute: TemplatesVogueRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -67,18 +67,29 @@ function Sidebar({ active }: { active: string }) {
         <nav className="space-y-0.5 px-2">
           {NAV.map(({ id, label, icon: Icon, href }) => {
             const isActive = id === active;
-            return (
-              <Link
-                key={id}
-                to={href as "/"}
-                className={`flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200 ${
-                  isActive
-                    ? "border border-violet-500/30 bg-violet-500/10 text-violet-300 shadow-inner shadow-violet-900/20"
-                    : "text-slate-500 hover:bg-white/5 hover:text-slate-300"
-                }`}
-              >
+            const className = `flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200 ${
+              isActive
+                ? "border border-violet-500/30 bg-violet-500/10 text-violet-300 shadow-inner shadow-violet-900/20"
+                : "text-slate-500 hover:bg-white/5 hover:text-slate-300"
+            }`;
+            const inner = (
+              <>
                 <Icon size={15} />
                 {label}
+              </>
+            );
+            
+            if (href === "#") {
+              return (
+                <button key={id} className={`${className} w-full text-left opacity-60 cursor-not-allowed`} title="Coming soon">
+                  {inner}
+                </button>
+              );
+            }
+            
+            return (
+              <Link key={id} to={href as "/"} className={className}>
+                {inner}
               </Link>
             );
           })}
