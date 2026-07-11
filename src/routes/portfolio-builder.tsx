@@ -10,7 +10,6 @@ export const Route = createFileRoute("/portfolio-builder")({
   component: PortfolioBuilderPage,
 });
 
-/* ── Nav items ── */
 const NAV = [
   { id: "dashboard", label: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
   { id: "portfolios", label: "Portfolios", icon: FolderOpen, href: "#" },
@@ -21,7 +20,6 @@ const NAV = [
   { id: "settings", label: "Settings", icon: Settings, href: "/settings" },
 ];
 
-/* ── Templates ── */
 const TEMPLATES = [
   {
     id: "3d-artist",
@@ -55,22 +53,17 @@ const TEMPLATES = [
   },
 ];
 
-/* ────────────────────────────────────────────────────────── */
-/*  LEFT SIDEBAR                                              */
-/* ────────────────────────────────────────────────────────── */
+/* ─── Sidebar ─────────────────────────────────────────────── */
 function Sidebar({ active }: { active: string }) {
   return (
-    <aside className="flex w-56 shrink-0 flex-col justify-between border-r border-slate-800/60 bg-[#0B0D14] py-5">
-      {/* Logo */}
+    <aside className="flex w-56 shrink-0 flex-col justify-between border-r border-white/5 bg-black/40 py-5 backdrop-blur-2xl">
       <div>
         <div className="mb-6 flex items-center gap-2 px-4">
           <span className="text-base font-bold text-white">✨ AI Portfolio</span>
-          <span className="rounded-full bg-violet-600 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-white">
+          <span className="rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-600 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-white shadow shadow-violet-900/50">
             Pro
           </span>
         </div>
-
-        {/* Nav */}
         <nav className="space-y-0.5 px-2">
           {NAV.map(({ id, label, icon: Icon, href }) => {
             const isActive = id === active;
@@ -78,10 +71,10 @@ function Sidebar({ active }: { active: string }) {
               <Link
                 key={id}
                 to={href as "/"}
-                className={`flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium transition-all ${
+                className={`flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200 ${
                   isActive
-                    ? "border border-violet-700/40 bg-violet-900/25 text-violet-300"
-                    : "text-slate-500 hover:bg-slate-800/50 hover:text-slate-300"
+                    ? "border border-violet-500/30 bg-violet-500/10 text-violet-300 shadow-inner shadow-violet-900/20"
+                    : "text-slate-500 hover:bg-white/5 hover:text-slate-300"
                 }`}
               >
                 <Icon size={15} />
@@ -93,13 +86,15 @@ function Sidebar({ active }: { active: string }) {
       </div>
 
       {/* Upgrade card */}
-      <div className="mx-3 rounded-xl border border-violet-700/40 bg-gradient-to-b from-violet-900/40 to-purple-950/60 p-4 shadow-lg shadow-violet-900/30">
-        <Diamond size={18} className="text-violet-400 mb-2" />
+      <div className="mx-3 rounded-2xl border border-violet-500/20 bg-gradient-to-b from-violet-900/30 to-fuchsia-950/40 p-4 shadow-[0_0_30px_rgba(139,92,246,0.15)]">
+        <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-fuchsia-600 shadow shadow-violet-900/50">
+          <Diamond size={15} className="text-white" />
+        </div>
         <p className="text-xs font-bold text-white mb-1">Upgrade to Pro</p>
         <p className="text-[10px] leading-relaxed text-slate-400 mb-3">
           Deploy to Vercel, custom domains, analytics &amp; unlimited portfolios.
         </p>
-        <button className="flex w-full items-center justify-center gap-1 rounded-lg bg-violet-600 py-2 text-xs font-semibold text-white shadow shadow-violet-900/60 transition hover:bg-violet-500">
+        <button className="flex w-full items-center justify-center gap-1 rounded-xl bg-gradient-to-r from-violet-600 to-fuchsia-600 py-2 text-xs font-semibold text-white shadow-[0_0_15px_rgba(168,85,247,0.4)] transition-all duration-300 hover:shadow-[0_0_25px_rgba(168,85,247,0.6)] hover:scale-[1.02]">
           Upgrade Now <ChevronRight size={12} />
         </button>
       </div>
@@ -107,60 +102,57 @@ function Sidebar({ active }: { active: string }) {
   );
 }
 
-/* ────────────────────────────────────────────────────────── */
-/*  TOP HEADER                                               */
-/* ────────────────────────────────────────────────────────── */
+/* ─── Header ─────────────────────────────────────────────── */
 function TopHeader() {
   return (
-    <header className="flex items-center justify-end gap-3 border-b border-slate-800/60 bg-[#0e1018] px-6 py-3">
-      <button className="flex items-center gap-1.5 rounded-lg border border-violet-700/50 bg-violet-900/20 px-3 py-1.5 text-xs font-semibold text-violet-300 transition hover:bg-violet-900/40">
+    <header className="flex items-center justify-end gap-3 border-b border-white/5 bg-black/20 px-6 py-3 backdrop-blur-xl">
+      <button className="flex items-center gap-1.5 rounded-lg border border-violet-500/30 bg-violet-500/10 px-3 py-1.5 text-xs font-semibold text-violet-300 transition-all duration-200 hover:bg-violet-500/20 hover:border-violet-400/50">
         <Diamond size={12} /> Upgrade to Pro
       </button>
-      <button className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 transition hover:bg-slate-800 hover:text-slate-300">
+      <button className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 transition hover:bg-white/5 hover:text-slate-300">
         <HelpCircle size={16} />
       </button>
-      <button className="relative flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 transition hover:bg-slate-800 hover:text-slate-300">
+      <button className="relative flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 transition hover:bg-white/5 hover:text-slate-300">
         <Bell size={16} />
-        <span className="absolute right-1.5 top-1.5 h-1.5 w-1.5 rounded-full bg-violet-500" />
+        <span className="absolute right-1.5 top-1.5 h-1.5 w-1.5 rounded-full bg-violet-500 shadow-[0_0_6px_rgba(139,92,246,0.8)]" />
       </button>
-      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-purple-700 text-xs font-bold text-white">
+      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-fuchsia-600 text-xs font-bold text-white shadow shadow-violet-900/50">
         AB
       </div>
     </header>
   );
 }
 
-/* ────────────────────────────────────────────────────────── */
-/*  STEP HEADER                                              */
-/* ────────────────────────────────────────────────────────── */
+/* ─── Step badge ─────────────────────────────────────────── */
 function StepBadge({ n, locked = false }: { n: number; locked?: boolean }) {
   return (
     <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-bold ${
       locked
-        ? "bg-slate-800 text-slate-500"
-        : "bg-violet-600 text-white shadow shadow-violet-900/50"
+        ? "bg-white/5 text-slate-500 border border-white/10"
+        : "bg-gradient-to-br from-violet-500 to-fuchsia-600 text-white shadow-[0_0_12px_rgba(168,85,247,0.5)]"
     }`}>
       {locked ? <Lock size={12} /> : n}
     </span>
   );
 }
 
-/* ────────────────────────────────────────────────────────── */
-/*  STEP 1 — Upload CV                                       */
-/* ────────────────────────────────────────────────────────── */
+/* ─── Step 1: Upload ─────────────────────────────────────── */
 function StepUpload({ file, onFile }: { file: File | null; onFile: (f: File) => void }) {
+  const [dragging, setDragging] = useState(false);
+
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
+    setDragging(false);
     const f = e.dataTransfer.files[0];
     if (f) onFile(f);
   };
 
   return (
-    <div className="rounded-xl border border-slate-800 bg-[#131520] p-5">
+    <div className="rounded-2xl border border-white/10 bg-white/5 p-5 shadow-[0_8px_32px_0_rgba(0,0,0,0.3)] backdrop-blur-xl transition-all duration-300 hover:border-white/15 hover:shadow-[0_8px_40px_0_rgba(139,92,246,0.1)]">
       <div className="mb-4 flex items-center gap-3">
         <StepBadge n={1} />
         <div>
-          <p className="text-sm font-bold text-slate-100">Upload Your CV</p>
+          <p className="text-sm font-bold text-white">Upload Your CV</p>
           <p className="text-[11px] text-slate-500">We'll extract your info automatically</p>
         </div>
       </div>
@@ -169,18 +161,25 @@ function StepUpload({ file, onFile }: { file: File | null; onFile: (f: File) => 
         {/* Dropzone */}
         <div
           onDrop={handleDrop}
-          onDragOver={(e) => e.preventDefault()}
-          className="flex flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed border-slate-700 bg-slate-900/40 py-10 transition hover:border-violet-600/60 hover:bg-violet-950/10"
+          onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
+          onDragLeave={() => setDragging(false)}
+          className={`flex flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed py-10 transition-all duration-300 hover:-translate-y-1 ${
+            dragging
+              ? "border-purple-400 bg-purple-500/10 shadow-[0_0_30px_rgba(168,85,247,0.2)]"
+              : "border-purple-500/50 bg-white/[0.03] hover:border-purple-400 hover:bg-purple-500/5 hover:shadow-[0_0_20px_rgba(168,85,247,0.15)]"
+          }`}
         >
           {file ? (
             <>
-              <FileText size={32} className="text-violet-400" />
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-violet-500/20 text-violet-400">
+                <FileText size={24} />
+              </div>
               <p className="text-xs font-semibold text-violet-300">{file.name}</p>
-              <p className="text-[10px] text-slate-500">File ready</p>
+              <p className="text-[10px] text-slate-500">File ready ✓</p>
             </>
           ) : (
             <>
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-slate-800 text-slate-400">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/5 text-slate-400 animate-pulse">
                 <Upload size={22} />
               </div>
               <div className="text-center">
@@ -189,7 +188,7 @@ function StepUpload({ file, onFile }: { file: File | null; onFile: (f: File) => 
               </div>
             </>
           )}
-          <label className="cursor-pointer rounded-lg bg-violet-600 px-4 py-2 text-xs font-semibold text-white shadow shadow-violet-900/50 transition hover:bg-violet-500">
+          <label className="cursor-pointer rounded-lg bg-gradient-to-r from-violet-600 to-fuchsia-600 px-4 py-2 text-xs font-semibold text-white shadow-[0_0_12px_rgba(168,85,247,0.4)] transition-all duration-300 hover:shadow-[0_0_20px_rgba(168,85,247,0.6)] hover:scale-105">
             Choose File
             <input
               type="file"
@@ -200,7 +199,7 @@ function StepUpload({ file, onFile }: { file: File | null; onFile: (f: File) => 
           </label>
         </div>
 
-        {/* Tips + icons */}
+        {/* Tips */}
         <div className="flex flex-col justify-center gap-4">
           <div>
             <p className="mb-2 text-xs font-bold text-slate-300">Tips for best results</p>
@@ -211,19 +210,19 @@ function StepUpload({ file, onFile }: { file: File | null; onFile: (f: File) => 
                 "Include a summary or objective section",
               ].map((tip) => (
                 <li key={tip} className="flex items-start gap-2">
-                  <Check size={13} className="mt-0.5 shrink-0 text-emerald-500" />
+                  <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-emerald-500/15 text-emerald-400">
+                    <Check size={10} />
+                  </span>
                   <span className="text-[11px] text-slate-400">{tip}</span>
                 </li>
               ))}
             </ul>
           </div>
-
-          {/* Glowing file type icons */}
           <div className="flex items-center gap-3">
             {["PDF", "DOCX"].map((ext) => (
               <div
                 key={ext}
-                className="flex h-14 w-14 flex-col items-center justify-center rounded-xl border border-violet-700/30 bg-violet-950/30 shadow-[0_0_20px_rgba(139,92,246,0.2)]"
+                className="flex h-14 w-14 flex-col items-center justify-center rounded-xl border border-violet-500/20 bg-violet-500/5 shadow-[0_0_20px_rgba(139,92,246,0.15)] transition-all duration-300 hover:shadow-[0_0_30px_rgba(139,92,246,0.3)] hover:-translate-y-0.5"
               >
                 <FileText size={20} className="text-violet-400" />
                 <span className="mt-1 text-[9px] font-bold text-violet-300">{ext}</span>
@@ -236,32 +235,28 @@ function StepUpload({ file, onFile }: { file: File | null; onFile: (f: File) => 
   );
 }
 
-/* ────────────────────────────────────────────────────────── */
-/*  STEP 2 — Choose Template                                 */
-/* ────────────────────────────────────────────────────────── */
+/* ─── Step 2: Templates ──────────────────────────────────── */
 function StepTemplates({ selected, setSelected }: { selected: string; setSelected: (s: string) => void }) {
   return (
-    <div className="rounded-xl border border-slate-800 bg-[#131520] p-5">
+    <div className="rounded-2xl border border-white/10 bg-white/5 p-5 shadow-[0_8px_32px_0_rgba(0,0,0,0.3)] backdrop-blur-xl transition-all duration-300 hover:border-white/15 hover:shadow-[0_8px_40px_0_rgba(139,92,246,0.1)]">
       <div className="mb-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <StepBadge n={2} />
           <div>
-            <p className="text-sm font-bold text-slate-100">Choose a Template</p>
+            <p className="text-sm font-bold text-white">Choose a Template</p>
             <p className="text-[11px] text-slate-500">Select the style that fits your industry</p>
           </div>
         </div>
-        <button className="text-[11px] font-medium text-violet-400 hover:text-violet-300 transition flex items-center gap-0.5">
+        <button className="flex items-center gap-0.5 text-[11px] font-medium text-violet-400 transition hover:text-violet-300">
           View all templates <ChevronRight size={13} />
         </button>
       </div>
 
-      <div className="relative flex items-center gap-2">
-        {/* Left arrow */}
-        <button className="shrink-0 flex h-7 w-7 items-center justify-center rounded-full border border-slate-700 bg-slate-800 text-slate-400 transition hover:border-violet-600/50 hover:text-white">
+      <div className="flex items-center gap-2">
+        <button className="shrink-0 flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-white/5 text-slate-400 backdrop-blur transition-all duration-200 hover:border-violet-500/50 hover:bg-violet-500/10 hover:text-white">
           <ChevronLeft size={14} />
         </button>
 
-        {/* Cards */}
         <div className="flex flex-1 gap-3 overflow-hidden">
           {TEMPLATES.map((t) => {
             const isSel = t.id === selected;
@@ -269,37 +264,35 @@ function StepTemplates({ selected, setSelected }: { selected: string; setSelecte
               <button
                 key={t.id}
                 onClick={() => setSelected(t.id)}
-                className={`group relative flex-1 rounded-xl border p-0 transition-all duration-200 overflow-hidden ${
+                className={`group relative flex-1 overflow-hidden rounded-xl border p-0 transition-all duration-500 hover:-translate-y-2 hover:scale-[1.03] ${
                   isSel
-                    ? "border-purple-500 shadow-[0_0_18px_rgba(168,85,247,0.4)]"
-                    : "border-slate-700/60 hover:border-slate-600"
+                    ? "border-purple-500/80 ring-2 ring-purple-500 ring-offset-2 ring-offset-black shadow-[0_20px_40px_-15px_rgba(168,85,247,0.5)]"
+                    : "border-white/10 hover:border-white/20 hover:shadow-[0_20px_40px_-15px_rgba(168,85,247,0.4)]"
                 }`}
               >
-                {/* Selected checkmark badge */}
                 {isSel && (
-                  <span className="absolute right-1.5 top-1.5 z-20 flex h-5 w-5 items-center justify-center rounded-full bg-purple-500 shadow-md shadow-purple-900/60 text-white">
+                  <span className="absolute right-1.5 top-1.5 z-20 flex h-5 w-5 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-fuchsia-500 shadow-[0_0_10px_rgba(168,85,247,0.7)] text-white">
                     <Check size={11} />
                   </span>
                 )}
 
-                {/* Image thumbnail with zoom on hover */}
                 <div className="relative h-28 w-full overflow-hidden">
                   <img
                     src={t.img}
                     alt={t.label}
-                    className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
                   />
-                  {/* Dark gradient overlay so label stays readable */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                  {/* Tag pill over the image */}
-                  <span className="absolute bottom-2 left-2 z-10 rounded-md bg-black/50 px-1.5 py-0.5 text-[9px] text-slate-300 backdrop-blur-sm">
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
+                  {isSel && (
+                    <div className="absolute inset-0 bg-violet-500/10" />
+                  )}
+                  <span className="absolute bottom-2 left-2 z-10 rounded-md bg-black/60 px-1.5 py-0.5 text-[9px] text-slate-300 backdrop-blur-sm">
                     {t.tag}
                   </span>
                 </div>
 
-                {/* Label footer */}
-                <div className={`px-2 py-1.5 transition-colors ${isSel ? "bg-violet-950/40" : "bg-slate-900"}`}>
-                  <p className={`text-[10px] font-semibold text-left transition-colors ${isSel ? "text-violet-300" : "text-slate-300"}`}>
+                <div className={`px-2 py-1.5 transition-colors ${isSel ? "bg-violet-900/30" : "bg-black/40"}`}>
+                  <p className={`text-left text-[10px] font-semibold transition-colors ${isSel ? "text-violet-300" : "text-slate-300"}`}>
                     {t.label}
                   </p>
                 </div>
@@ -308,8 +301,7 @@ function StepTemplates({ selected, setSelected }: { selected: string; setSelecte
           })}
         </div>
 
-        {/* Right arrow */}
-        <button className="shrink-0 flex h-7 w-7 items-center justify-center rounded-full border border-slate-700 bg-slate-800 text-slate-400 transition hover:border-violet-600/50 hover:text-white">
+        <button className="shrink-0 flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-white/5 text-slate-400 backdrop-blur transition-all duration-200 hover:border-violet-500/50 hover:bg-violet-500/10 hover:text-white">
           <ChevronRight size={14} />
         </button>
       </div>
@@ -317,17 +309,15 @@ function StepTemplates({ selected, setSelected }: { selected: string; setSelecte
   );
 }
 
-/* ────────────────────────────────────────────────────────── */
-/*  STEP 3 — Generate                                        */
-/* ────────────────────────────────────────────────────────── */
+/* ─── Step 3: Generate ───────────────────────────────────── */
 function StepGenerate({ onGenerate, loading }: { onGenerate: () => void; loading: boolean }) {
   return (
-    <div className="rounded-xl border border-slate-800 bg-[#131520] p-5">
+    <div className="rounded-2xl border border-white/10 bg-white/5 p-5 shadow-[0_8px_32px_0_rgba(0,0,0,0.3)] backdrop-blur-xl transition-all duration-300 hover:border-white/15 hover:shadow-[0_8px_40px_0_rgba(139,92,246,0.1)]">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <StepBadge n={3} />
           <div>
-            <p className="text-sm font-bold text-slate-100">Generate AI Portfolio</p>
+            <p className="text-sm font-bold text-white">Generate AI Portfolio</p>
             <p className="text-[11px] text-slate-500">
               Our AI will craft a stunning portfolio from your CV in seconds
             </p>
@@ -336,22 +326,25 @@ function StepGenerate({ onGenerate, loading }: { onGenerate: () => void; loading
         <button
           onClick={onGenerate}
           disabled={loading}
-          className="flex items-center gap-2 rounded-xl bg-violet-600 px-5 py-2.5 text-sm font-bold text-white shadow-[0_0_15px_rgba(168,85,247,0.5)] transition hover:bg-violet-500 hover:shadow-[0_0_25px_rgba(168,85,247,0.65)] active:scale-95 disabled:opacity-60"
+          className="group flex items-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-fuchsia-600 px-6 py-3 text-sm font-bold text-white shadow-[0_0_20px_rgba(168,85,247,0.5)] transition-all duration-300 hover:scale-105 hover:shadow-[0_0_35px_rgba(168,85,247,0.7)] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <Sparkles size={15} />
+          <Sparkles size={16} className="transition-transform duration-300 group-hover:rotate-12" />
           {loading ? "Generating…" : "✨ Generate Portfolio"}
         </button>
       </div>
 
       {loading && (
-        <div className="mt-4">
-          <div className="mb-1.5 flex justify-between text-[11px] text-slate-400">
-            <span>AI is crafting your portfolio…</span>
-            <span className="text-violet-400">Running</span>
+        <div className="mt-5 rounded-xl border border-violet-500/20 bg-violet-500/5 p-4">
+          <div className="mb-2 flex items-center justify-between text-[11px]">
+            <span className="text-slate-400 flex items-center gap-1.5">
+              <span className="inline-block h-1.5 w-1.5 rounded-full bg-violet-500 animate-ping" />
+              AI is crafting your portfolio…
+            </span>
+            <span className="font-medium text-violet-400">Running</span>
           </div>
-          <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-800">
+          <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/5">
             <div
-              className="h-full rounded-full bg-gradient-to-r from-violet-600 to-purple-400 animate-pulse"
+              className="h-full rounded-full bg-gradient-to-r from-violet-600 via-fuchsia-500 to-violet-600 animate-pulse bg-[length:200%_100%]"
               style={{ width: "65%" }}
             />
           </div>
@@ -361,26 +354,24 @@ function StepGenerate({ onGenerate, loading }: { onGenerate: () => void; loading
   );
 }
 
-/* ────────────────────────────────────────────────────────── */
-/*  STEP 4 — Publish (Locked)                               */
-/* ────────────────────────────────────────────────────────── */
+/* ─── Step 4: Publish (locked) ───────────────────────────── */
 function StepPublish() {
   return (
-    <div className="rounded-xl border border-slate-800 bg-[#131520] p-5 opacity-70">
+    <div className="rounded-2xl border border-white/5 bg-white/[0.02] p-5 opacity-70 shadow-[0_8px_32px_0_rgba(0,0,0,0.2)] backdrop-blur-xl">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <StepBadge n={4} locked />
           <div>
-            <p className="text-sm font-bold text-slate-400">Publish &amp; Deploy</p>
+            <p className="text-sm font-bold text-slate-500">Publish &amp; Deploy</p>
             <p className="text-[11px] text-slate-600">Deploy your portfolio live with one click</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <Lock size={14} className="text-slate-500" />
-          <div className="flex items-center gap-1.5 rounded-lg border border-yellow-700/30 bg-yellow-950/20 px-3 py-1.5">
-            <Diamond size={12} className="text-yellow-500" />
-            <span className="text-[11px] font-semibold text-yellow-600/90">
-              Pro feature: Pay to deploy to Vercel
+          <Lock size={14} className="text-slate-600" />
+          <div className="flex items-center gap-1.5 rounded-lg border border-yellow-500/20 bg-yellow-500/5 px-3 py-1.5 backdrop-blur">
+            <Diamond size={12} className="text-yellow-500/80" />
+            <span className="text-[11px] font-semibold text-yellow-600/80">
+              💎 Pro feature: Pay to deploy to Vercel
             </span>
           </div>
         </div>
@@ -389,12 +380,10 @@ function StepPublish() {
   );
 }
 
-/* ────────────────────────────────────────────────────────── */
-/*  PAGE ROOT                                               */
-/* ────────────────────────────────────────────────────────── */
+/* ─── Page root ──────────────────────────────────────────── */
 function PortfolioBuilderPage() {
   const [file, setFile] = useState<File | null>(null);
-  const [selectedTemplate, setSelectedTemplate] = useState("modern");
+  const [selectedTemplate, setSelectedTemplate] = useState("3d-artist");
   const [generating, setGenerating] = useState(false);
 
   const handleGenerate = () => {
@@ -403,28 +392,44 @@ function PortfolioBuilderPage() {
   };
 
   return (
-    <div className="flex h-screen overflow-hidden bg-[#0e1018] font-sans">
+    <div className="relative flex h-screen overflow-hidden font-sans">
+      {/* ── Rich radial background ── */}
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-900 via-[#0a0a0f] to-black" />
+
+      {/* ── Ambient glow orbs ── */}
+      <div
+        className="pointer-events-none absolute -left-40 -top-40 h-[500px] w-[500px] rounded-full opacity-20 blur-[120px]"
+        style={{ background: "radial-gradient(circle, #7c3aed, transparent 70%)" }}
+      />
+      <div
+        className="pointer-events-none absolute -bottom-20 right-0 h-[400px] w-[400px] rounded-full opacity-15 blur-[120px]"
+        style={{ background: "radial-gradient(circle, #4f46e5, transparent 70%)" }}
+      />
+      <div
+        className="pointer-events-none absolute left-1/2 top-1/2 h-[300px] w-[300px] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-10 blur-[100px]"
+        style={{ background: "radial-gradient(circle, #c026d3, transparent 70%)" }}
+      />
+
+      {/* ── Layout ── */}
       <Sidebar active="dashboard" />
 
-      {/* Main content */}
-      <div className="flex flex-1 flex-col overflow-hidden">
+      <div className="relative flex flex-1 flex-col overflow-hidden">
         <TopHeader />
 
         <main className="flex-1 overflow-y-auto px-8 py-6">
           {/* Page title row */}
           <div className="mb-6 flex items-start justify-between">
             <div>
-              <h1 className="text-xl font-bold text-slate-100">✨ Portfolio Builder</h1>
+              <h1 className="text-xl font-bold text-white">✨ Portfolio Builder</h1>
               <p className="mt-1 max-w-lg text-sm text-slate-500">
                 Upload your CV, choose a template, and let AI craft a stunning portfolio for you.
               </p>
             </div>
-            <button className="flex items-center gap-2 rounded-lg border border-slate-700 bg-transparent px-4 py-2 text-sm font-medium text-slate-300 transition hover:border-slate-600 hover:text-white">
+            <button className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-slate-300 backdrop-blur transition-all duration-200 hover:border-white/20 hover:bg-white/10 hover:text-white">
               <FolderOpen size={15} /> My Portfolios
             </button>
           </div>
 
-          {/* Steps */}
           <div className="flex flex-col gap-4">
             <StepUpload file={file} onFile={setFile} />
             <StepTemplates selected={selectedTemplate} setSelected={setSelectedTemplate} />
