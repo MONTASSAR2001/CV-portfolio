@@ -1,0 +1,211 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ============================================
+   THE ARCHITECT OF LAW — Design System
+   Deep charcoal · Brushed bronze · Rich walnut
+   ============================================ */
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-bronze: var(--bronze);
+  --color-bronze-deep: var(--bronze-deep);
+  --color-bronze-light: var(--bronze-light);
+  --color-walnut: var(--walnut);
+  --color-charcoal: var(--charcoal);
+  --color-charcoal-deep: var(--charcoal-deep);
+  --color-ivory: var(--ivory);
+
+  --font-serif: "Cormorant Garamond", "Playfair Display", ui-serif, Georgia, serif;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+}
+
+:root {
+  --radius: 0.25rem;
+
+  /* Core palette */
+  --charcoal-deep: oklch(0.14 0.005 60);
+  --charcoal: oklch(0.20 0.008 60);
+  --walnut: oklch(0.32 0.055 45);
+  --bronze-deep: oklch(0.48 0.09 55);
+  --bronze: oklch(0.66 0.11 60);
+  --bronze-light: oklch(0.82 0.09 75);
+  --ivory: oklch(0.94 0.015 80);
+
+  /* Semantic tokens (dark by default — this is a dark luxury theme) */
+  --background: var(--charcoal-deep);
+  --foreground: var(--ivory);
+  --card: oklch(0.18 0.008 60);
+  --card-foreground: var(--ivory);
+  --popover: var(--charcoal);
+  --popover-foreground: var(--ivory);
+  --primary: var(--bronze);
+  --primary-foreground: var(--charcoal-deep);
+  --secondary: var(--walnut);
+  --secondary-foreground: var(--ivory);
+  --muted: oklch(0.24 0.01 60);
+  --muted-foreground: oklch(0.68 0.02 70);
+  --accent: var(--bronze-deep);
+  --accent-foreground: var(--ivory);
+  --destructive: oklch(0.55 0.20 25);
+  --destructive-foreground: var(--ivory);
+  --border: oklch(0.30 0.02 60 / 60%);
+  --input: oklch(0.30 0.02 60 / 60%);
+  --ring: var(--bronze);
+
+  /* Gradients & shadows */
+  --gradient-bronze: linear-gradient(135deg, oklch(0.55 0.10 55), oklch(0.78 0.10 75));
+  --gradient-charcoal: linear-gradient(180deg, oklch(0.14 0.005 60), oklch(0.20 0.008 60));
+  --gradient-curtain: linear-gradient(180deg, oklch(0.18 0.008 60 / 0.98), oklch(0.14 0.005 60));
+  --shadow-elegant: 0 40px 80px -30px oklch(0 0 0 / 0.7), 0 0 0 1px oklch(0.66 0.11 60 / 0.06);
+  --shadow-bronze: 0 20px 60px -20px oklch(0.55 0.10 55 / 0.35);
+  --shadow-paper: 0 1px 0 0 oklch(1 0 0 / 0.04) inset, 0 30px 60px -20px oklch(0 0 0 / 0.8);
+
+  /* Motion */
+  --ease-architect: cubic-bezier(0.2, 0.7, 0.1, 1);
+  --dur-curtain: 1100ms;
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    font-feature-settings: "ss01", "cv11";
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+  h1, h2, h3, h4, .serif {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    letter-spacing: -0.015em;
+  }
+  ::selection {
+    background: var(--bronze);
+    color: var(--charcoal-deep);
+  }
+}
+
+/* ============ Utilities ============ */
+
+@utility glass-paper {
+  background: linear-gradient(
+    145deg,
+    oklch(0.22 0.01 60 / 0.72),
+    oklch(0.16 0.008 60 / 0.55)
+  );
+  backdrop-filter: blur(24px) saturate(140%);
+  border: 1px solid oklch(0.66 0.11 60 / 0.18);
+  box-shadow:
+    0 1px 0 0 oklch(1 0 0 / 0.06) inset,
+    0 60px 120px -40px oklch(0 0 0 / 0.7);
+}
+
+@utility bronze-text {
+  background: var(--gradient-bronze);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@utility hairline {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    oklch(0.66 0.11 60 / 0.6),
+    transparent
+  );
+  height: 1px;
+}
+
+@utility kinetic {
+  transition: transform 500ms var(--ease-architect), letter-spacing 500ms var(--ease-architect), color 400ms;
+  will-change: transform, letter-spacing;
+}
+
+@utility kinetic-hover {
+  &:hover {
+    transform: translateX(12px) skewX(-2deg);
+    letter-spacing: 0.04em;
+    color: var(--bronze-light);
+  }
+}
+
+@utility curtain-reveal {
+  animation: curtain 1200ms var(--ease-architect) both;
+}
+
+@utility rise {
+  animation: rise 900ms var(--ease-architect) both;
+}
+
+@utility grain {
+  position: relative;
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.06;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.7'/></svg>");
+  }
+}
+
+@keyframes curtain {
+  from {
+    clip-path: inset(100% 0 0 0);
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes rise {
+  from { transform: translateY(40px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
