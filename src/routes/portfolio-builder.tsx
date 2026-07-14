@@ -6,7 +6,7 @@ import {
   LayoutDashboard, FolderOpen, LayoutTemplate, Bot, BarChart2,
   Globe, Settings, Diamond, ChevronRight, ChevronLeft, Check,
   Upload, Bell, HelpCircle, Lock, Sparkles, FileText, ExternalLink,
-  AlertCircle, CheckCircle2, Cpu, Loader2, CloudUpload,
+  AlertCircle, CheckCircle2, Cpu, Loader2, CloudUpload, Copy, Rocket,
 } from "lucide-react";
 
 /* ─── AI Content Types ───────────────────────────────────── */
@@ -475,16 +475,20 @@ function StepGenerate({
 /* ─── Step 4: Publish (locks until AI generates content) ──── */
 function StepPublish({
   content,
-  onSave,
+  onDeployAndSave,
+  isDeploying,
   saving,
   saved,
-  saveError,
+  deployedUrl,
+  deployError,
 }: {
   content: PortfolioContent | null;
-  onSave: () => void;
+  onDeployAndSave: () => void;
+  isDeploying: boolean;
   saving: boolean;
   saved: boolean;
-  saveError: string | null;
+  deployedUrl: string | null;
+  deployError: string | null;
 }) {
   const isUnlocked = content !== null;
 
@@ -509,7 +513,106 @@ function StepPublish({
   }
 
   return (
-    <div className="group rounded-2xl border border-emerald-500/30 bg-emerald-500/5 p-5 shadow-[0_8px_32px_0_rgba(16,185,129,0.15)] backdrop-blur-xl transition-all duration-500 hover:border-emerald-400/50 hover:shadow-[0_0_40px_rgba(16,185,129,0.25)] relative overflow-hidden">
+    <div className="rounded-2xl border border-emerald-500/30 bg-emerald-500/5 p-5 shadow-[0_8px_32px_0_rgba(16,185,129,0.15)] backdrop-blur-xl relative overflow-hidden">
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-emerald-500/10 via-transparent to-teal-500/10 opacity-60" />
+
+      {/* Header */}
+      <div className="relative z-10 flex items-start justify-between gap-4">
+        <div className="flex items-start gap-3">
+          <StepBadge n={4} />
+          <div>
+            <div className="flex items-center gap-2 mb-1">
+              <p className="text-sm font-bold text-white">Publish &amp; Deploy</p>
+              <span className="inline-flex items-center gap-1 rounded-full border border-emerald-500/40 bg-emerald-500/15 px-2 py-0.5 text-[10px] font-bold text-emerald-300">
+                <CheckCircle2 size={10} /> Content Ready
+              </span>
+            </div>
+            <p className="text-[11px] text-slate-400">Deploy your portfolio live to Vercel with one click.</p>
+          </div>
+        </div>
+
+        {/* CTA */}
+        <button
+          id="portfolio-deploy-btn"
+          onClick={onDeployAndSave}
+          disabled={isDeploying || saving || saved}
+          className={`shrink-0 flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-bold transition-all duration-300 disabled:cursor-not-allowed ${
+            saved
+              ? "border border-emerald-500/40 bg-emerald-500/15 text-emerald-300"
+              : "bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white shadow-[0_0_20px_rgba(168,85,247,0.5)] hover:shadow-[0_0_35px_rgba(168,85,247,0.8)] hover:scale-[1.03] active:scale-95"
+          }`}
+        >
+          {isDeploying || saving ? (
+            <><Loader2 size={14} className="animate-spin" /> {isDeploying ? "Deploying…" : "Saving…"}</>
+          ) : saved ? (
+            <><CheckCircle2 size={14} /> Live!</>
+          ) : (
+            <><Rocket size={14} /> 🚀 Deploy Live to Vercel</>
+          )}
+        </button>
+      </div>
+
+      {/* Deploy error */}
+      {deployError && !isDeploying && (
+        <div className="relative z-10 mt-4 flex items-start gap-2.5 rounded-xl border border-rose-500/30 bg-rose-500/10 px-4 py-3">
+          <AlertCircle size={14} className="mt-0.5 shrink-0 text-rose-400" />
+          <p className="text-[12px] text-rose-300 leading-relaxed">{deployError}</p>
+        </div>
+      )}
+
+      {/* Live URL banner */}
+      {deployedUrl && (
+        <div className="relative z-10 mt-4 flex items-center gap-3 rounded-xl border border-emerald-500/40 bg-emerald-500/10 px-4 py-3">
+          <span className="text-base">🎉</span>
+          <div className="flex-1 min-w-0">
+            <p className="text-[11px] text-emerald-400 font-semibold mb-0.5">Your portfolio is live!</p>
+            <a
+              href={deployedUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs text-emerald-300 hover:text-white transition truncate flex items-center gap-1"
+            >
+              {deployedUrl} <ExternalLink size={11} />
+            </a>
+          </div>
+          <button
+            id="copy-deploy-url"
+            onClick={() => navigator.clipboard.writeText(deployedUrl)}
+            className="shrink-0 flex items-center gap-1.5 rounded-lg border border-emerald-500/40 bg-emerald-500/10 px-3 py-1.5 text-[11px] font-semibold text-emerald-300 hover:bg-emerald-500/20 transition"
+          >
+            <Copy size={12} /> Copy Link
+          </button>
+        </div>
+      )}
+
+      {/* Content preview */}
+      <div className="relative z-10 mt-4 grid grid-cols-3 gap-3">
+        <div className="rounded-xl border border-white/10 bg-black/30 p-3">
+          <p className="text-[10px] uppercase tracking-widest text-slate-500 mb-1.5">Bio</p>
+          <p className="text-[11px] text-slate-300 leading-relaxed line-clamp-3">{content.bio}</p>
+        </div>
+        <div className="rounded-xl border border-white/10 bg-black/30 p-3">
+          <p className="text-[10px] uppercase tracking-widest text-slate-500 mb-1.5">Projects</p>
+          <p className="text-2xl font-bold text-white">{content.projects.length}</p>
+          <div className="mt-1 flex flex-wrap gap-1">
+            {content.projects.slice(0, 3).map((p) => (
+              <span key={p.title} className="rounded bg-white/5 px-1.5 py-0.5 text-[9px] text-slate-400">{p.title}</span>
+            ))}
+          </div>
+        </div>
+        <div className="rounded-xl border border-white/10 bg-black/30 p-3">
+          <p className="text-[10px] uppercase tracking-widest text-slate-500 mb-1.5">Skills</p>
+          <p className="text-2xl font-bold text-white">{content.skills.length}</p>
+          <div className="mt-1 flex flex-wrap gap-1">
+            {content.skills.slice(0, 4).map((s) => (
+              <span key={s} className="rounded bg-violet-500/15 border border-violet-500/25 px-1.5 py-0.5 text-[9px] text-violet-300">{s}</span>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-emerald-500/10 via-transparent to-teal-500/10 opacity-60" />
 
       <div className="relative z-10 flex items-start justify-between gap-6">
@@ -598,29 +701,44 @@ function PortfolioBuilderPage() {
   const [generationError, setGenerationError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
-  const [saveError, setSaveError] = useState<string | null>(null);
+  const [isDeploying, setIsDeploying] = useState(false);
+  const [deployedUrl, setDeployedUrl] = useState<string | null>(null);
+  const [deployError, setDeployError] = useState<string | null>(null);
 
   // ── Auth guard ──────────────────────────────────────────────
   useEffect(() => {
     if (!loading && !user) navigate({ to: "/login" });
   }, [user, loading, navigate]);
 
-  // ── Save portfolio to Supabase ──────────────────────────────
-  const handleSave = async () => {
+  // ── Deploy to Vercel + save to Supabase ──────────────────────
+  const handleDeployAndSave = async () => {
     if (!user || !generatedContent) return;
-    setSaving(true);
-    setSaveError(null);
-    const { error } = await supabase.from("portfolios").insert({
-      user_id: user.id,
-      template_id: selectedTemplate,
-      content_json: generatedContent,
-    });
-    if (error) {
-      setSaveError(error.message);
+    setIsDeploying(true);
+    setDeployError(null);
+
+    try {
+      const { deployPortfolio } = await import("@/lib/vercel-deploy");
+      const url = await deployPortfolio(generatedContent, selectedTemplate);
+      setDeployedUrl(url);
+      setIsDeploying(false);
+
+      // Persist to Supabase with the live URL
+      setSaving(true);
+      const { error } = await supabase.from("portfolios").insert({
+        user_id: user.id,
+        template_id: selectedTemplate,
+        content_json: generatedContent,
+        deployed_url: url,
+      });
       setSaving(false);
-    } else {
-      setSaved(true);
-      setTimeout(() => navigate({ to: "/dashboard" }), 1500);
+      if (error) {
+        setDeployError(`Saved to Vercel but DB insert failed: ${error.message}`);
+      } else {
+        setSaved(true);
+      }
+    } catch (err) {
+      setDeployError(err instanceof Error ? err.message : "Deployment failed.");
+      setIsDeploying(false);
     }
   };
 
@@ -779,10 +897,12 @@ Rules:
             />
             <StepPublish
               content={generatedContent}
-              onSave={handleSave}
+              onDeployAndSave={handleDeployAndSave}
+              isDeploying={isDeploying}
               saving={saving}
               saved={saved}
-              saveError={saveError}
+              deployedUrl={deployedUrl}
+              deployError={deployError}
             />
           </div>
         </main>
