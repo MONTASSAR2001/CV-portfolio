@@ -1,4 +1,6 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useEffect, useState as useStateCore } from "react";
+import { supabase } from "@/lib/supabase";
 import { useState } from "react";
 import {
   LayoutDashboard,
@@ -99,7 +101,50 @@ const users = [
 ];
 
 function AdminDashboard() {
+  const navigate = useNavigate();
   const [view, setView] = useState<View>("overview");
+  const [authChecked, setAuthChecked] = useStateCore(false);
+
+  // ── Auth guard ──────────────────────────────────────────────
+  useEffect(() => {
+    // 1. Check if there is an existing session on mount
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session) {
+        navigate({ to: "/login" });
+      } else {
+        setAuthChecked(true);
+      }
+    });
+
+    // 2. Listen for auth events (logout from another tab, token expiry, etc.)
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (!session) {
+        navigate({ to: "/login" });
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [navigate]);
+
+  // ── Logout handler ──────────────────────────────────────────
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    navigate({ to: "/login" });
+  };
+
+  // Block render until session is confirmed — prevents flash of admin UI
+  if (!authChecked) {
+    return (
+      <div className="dark flex min-h-screen items-center justify-center bg-zinc-950">
+        <div className="flex flex-col items-center gap-4">
+          <div className="h-6 w-6 animate-spin rounded-full border-2 border-zinc-700 border-t-zinc-300" />
+          <span className="text-xs text-zinc-600 tracking-widest uppercase">Verifying session…</span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="dark min-h-screen bg-zinc-950 text-zinc-200 font-sans antialiased">
@@ -193,7 +238,11 @@ function AdminDashboard() {
                 <span className="text-sm text-zinc-200">Daniel</span>
                 <ChevronDown className="h-3.5 w-3.5 text-zinc-500" />
               </button>
-              <button className="h-9 px-3 rounded-md border border-zinc-800 bg-zinc-900/60 hover:bg-rose-950/40 hover:border-rose-900 hover:text-rose-300 text-zinc-400 text-sm flex items-center gap-1.5 transition-colors">
+              <button
+                id="admin-logout"
+                onClick={handleLogout}
+                className="h-9 px-3 rounded-md border border-zinc-800 bg-zinc-900/60 hover:bg-rose-950/40 hover:border-rose-900 hover:text-rose-300 text-zinc-400 text-sm flex items-center gap-1.5 transition-colors"
+              >
                 <LogOut className="h-4 w-4" /> Logout
               </button>
             </div>

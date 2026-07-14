@@ -1,10 +1,42 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useState, useEffect } from "react";
+import { useAuth } from "@/hooks/use-auth";
+import { supabase } from "@/lib/supabase";
 import {
   LayoutDashboard, FolderOpen, LayoutTemplate, Bot, BarChart2,
   Globe, Settings, Diamond, ChevronRight, ChevronLeft, Check,
-  Upload, Bell, HelpCircle, Lock, Sparkles, FileText, ExternalLink
+  Upload, Bell, HelpCircle, Lock, Sparkles, FileText, ExternalLink,
+  AlertCircle, CheckCircle2, Cpu, Loader2, CloudUpload,
 } from "lucide-react";
+
+/* ─── AI Content Types ───────────────────────────────────── */
+export type PortfolioProject = {
+  title: string;
+  description: string;
+  tech: string[];
+  highlight?: string;
+};
+
+export type PortfolioContent = {
+  bio: string;
+  headline: string;
+  projects: PortfolioProject[];
+  skills: string[];
+};
+
+/* ─── Template tone map ──────────────────────────────────── */
+const TEMPLATE_TONES: Record<string, string> = {
+  vogue:
+    "Editorial, high-fashion, sophisticated, and aspirational — use elevated language befitting a luxury creative professional.",
+  architect:
+    "Clean, minimalist, structural, and precise — like a thoughtful architecture firm portfolio. Formal yet elegant.",
+  biotech:
+    "Scientific, data-driven, and research-focused. Methodical and credentialed, highlighting measurable outcomes.",
+  lumina:
+    "Story-driven and UX-focused. Empathetic, warm, and narrative — lead with human impact over technical detail.",
+  sterling:
+    "Terminal aesthetic, developer-centric, and technically precise. Terse, impactful sentences. Let the tech stack speak.",
+};
 
 export const Route = createFileRoute("/portfolio-builder")({
   component: PortfolioBuilderPage,
@@ -343,45 +375,95 @@ function StepTemplates({ selected, setSelected }: { selected: string; setSelecte
 }
 
 /* ─── Step 3: Generate ───────────────────────────────────── */
-function StepGenerate({ onGenerate, loading }: { onGenerate: () => void; loading: boolean }) {
+const STAGES = [
+  "Parsing your CV document…",
+  "Analyzing experience and projects…",
+  "Crafting portfolio narrative…",
+  "Tailoring tone to selected template…",
+];
+
+function StepGenerate({
+  onGenerate,
+  loading,
+  stage,
+  error,
+  hasFile,
+}: {
+  onGenerate: () => void;
+  loading: boolean;
+  stage: string;
+  error: string | null;
+  hasFile: boolean;
+}) {
   return (
     <div className="group rounded-2xl border border-white/10 bg-white/5 p-5 shadow-[0_8px_32px_0_rgba(0,0,0,0.3)] backdrop-blur-xl transition-all duration-500 hover:-translate-y-2 hover:scale-[1.03] hover:border-violet-500/50 hover:shadow-[0_0_40px_rgba(139,92,246,0.3)] relative overflow-hidden">
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-violet-500/10 via-transparent to-fuchsia-500/10 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-      
+
       <div className="relative z-10 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <StepBadge n={3} />
           <div>
             <p className="text-sm font-bold text-white">Generate AI Portfolio</p>
             <p className="text-[11px] text-slate-500">
-              Our AI will craft a stunning portfolio from your CV in seconds
+              AI reads your CV and crafts structured portfolio copy
             </p>
           </div>
         </div>
         <button
           onClick={onGenerate}
-          disabled={loading}
-          className="group/btn relative flex items-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-fuchsia-600 px-6 py-3 text-sm font-bold text-white shadow-[0_0_20px_rgba(168,85,247,0.5)] transition-all duration-300 hover:scale-105 hover:shadow-[0_0_40px_rgba(168,85,247,0.8)] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden"
+          disabled={loading || !hasFile}
+          title={!hasFile ? "Upload your CV in Step 1 first" : undefined}
+          className="group/btn relative flex items-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-fuchsia-600 px-6 py-3 text-sm font-bold text-white shadow-[0_0_20px_rgba(168,85,247,0.5)] transition-all duration-300 hover:scale-105 hover:shadow-[0_0_40px_rgba(168,85,247,0.8)] active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed disabled:scale-100 overflow-hidden"
         >
           <div className="absolute inset-0 bg-white/20 translate-y-full transition-transform duration-300 group-hover/btn:translate-y-0" />
           <Sparkles size={16} className="relative z-10 transition-transform duration-300 group-hover/btn:rotate-12 group-hover/btn:scale-110" />
-          <span className="relative z-10">{loading ? "Generating…" : "✨ Generate Portfolio"}</span>
+          <span className="relative z-10">
+            {loading ? "Generating…" : "✨ Generate Portfolio"}
+          </span>
         </button>
       </div>
 
+      {/* Error banner */}
+      {error && !loading && (
+        <div className="relative z-10 mt-4 flex items-start gap-2.5 rounded-xl border border-rose-500/30 bg-rose-500/10 px-4 py-3">
+          <AlertCircle size={15} className="mt-0.5 shrink-0 text-rose-400" />
+          <p className="text-[12px] leading-relaxed text-rose-300">{error}</p>
+        </div>
+      )}
+
+      {/* Live progress */}
       {loading && (
         <div className="relative z-10 mt-5 rounded-xl border border-violet-500/30 bg-violet-500/10 p-4 shadow-[0_0_20px_rgba(139,92,246,0.2)]">
-          <div className="mb-2 flex items-center justify-between text-[11px]">
+          <div className="mb-3 flex items-center justify-between text-[11px]">
             <span className="text-slate-300 flex items-center gap-1.5">
               <span className="inline-block h-2 w-2 rounded-full bg-violet-400 animate-ping" />
-              AI is crafting your portfolio…
+              {stage || "Initializing…"}
             </span>
-            <span className="font-bold text-violet-300">Running</span>
+            <span className="font-bold text-violet-300 flex items-center gap-1">
+              <Cpu size={11} className="animate-pulse" /> AI Running
+            </span>
+          </div>
+          {/* Stage pipeline indicators */}
+          <div className="flex gap-1.5 mb-3">
+            {STAGES.map((s) => (
+              <div
+                key={s}
+                className={`flex-1 h-1 rounded-full transition-all duration-700 ${
+                  stage === s
+                    ? "bg-violet-400 shadow-[0_0_8px_rgba(167,139,250,0.8)]"
+                    : STAGES.indexOf(s) < STAGES.indexOf(stage)
+                    ? "bg-violet-600/70"
+                    : "bg-white/10"
+                }`}
+              />
+            ))}
           </div>
           <div className="h-1.5 w-full overflow-hidden rounded-full bg-black/40">
             <div
-              className="h-full rounded-full bg-gradient-to-r from-violet-400 via-fuchsia-400 to-violet-400 animate-pulse bg-[length:200%_100%] shadow-[0_0_10px_rgba(168,85,247,0.8)]"
-              style={{ width: "65%" }}
+              className="h-full rounded-full bg-gradient-to-r from-violet-400 via-fuchsia-400 to-violet-400 bg-[length:200%_100%] shadow-[0_0_10px_rgba(168,85,247,0.8)] transition-all duration-700"
+              style={{
+                width: `${Math.max(10, ((STAGES.indexOf(stage) + 1) / STAGES.length) * 100)}%`,
+              }}
             />
           </div>
         </div>
@@ -390,25 +472,112 @@ function StepGenerate({ onGenerate, loading }: { onGenerate: () => void; loading
   );
 }
 
-/* ─── Step 4: Publish (locked) ───────────────────────────── */
-function StepPublish() {
-  return (
-    <div className="group rounded-2xl border border-white/5 bg-white/[0.02] p-5 opacity-70 shadow-[0_8px_32px_0_rgba(0,0,0,0.2)] backdrop-blur-xl transition-all duration-500 hover:opacity-100 hover:border-white/10 hover:shadow-[0_8px_32px_0_rgba(255,255,255,0.05)]">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <StepBadge n={4} locked />
-          <div>
-            <p className="text-sm font-bold text-slate-400 transition-colors group-hover:text-white">Publish &amp; Deploy</p>
-            <p className="text-[11px] text-slate-500">Deploy your portfolio live with one click</p>
+/* ─── Step 4: Publish (locks until AI generates content) ──── */
+function StepPublish({
+  content,
+  onSave,
+  saving,
+  saved,
+  saveError,
+}: {
+  content: PortfolioContent | null;
+  onSave: () => void;
+  saving: boolean;
+  saved: boolean;
+  saveError: string | null;
+}) {
+  const isUnlocked = content !== null;
+
+  if (!isUnlocked) {
+    return (
+      <div className="group rounded-2xl border border-white/5 bg-white/[0.02] p-5 opacity-60 shadow-[0_8px_32px_0_rgba(0,0,0,0.2)] backdrop-blur-xl transition-all duration-500 hover:opacity-80 hover:border-white/10">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <StepBadge n={4} locked />
+            <div>
+              <p className="text-sm font-bold text-slate-500">Publish &amp; Deploy</p>
+              <p className="text-[11px] text-slate-600">Complete Step 3 to unlock deployment</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-1.5 rounded-lg border border-yellow-500/20 bg-yellow-500/5 px-3 py-1.5">
+            <Lock size={12} className="text-yellow-600/60" />
+            <span className="text-[11px] font-semibold text-yellow-600/60">Locked</span>
           </div>
         </div>
-        <div className="flex items-center gap-2">
-          <Lock size={14} className="text-slate-600 transition-colors group-hover:text-slate-400" />
-          <div className="flex items-center gap-1.5 rounded-lg border border-yellow-500/20 bg-yellow-500/5 px-3 py-1.5 backdrop-blur transition-all group-hover:border-yellow-500/40 group-hover:bg-yellow-500/10">
-            <Diamond size={12} className="text-yellow-500/80 group-hover:text-yellow-400" />
-            <span className="text-[11px] font-semibold text-yellow-600/80 group-hover:text-yellow-400">
-              💎 Pro feature: Pay to deploy to Vercel
-            </span>
+      </div>
+    );
+  }
+
+  return (
+    <div className="group rounded-2xl border border-emerald-500/30 bg-emerald-500/5 p-5 shadow-[0_8px_32px_0_rgba(16,185,129,0.15)] backdrop-blur-xl transition-all duration-500 hover:border-emerald-400/50 hover:shadow-[0_0_40px_rgba(16,185,129,0.25)] relative overflow-hidden">
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-emerald-500/10 via-transparent to-teal-500/10 opacity-60" />
+
+      <div className="relative z-10 flex items-start justify-between gap-6">
+        <div className="flex items-start gap-3">
+          <StepBadge n={4} />
+          <div>
+            <div className="flex items-center gap-2 mb-1">
+              <p className="text-sm font-bold text-white">Publish &amp; Deploy</p>
+              <span className="inline-flex items-center gap-1 rounded-full border border-emerald-500/40 bg-emerald-500/15 px-2 py-0.5 text-[10px] font-bold text-emerald-300">
+                <CheckCircle2 size={10} /> Ready
+              </span>
+            </div>
+            <p className="text-[11px] text-slate-400 max-w-sm leading-relaxed">
+              AI has generated your portfolio content. Review the preview, then deploy live.
+            </p>
+          </div>
+        </div>
+        <div className="flex flex-col items-end gap-2 shrink-0">
+          {saveError && (
+            <p className="text-[11px] text-rose-400 text-right max-w-[200px]">{saveError}</p>
+          )}
+          <button
+            id="portfolio-save-btn"
+            onClick={onSave}
+            disabled={saving || saved}
+            className={`flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-bold transition-all duration-300 disabled:cursor-not-allowed ${
+              saved
+                ? "border border-emerald-500/40 bg-emerald-500/15 text-emerald-300"
+                : "bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-[0_0_20px_rgba(16,185,129,0.4)] hover:shadow-[0_0_30px_rgba(16,185,129,0.6)] hover:scale-[1.03] active:scale-95"
+            }`}
+          >
+            {saving ? (
+              <><Loader2 size={14} className="animate-spin" /> Saving…</>
+            ) : saved ? (
+              <><CheckCircle2 size={14} /> Saved! Redirecting…</>
+            ) : (
+              <><CloudUpload size={14} /> Save to Dashboard</>
+            )}
+          </button>
+          <div className="flex items-center gap-1.5 rounded-lg border border-yellow-500/30 bg-yellow-500/10 px-2.5 py-1">
+            <Diamond size={11} className="text-yellow-500/70" />
+            <span className="text-[10px] font-semibold text-yellow-600/80">Pro: Deploy to Vercel</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Generated content preview */}
+      <div className="relative z-10 mt-4 grid grid-cols-3 gap-3">
+        <div className="rounded-xl border border-white/10 bg-black/30 p-3">
+          <p className="text-[10px] uppercase tracking-widest text-slate-500 mb-1.5">Bio</p>
+          <p className="text-[11px] text-slate-300 leading-relaxed line-clamp-3">{content.bio}</p>
+        </div>
+        <div className="rounded-xl border border-white/10 bg-black/30 p-3">
+          <p className="text-[10px] uppercase tracking-widest text-slate-500 mb-1.5">Projects extracted</p>
+          <p className="text-2xl font-bold text-white">{content.projects.length}</p>
+          <div className="mt-1 flex flex-wrap gap-1">
+            {content.projects.slice(0, 3).map((p) => (
+              <span key={p.title} className="rounded-md bg-white/5 px-1.5 py-0.5 text-[9px] text-slate-400">{p.title}</span>
+            ))}
+          </div>
+        </div>
+        <div className="rounded-xl border border-white/10 bg-black/30 p-3">
+          <p className="text-[10px] uppercase tracking-widest text-slate-500 mb-1.5">Skills</p>
+          <p className="text-2xl font-bold text-white">{content.skills.length}</p>
+          <div className="mt-1 flex flex-wrap gap-1">
+            {content.skills.slice(0, 4).map((s) => (
+              <span key={s} className="rounded-md bg-violet-500/15 border border-violet-500/25 px-1.5 py-0.5 text-[9px] text-violet-300">{s}</span>
+            ))}
           </div>
         </div>
       </div>
@@ -418,13 +587,145 @@ function StepPublish() {
 
 /* ─── Page root ──────────────────────────────────────────── */
 function PortfolioBuilderPage() {
+  const navigate = useNavigate();
+  const { user, loading } = useAuth();
+
   const [file, setFile] = useState<File | null>(null);
   const [selectedTemplate, setSelectedTemplate] = useState("vogue");
   const [generating, setGenerating] = useState(false);
+  const [generationStage, setGenerationStage] = useState("");
+  const [generatedContent, setGeneratedContent] = useState<PortfolioContent | null>(null);
+  const [generationError, setGenerationError] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
-  const handleGenerate = () => {
+  // ── Auth guard ──────────────────────────────────────────────
+  useEffect(() => {
+    if (!loading && !user) navigate({ to: "/login" });
+  }, [user, loading, navigate]);
+
+  // ── Save portfolio to Supabase ──────────────────────────────
+  const handleSave = async () => {
+    if (!user || !generatedContent) return;
+    setSaving(true);
+    setSaveError(null);
+    const { error } = await supabase.from("portfolios").insert({
+      user_id: user.id,
+      template_id: selectedTemplate,
+      content_json: generatedContent,
+    });
+    if (error) {
+      setSaveError(error.message);
+      setSaving(false);
+    } else {
+      setSaved(true);
+      setTimeout(() => navigate({ to: "/dashboard" }), 1500);
+    }
+  };
+
+  if (loading) return null;
+
+  const handleGenerate = async () => {
+    if (!file) {
+      setGenerationError("Please upload your CV in Step 1 before generating.");
+      return;
+    }
+    if (file.type !== "application/pdf") {
+      setGenerationError("Only PDF files are supported for AI generation. Please re-upload as a PDF.");
+      return;
+    }
+
     setGenerating(true);
-    setTimeout(() => setGenerating(false), 3500);
+    setGenerationError(null);
+    setGeneratedContent(null);
+
+    try {
+      // ── Stage 1: Extract PDF text ────────────────────────
+      setGenerationStage(STAGES[0]);
+      const { extractTextFromPDF } = await import("@/lib/pdf-extractor");
+      const cvText = await extractTextFromPDF(file);
+      if (cvText.trim().length < 80) {
+        throw new Error("The extracted text is too short. Make sure the PDF contains selectable text, not just scanned images.");
+      }
+
+      // ── Stage 2: Analyze ─────────────────────────────────
+      setGenerationStage(STAGES[1]);
+      const tone = TEMPLATE_TONES[selectedTemplate] ?? "Professional and polished.";
+      const apiKey = import.meta.env.VITE_GROQ_API_KEY as string | undefined;
+      if (!apiKey) throw new Error("AI service key is not configured. Contact support.");
+
+      // ── Stage 3: Call Groq LLM ───────────────────────────
+      setGenerationStage(STAGES[2]);
+
+      const systemPrompt = `You are an expert web copywriter and career branding strategist. Transform raw CV text into structured portfolio website content.
+
+Tone & Style: ${tone}
+
+Return ONLY a valid JSON object with this exact structure:
+{
+  "bio": "2–3 sentence professional bio in first person, tailored to the tone.",
+  "headline": "Short punchy hero headline, max 8 words.",
+  "projects": [
+    {
+      "title": "Project name",
+      "description": "1–2 sentences on impact and purpose, written for the web.",
+      "tech": ["Tech1", "Tech2"],
+      "highlight": "One standout achievement or metric (optional)"
+    }
+  ],
+  "skills": ["Skill1", "Skill2"]
+}
+
+Rules:
+- Extract up to 6 projects. Include fewer if fewer are present.
+- Skills: flat array of strings, max 12.
+- Never invent employers, dates, or metrics not in the CV.
+- Output ONLY the JSON — no markdown, no commentary.`;
+
+      const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify({
+          model: "llama-3.3-70b-versatile",
+          response_format: { type: "json_object" },
+          temperature: 0.65,
+          max_tokens: 2048,
+          messages: [
+            { role: "system", content: systemPrompt },
+            {
+              role: "user",
+              content: `Transform this CV into portfolio content:\n\n---\n${cvText.slice(0, 14000)}\n---`,
+            },
+          ],
+        }),
+      });
+
+      if (!response.ok) {
+        const errBody = await response.json().catch(() => ({})) as { error?: { message?: string } };
+        throw new Error(errBody?.error?.message ?? `AI service error (HTTP ${response.status}).`);
+      }
+
+      // ── Stage 4: Parse & validate ────────────────────────
+      setGenerationStage(STAGES[3]);
+      const data = await response.json() as { choices: { message: { content: string } }[] };
+      const raw = data.choices?.[0]?.message?.content ?? "";
+      const parsed = JSON.parse(raw) as PortfolioContent;
+
+      if (!parsed.bio || !Array.isArray(parsed.projects) || !Array.isArray(parsed.skills)) {
+        throw new Error("Unexpected AI response format. Please try again.");
+      }
+
+      setGeneratedContent(parsed);
+    } catch (err) {
+      setGenerationError(err instanceof Error ? err.message : "An unexpected error occurred.");
+    } finally {
+      setGenerating(false);
+      setGenerationStage("");
+    }
   };
 
   return (
@@ -469,8 +770,20 @@ function PortfolioBuilderPage() {
           <div className="flex flex-col gap-5">
             <StepUpload file={file} onFile={setFile} />
             <StepTemplates selected={selectedTemplate} setSelected={setSelectedTemplate} />
-            <StepGenerate onGenerate={handleGenerate} loading={generating} />
-            <StepPublish />
+            <StepGenerate
+              onGenerate={handleGenerate}
+              loading={generating}
+              stage={generationStage}
+              error={generationError}
+              hasFile={file !== null}
+            />
+            <StepPublish
+              content={generatedContent}
+              onSave={handleSave}
+              saving={saving}
+              saved={saved}
+              saveError={saveError}
+            />
           </div>
         </main>
       </div>

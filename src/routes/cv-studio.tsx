@@ -1,10 +1,14 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState, useRef, forwardRef } from "react";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useState, useRef, forwardRef, useEffect } from "react";
+import { toast } from "sonner";
+import { useAuth } from "@/hooks/use-auth";
+import { supabase } from "@/lib/supabase";
 import { useReactToPrint } from "react-to-print";
 import {
   FileText, LayoutTemplate, FolderOpen, Bot, Settings, Sparkles,
   ChevronDown, CheckCircle2, Monitor, Smartphone, Eye, Download,
-  Mail, Phone, MapPin, Linkedin, ArrowLeft, Plus, Trash2, X
+  Mail, Phone, MapPin, Linkedin, ArrowLeft, Plus, Trash2, X,
+  Cloud, Loader2,
 } from "lucide-react";
 import {
   MinimalistTemplate,
@@ -535,12 +539,16 @@ function renderTemplate(id: TemplateId, data: CvState, ref: React.Ref<HTMLDivEle
 /* ─── Preview Pane ───────────────────────────────────────── */
 function PreviewPane({
   device, setDevice, cvData, activeTemplate, setActiveTemplate,
+  onSaveCloud, saving, saveStatus,
 }: {
   device: "desktop" | "mobile";
   setDevice: (d: "desktop" | "mobile") => void;
   cvData: CvState;
   activeTemplate: TemplateId;
   setActiveTemplate: (t: TemplateId) => void;
+  onSaveCloud: () => void;
+  saving: boolean;
+  saveStatus: "idle" | "saved" | "error";
 }) {
   const printRef = useRef<HTMLDivElement>(null);
 
@@ -565,6 +573,19 @@ function PreviewPane({
         <div className="flex items-center gap-2">
           <button className="flex items-center gap-1.5 rounded-lg border border-slate-700 bg-slate-800/60 px-3 py-1.5 text-xs font-medium text-slate-300 transition hover:border-violet-600/50 hover:text-white">
             <Eye size={13} /> Preview
+          </button>
+          <button
+            id="cv-save-cloud-btn"
+            onClick={onSaveCloud}
+            disabled={saving}
+            className={`flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium transition-all ${
+              saveStatus === "saved"
+                ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-400"
+                : "border-slate-700 bg-slate-800/60 text-slate-300 hover:border-violet-600/50 hover:text-white"
+            }`}
+          >
+            {saving ? <Loader2 size={13} className="animate-spin" /> : saveStatus === "saved" ? <CheckCircle2 size={13} /> : <Cloud size={13} />}
+            {saving ? "Saving…" : saveStatus === "saved" ? "Saved!" : "Save to Cloud"}
           </button>
           <button onClick={() => handlePrint()} className="flex items-center gap-1.5 rounded-lg bg-violet-600 px-3 py-1.5 text-xs font-semibold text-white shadow shadow-violet-900/50 transition hover:bg-violet-500 active:scale-[0.98]">
             <Download size={13} /> Export as PDF
@@ -620,11 +641,44 @@ function PreviewPane({
 
 /* ─── Page root ──────────────────────────────────────────── */
 function CvStudioPage() {
+  const navigate = useNavigate();
+  const { user, loading } = useAuth();
+
   const [activeNav] = useState("builder");
   const [openStep, setOpenStep] = useState(1);
   const [device, setDevice] = useState<"desktop" | "mobile">("desktop");
   const [cvData, setCvData] = useState<CvState>(initialState);
   const [activeTemplate, setActiveTemplate] = useState<TemplateId>("minimalist");
+  const [saving, setSaving] = useState(false);
+  const [saveStatus, setSaveStatus] = useState<"idle" | "saved" | "error">("idle");
+
+  // ── Auth guard ──────────────────────────────────────────────
+  useEffect(() => {
+    if (!loading && !user) navigate({ to: "/login" });
+  }, [user, loading, navigate]);
+
+  // ── Save CV to Supabase ─────────────────────────────────────
+  const handleSaveCloud = async () => {
+    if (!user) return;
+    setSaving(true);
+    setSaveStatus("idle");
+    const toastId = toast.loading("Saving CV to cloud…");
+    const { error } = await supabase.from("cvs").upsert(
+      { user_id: user.id, cv_data_json: cvData, updated_at: new Date().toISOString() },
+      { onConflict: "user_id" }
+    );
+    setSaving(false);
+    if (error) {
+      setSaveStatus("error");
+      toast.error(`Save failed: ${error.message}`, { id: toastId });
+    } else {
+      setSaveStatus("saved");
+      toast.success("CV saved successfully!", { id: toastId });
+      setTimeout(() => setSaveStatus("idle"), 4000);
+    }
+  };
+
+  if (loading) return null;
 
   return (
     <div className="flex h-screen overflow-hidden bg-gray-950 font-sans">
@@ -641,6 +695,9 @@ function CvStudioPage() {
         cvData={cvData}
         activeTemplate={activeTemplate}
         setActiveTemplate={setActiveTemplate}
+        onSaveCloud={handleSaveCloud}
+        saving={saving}
+        saveStatus={saveStatus}
       />
     </div>
   );
