@@ -3,6 +3,10 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/lib/supabase";
 import {
+  generatePortfolioContent,
+  deployPortfolioToVercel,
+} from "@/lib/server-fns";
+import {
   LayoutDashboard, FolderOpen, LayoutTemplate, Bot, BarChart2,
   Globe, Settings, Diamond, ChevronRight, ChevronLeft, Check,
   Upload, Bell, HelpCircle, Lock, Sparkles, FileText, ExternalLink,
@@ -644,8 +648,10 @@ function PortfolioBuilderPage() {
     setDeployError(null);
 
     try {
-      const { deployPortfolio } = await import("@/lib/vercel-deploy");
-      const url = await deployPortfolio(generatedContent, selectedTemplate);
+      // Secure server-side deploy — VERCEL_ACCESS_TOKEN never reaches the browser
+      const { url } = await deployPortfolioToVercel({
+        data: { content: generatedContent, templateId: selectedTemplate },
+      });
       setDeployedUrl(url);
       setIsDeploying(false);
 
@@ -686,7 +692,7 @@ function PortfolioBuilderPage() {
     setGeneratedContent(null);
 
     try {
-      // ── Stage 1: Extract PDF text ────────────────────────
+      // ── Stage 1: Extract PDF text (client-side, no secrets needed) ──────
       setGenerationStage(STAGES[0]);
       const { extractTextFromPDF } = await import("@/lib/pdf-extractor");
       const cvText = await extractTextFromPDF(file);
@@ -694,72 +700,18 @@ function PortfolioBuilderPage() {
         throw new Error("The extracted text is too short. Make sure the PDF contains selectable text, not just scanned images.");
       }
 
-      // ── Stage 2: Analyze ─────────────────────────────────
+      // ── Stage 2: Prepare context ──────────────────────────────────────────
       setGenerationStage(STAGES[1]);
       const tone = TEMPLATE_TONES[selectedTemplate] ?? "Professional and polished.";
-      const apiKey = import.meta.env.VITE_GROQ_API_KEY as string | undefined;
-      if (!apiKey) throw new Error("AI service key is not configured. Contact support.");
 
-      // ── Stage 3: Call Groq LLM ───────────────────────────
+      // ── Stage 3: Call secure server function (GROQ_API_KEY stays server-side)
       setGenerationStage(STAGES[2]);
-
-      const systemPrompt = `You are an expert web copywriter and career branding strategist. Transform raw CV text into structured portfolio website content.
-
-Tone & Style: ${tone}
-
-Return ONLY a valid JSON object with this exact structure:
-{
-  "bio": "2–3 sentence professional bio in first person, tailored to the tone.",
-  "headline": "Short punchy hero headline, max 8 words.",
-  "projects": [
-    {
-      "title": "Project name",
-      "description": "1–2 sentences on impact and purpose, written for the web.",
-      "tech": ["Tech1", "Tech2"],
-      "highlight": "One standout achievement or metric (optional)"
-    }
-  ],
-  "skills": ["Skill1", "Skill2"]
-}
-
-Rules:
-- Extract up to 6 projects. Include fewer if fewer are present.
-- Skills: flat array of strings, max 12.
-- Never invent employers, dates, or metrics not in the CV.
-- Output ONLY the JSON — no markdown, no commentary.`;
-
-      const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${apiKey}`,
-        },
-        body: JSON.stringify({
-          model: "llama-3.3-70b-versatile",
-          response_format: { type: "json_object" },
-          temperature: 0.65,
-          max_tokens: 2048,
-          messages: [
-            { role: "system", content: systemPrompt },
-            {
-              role: "user",
-              content: `Transform this CV into portfolio content:\n\n---\n${cvText.slice(0, 14000)}\n---`,
-            },
-          ],
-        }),
+      const parsed = await generatePortfolioContent({
+        data: { cvText: cvText.slice(0, 14000), templateTone: tone },
       });
 
-      if (!response.ok) {
-        const errBody = await response.json().catch(() => ({})) as { error?: { message?: string } };
-        throw new Error(errBody?.error?.message ?? `AI service error (HTTP ${response.status}).`);
-      }
-
-      // ── Stage 4: Parse & validate ────────────────────────
+      // ── Stage 4: Validate & store ─────────────────────────────────────────
       setGenerationStage(STAGES[3]);
-      const data = await response.json() as { choices: { message: { content: string } }[] };
-      const raw = data.choices?.[0]?.message?.content ?? "";
-      const parsed = JSON.parse(raw) as PortfolioContent;
-
       if (!parsed.bio || !Array.isArray(parsed.projects) || !Array.isArray(parsed.skills)) {
         throw new Error("Unexpected AI response format. Please try again.");
       }

@@ -1,0 +1,389 @@
+================================================================================
+  NEXUS AI CAREER OS — COMPREHENSIVE CODEBASE DIAGNOSTIC REPORT
+  Generated: 2026-07-20
+  Scope: Full monorepo (Main App + Admin CMS)
+================================================================================
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 1 — REPOSITORY & STACK OVERVIEW
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Structure:
+  /                                  → Main SaaS app (Public-facing)
+  /infinitycms-admin-main/           → Admin CMS (Separate Vite app)
+  /src/routes/                       → TanStack Router file-based routes
+  /src/lib/                          → Utilities (supabase, pdf-extractor, vercel-deploy)
+  /src/hooks/                        → use-auth.tsx (Auth context)
+  /src/components/cv-templates.tsx   → 10 CV template components
+
+Tech Stack:
+  Framework:   TanStack Start + TanStack Router (SSR, file-based routing)
+  Runtime:     React 19 + Vite 8 + TypeScript
+  Styling:     Tailwind CSS v4 + Framer Motion
+  Auth & DB:   Supabase JS v2 (@supabase/supabase-js ^2.109.0)
+  AI:          Groq API (llama-3.3-70b-versatile) — called directly from client
+  PDF:         pdfjs-dist v5 (client-side extraction)
+  Deploy:      Vercel REST API v13 (client-side direct call)
+  UI Lib:      Radix UI primitives + Shadcn-style components
+  Charts:      Recharts (Admin only)
+  Print:       react-to-print (CV Studio PDF export)
+  Toasts:      Sonner
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 2 — MAIN APP ROUTE INVENTORY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Route               File                        Status
+─────────────────────────────────────────────────────────────────────────────
+/                   src/routes/index.tsx         COMPLETE — Full landing page
+/login              src/routes/login.tsx         COMPLETE — Supabase auth wired
+/signup             src/routes/signup.tsx        COMPLETE — Supabase auth wired
+/dashboard          src/routes/dashboard.tsx     PARTIAL  — Auth guard only (see §3)
+/cv-studio          src/routes/cv-studio.tsx     COMPLETE — Full builder + Supabase save
+/portfolio-builder  src/routes/portfolio-builder COMPLETE — Full pipeline (see §3)
+/settings           src/routes/settings.tsx      PLACEHOLDER — Static shell only
+/templates/vogue    src/routes/templates/vogue   COMPLETE — Static preview route
+/templates/sterling src/routes/templates/sterling COMPLETE — Static preview route
+/templates/lumina   src/routes/templates/lumina  COMPLETE — Static preview route
+/templates/biotech  src/routes/templates/biotech COMPLETE — Static preview route
+/templates/architect src/routes/templates/architect COMPLETE — Static preview route
+
+Admin App Route Inventory (infinitycms-admin-main):
+  /         routes/index.tsx   COMPLETE — Full SPA dashboard (4 views)
+  /login    routes/login.tsx   COMPLETE — Supabase auth wired
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 3 — COMPLETED & FUNCTIONAL FEATURES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+[✓] SUPABASE AUTHENTICATION (Main App)
+    - createClient configured with persistSession, autoRefreshToken, detectSessionInUrl
+    - AuthProvider wraps entire app in __root.tsx via React Context
+    - useAuth() hook exposes: user, session, loading, signIn, signUp, signOut
+    - Login page (login.tsx): wired to supabase.auth.signInWithPassword, redirects to /dashboard on success
+    - Signup page (signup.tsx): wired to supabase.auth.signUp, handles email confirmation flow
+    - Auth guards active on: /dashboard, /cv-studio, /portfolio-builder (useEffect redirect to /login)
+    - ENV STATUS: .env file contains only PLACEHOLDER values ("your_supabase_project_url"),
+      meaning Supabase IS NOT connected in local dev. Must be configured in Vercel env vars for production.
+
+[✓] PDF TEXT EXTRACTION (src/lib/pdf-extractor.ts)
+    - Uses pdfjs-dist v5 with Vite URL-resolved worker (no extra plugin)
+    - Extracts all pages sequentially, joins text items, validates min length (80 chars)
+    - Called lazily via dynamic import() inside portfolio-builder.tsx (Stage 1 of 4)
+
+[✓] AI GENERATION WITH GROQ (portfolio-builder.tsx)
+    - Model: llama-3.3-70b-versatile via Groq REST API
+    - response_format: json_object — structured output enforced
+    - System prompt is template-tone-aware (5 tone variants: vogue, architect, biotech, lumina, sterling)
+    - CV text truncated to 14,000 chars before sending to API
+    - Validates parsed JSON shape (bio, projects[], skills[])
+    - Live 4-stage progress UI: "Parsing → Analyzing → Crafting → Tailoring"
+    - ENV STATUS: VITE_GROQ_API_KEY must be set (not present in .env file)
+
+[✓] VERCEL DEPLOYMENT (src/lib/vercel-deploy.ts)
+    - Uses Vercel Deployments API v13
+    - Builds a themed static HTML file from generated content (5 THEMES: vogue/architect/biotech/lumina/sterling)
+    - Encodes HTML as base64 for upload
+    - Returns live https:// URL on success
+    - Error handling for non-OK responses
+    - ENV STATUS: VITE_VERCEL_ACCESS_TOKEN must be set (not present in .env)
+
+[✓] DATABASE PERSISTENCE (portfolio-builder.tsx → Supabase)
+    - On successful deploy: inserts row into "portfolios" table with:
+      { user_id, template_id, content_json, deployed_url }
+    - On insert error: surfaces message to user without blocking the live URL display
+    - CRITICAL GAP: The "portfolios" table schema must exist in Supabase.
+      There is no migration file or SQL schema in this repo. If the table doesn't
+      exist, the insert silently fails and only the error state is shown.
+
+[✓] CV STUDIO — FULL BUILDER (cv-studio.tsx)
+    - 4-step accordion form: Personal Info, Experience, Education, Skills
+    - Live preview pane with 10 selectable CV templates rendered via cv-templates.tsx
+    - Desktop/Mobile preview toggle
+    - "Save to Cloud" → upsert to Supabase "cvs" table: { user_id, cv_data_json, updated_at }
+    - PDF export via react-to-print (print-safe A4 CSS)
+    - CV data persists only in React state — no auto-save or draft recovery
+    - CRITICAL GAP: Like "portfolios", the "cvs" table must exist in Supabase.
+      No schema/migration found in the repo.
+
+[✓] 10 CV TEMPLATES (src/components/cv-templates.tsx — 63KB)
+    - MinimalistTemplate, CorporateTemplate, TechTemplate, CreativeTemplate,
+      ExecutiveTemplate, StartupTemplate, AcademicTemplate, EditorialTemplate,
+      DarkBoldTemplate, VisualTemplate
+    - All A4 print-compatible
+
+[✓] 5 PORTFOLIO PREVIEW ROUTES
+    - /templates/vogue, /templates/architect, /templates/biotech,
+      /templates/lumina, /templates/sterling
+    - Each is a standalone read-only preview page — no data wiring needed
+
+[✓] LANDING PAGE (src/routes/index.tsx — 31KB)
+    - Complete marketing page: Nav, Hero, SplitPath (features), Dashboard mockup, Pricing, Footer
+    - Kinetic animated glyphs (DataExtractionGlyph, WebMeshGlyph, OrbitNode)
+    - Framer Motion scroll parallax
+    - Pricing section: "Preview $0 / Pro Export $15" — CTAs are static buttons (no Stripe)
+    - Nav links to /login and /signup are functional
+
+[✓] ADMIN APP — 4-VIEW DASHBOARD (infinitycms-admin-main)
+    - Supabase auth guard on "/" — redirects to /login if no session
+    - auth.onAuthStateChange listener for multi-tab logout
+    - 4 views rendered via state toggle (no URL routing per view):
+      Overview, Template Manager, Content & Prompts, Users & Billing
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 4 — GAP ANALYSIS & CRITICAL FINDINGS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+────────────────────────────────────────────────────────────
+4A. dashboard.tsx — STATUS: PARTIAL / STATIC SHELL
+────────────────────────────────────────────────────────────
+WHAT IT DOES:
+  - Auth guard: redirects to /login if no session ✓
+  - Reads user.email from Supabase Auth context ✓
+  - Sign out button calls signOut() ✓
+  - 3 navigation cards: CV Studio, Portfolio Builder, Settings ✓
+
+WHAT IS MISSING:
+  - No DB query to fetch user's saved CVs count
+  - No DB query to fetch user's deployed portfolios
+  - No "recent activity" or history feed
+  - No display of subscription tier or plan status
+  - The 3 cards are hardcoded navigation links — no dynamic data
+  - Verdict: Functional as a navigation hub, but NOT a true user data dashboard.
+    It shows zero personalized user data from the DB.
+
+────────────────────────────────────────────────────────────
+4B. settings.tsx — STATUS: EMPTY PLACEHOLDER
+────────────────────────────────────────────────────────────
+WHAT IT DOES:
+  - Renders a styled "under construction" page
+  - Shows animated placeholder rows (Account, Subscription, Exports, Danger zone)
+  - Has a "Back to Dashboard" link
+
+WHAT IS MISSING:
+  - NO account management (name, email change)
+  - NO subscription display or management
+  - NO export history
+  - NO password reset
+  - NO account deletion ("Danger zone")
+  - NO Supabase queries whatsoever
+  - Verdict: ENTIRELY a visual placeholder. Zero functional implementation.
+
+────────────────────────────────────────────────────────────
+4C. Admin App — CHARTS & TABLES STATUS: ALL HARDCODED
+────────────────────────────────────────────────────────────
+ALL data in the Admin dashboard is static mock data defined as JS constants:
+
+  revenueData[] — 12 hardcoded monthly revenue values (Jan–Dec)
+  recentActivity[] — 6 hardcoded user events
+  templates[] — 6 hardcoded template entries
+  users[] — 7 hardcoded user records
+
+SPECIFIC FINDINGS:
+  - Overview: Revenue chart (Recharts AreaChart) uses hardcoded revenueData.
+    Metrics ($1.2M, 24,891 users, 84,203 CVs) are hardcoded strings.
+    "Recent activity" table uses hardcoded recentActivity[].
+  - Template Manager: Toggle (active/disabled) works in local state only.
+    "Edit", "Upload" buttons exist but are non-functional (no handlers).
+  - Content & Prompts: All input fields have hardcoded defaultValues.
+    "Publish changes" button sets a local `saved` state for 1.6s — no DB write.
+    Safety flag toggles work locally only (ToggleStatic component).
+  - Users & Billing: Client-side search filter works on hardcoded users[].
+    "Revoke" and "Ban" buttons render but have no onClick handlers.
+  - Admin user profile (sidebar): Shows hardcoded "Daniel Rhodes" / "daniel@infinitybugs.io".
+    Does NOT read from supabase.auth.getUser().
+  - Verdict: The Admin App is a PIXEL-PERFECT PROTOTYPE but is entirely disconnected
+    from Supabase. It performs zero database reads or writes.
+
+────────────────────────────────────────────────────────────
+4D. MISSING ROUTES / FEATURES
+────────────────────────────────────────────────────────────
+  [MISSING] Stripe integration — Pricing CTAs on landing page are dead buttons
+  [MISSING] Password reset flow — No /forgot-password route
+  [MISSING] Email confirmation redirect handler — No /auth/callback route
+  [MISSING] User profile page — Dashboard shows email but no editable profile
+  [MISSING] Portfolio history page — No way to view previously deployed portfolios
+  [MISSING] CV history / "My CVs" view — CV Studio sidebar has "My CVs" icon but it's a dead button
+  [MISSING] Analytics view in Portfolio Builder sidebar — Dead button (href="#")
+  [MISSING] Domains view in Portfolio Builder sidebar — Dead button (href="#")
+  [MISSING] Admin app sub-routes — Overview/Templates/Content/Users are state-toggled,
+            not real routes (no direct URL access, no browser back support)
+  [MISSING] Admin app Settings view — Sidebar button has no handler
+  [MISSING] Supabase database schema — No SQL migrations or schema files in repo
+  [MISSING] Row Level Security (RLS) policies — Not defined in codebase
+  [MISSING] Environment variables for AI and Vercel — Only Supabase vars in .env.example
+
+────────────────────────────────────────────────────────────
+4E. ENVIRONMENT VARIABLE STATUS
+────────────────────────────────────────────────────────────
+  .env (root):
+    VITE_SUPABASE_URL     = "your_supabase_project_url" ← PLACEHOLDER
+    VITE_SUPABASE_ANON_KEY = "your_supabase_anon_key"  ← PLACEHOLDER
+
+  Required but NOT in .env or .env.example:
+    VITE_GROQ_API_KEY           ← Required for AI generation
+    VITE_VERCEL_ACCESS_TOKEN    ← Required for portfolio deployment
+
+  Supabase client throws at startup if URL/KEY are missing/placeholder.
+  The app WILL crash in local dev unless real Supabase credentials are provided.
+
+────────────────────────────────────────────────────────────
+4F. SECURITY CONCERNS
+────────────────────────────────────────────────────────────
+  [HIGH] VITE_GROQ_API_KEY is exposed to the browser bundle. Any user can
+         extract it from DevTools and make API calls billed to your account.
+         Mitigation: Move AI calls to a server-side function (TanStack Start
+         API route or Vercel Edge Function).
+
+  [HIGH] VITE_VERCEL_ACCESS_TOKEN is exposed to the browser bundle.
+         A malicious user can use it to deploy unlimited projects to your
+         Vercel account.
+         Mitigation: Move Vercel API calls server-side.
+
+  [MEDIUM] Admin App uses Supabase Anon Key (not Service Role Key).
+           Role-based access control (admin-only users) is not enforced
+           in the codebase — any authenticated Supabase user can log in
+           to the Admin panel if they know the URL.
+           Mitigation: Add a database role check (e.g., profiles.role = 'admin')
+           after session validation.
+
+  [LOW] No CSRF protection on form submissions (not applicable for SPAs
+        calling Supabase directly, but relevant if server functions are added).
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 5 — END-TO-END USER FLOW AUDIT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+HAPPY PATH — NEW USER FLOW:
+  / (Landing)
+    → Clicks "Launch app" or "Start building"  [Links to /signup ✓]
+  /signup
+    → Fills email + password → submits
+    → If email confirmation required: sees confirmation notice (no redirect) ✓
+    → If auto-confirmed: redirects to /dashboard ✓
+  /dashboard
+    → Sees welcome card + 3 navigation cards ✓
+    → Clicks "Open CV Studio" → /cv-studio ✓
+    → Clicks "Start building" (Portfolio) → /portfolio-builder ✓
+    → Clicks "Go to settings" → /settings [DEAD END — placeholder only]
+
+PATH A — CV STUDIO FLOW:
+  /cv-studio
+    → Fills 4 accordion steps (Personal, Experience, Education, Skills) ✓
+    → Previews live CV in chosen template (10 templates) ✓
+    → Clicks "Export as PDF" → print dialog ✓
+    → Clicks "Save to Cloud" → upsert to Supabase "cvs" table
+      [RISK: Fails silently if table doesn't exist in DB]
+    → No way to reload/resume a previously saved CV ✗
+    → Dead end — no "My CVs" history view ✗
+
+PATH B — PORTFOLIO BUILDER FLOW:
+  /portfolio-builder
+    → Step 1: Upload PDF CV (drag & drop or file picker) ✓
+    → Step 2: Select template (5 options, each links to /templates/:id preview) ✓
+    → Step 3: Click "Generate Portfolio"
+      → Extracts PDF text (pdfjs) ✓
+      → Calls Groq API with CV text + template tone ✓
+      → Parses JSON response into PortfolioContent ✓
+      → [RISK: Fails if VITE_GROQ_API_KEY not set]
+    → Step 4: Unlocks "Publish & Deploy" panel ✓
+      → Calls Vercel API to deploy static HTML ✓
+      → Inserts row to Supabase "portfolios" table ✓
+      → Shows live URL with copy button ✓
+      → [RISK: Fails if VITE_VERCEL_ACCESS_TOKEN not set]
+      → No way to view past deployments ✗
+
+BROKEN LINKS / DEAD ENDS:
+  1. settings.tsx — accessible but does nothing functional
+  2. Dashboard "Account" card links to /settings — hits above dead end
+  3. Portfolio Builder sidebar: "Portfolios", "Templates", "AI Assistant",
+     "Analytics", "Domains" all have href="#" and show as disabled (cursor-not-allowed)
+  4. CV Studio sidebar: All 5 nav items are <button> elements with no
+     routing — clicking them does nothing
+  5. Landing Pricing CTAs — "Start free" and "Unlock Pro" buttons have no
+     href or onClick — completely non-functional
+  6. Landing Nav "Architecture", "Studio", "Pricing" — href="#features", "#dashboard",
+     "#pricing" (hash scroll links) — functional within the page only
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 6 — PRIORITIZED ACTION PLAN
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+TIER 1 — BLOCKING (Must fix before any real user traffic)
+─────────────────────────────────────────────────────────
+  1. Create Supabase DB schema:
+       CREATE TABLE cvs (id uuid, user_id uuid, cv_data_json jsonb, updated_at timestamptz)
+       CREATE TABLE portfolios (id uuid, user_id uuid, template_id text,
+                                content_json jsonb, deployed_url text, created_at timestamptz)
+     Add RLS: user can only read/write their own rows.
+
+  2. Move VITE_GROQ_API_KEY and VITE_VERCEL_ACCESS_TOKEN to server-side.
+     Create TanStack Start API routes:
+       POST /api/generate  → calls Groq
+       POST /api/deploy    → calls Vercel API
+
+  3. Set real environment variables in Vercel project settings (both apps).
+
+  4. Add Admin role gate: after session check in Admin app, query profiles table
+     and verify role = 'admin'. Redirect to /login if not admin.
+
+TIER 2 — HIGH VALUE (Needed for a usable product)
+──────────────────────────────────────────────────
+  5. Build real settings.tsx:
+       - Display user email + join date from supabase.auth.getUser()
+       - Password change via supabase.auth.updateUser()
+       - Account deletion
+
+  6. Enhance dashboard.tsx with real data:
+       - Fetch CV count: SELECT count(*) FROM cvs WHERE user_id = me
+       - Fetch portfolio count + most recent deployed_url
+       - Display a "recent items" list
+
+  7. Wire Admin App to Supabase:
+       - Overview: Query real user counts, generation counts from DB
+       - Users view: SELECT from auth.users joined with profiles
+       - Templates view: SELECT/UPDATE from templates table
+       - Content view: SELECT/UPDATE from app_content table
+
+  8. Add /auth/callback route to handle email confirmation redirects from Supabase.
+
+  9. Add /forgot-password route.
+
+TIER 3 — GROWTH FEATURES
+─────────────────────────
+  10. Stripe integration for Pricing CTAs.
+  11. Portfolio history page at /dashboard or a new /my-portfolios route.
+  12. CV history / "My CVs" view in CV Studio sidebar.
+  13. Admin app sub-routes (proper URL-based navigation per view).
+  14. Token/usage tracking per user.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 7 — OVERALL HEALTH SCORE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Area                          Score    Notes
+──────────────────────────────────────────────────────────────────────────────
+UI / Design Polish            9/10     Premium, consistent design system
+Landing Page                  9/10     Complete, animated, production-quality
+Authentication (Main)         8/10     Wired — blocked only by missing .env
+CV Studio                     8/10     Functional — blocked by missing DB schema
+Portfolio Builder             8/10     Full pipeline — blocked by missing env vars
+Dashboard                     4/10     Nav hub only — no real user data
+Settings                      1/10     Entirely a placeholder
+Admin App — UI                9/10     Beautiful, complete UI
+Admin App — DB Integration    0/10     100% hardcoded mock data
+Security                      3/10     API keys exposed in client bundle
+DB Schema / Migrations        0/10     No schema files exist in the repo
+──────────────────────────────────────────────────────────────────────────────
+OVERALL PRODUCTION READINESS: ~45/100
+
+The core user-facing product flows (Auth, CV Builder, Portfolio generation,
+Vercel deployment) are architecturally complete and well-engineered. The
+primary blockers are: missing DB schema in Supabase, missing environment
+variables, client-side API key exposure (security risk), and two fully
+incomplete pages (Settings + Dashboard data). The Admin CMS is a polished
+prototype that requires a full Supabase integration pass.
+
+================================================================================
+END OF REPORT
+================================================================================
