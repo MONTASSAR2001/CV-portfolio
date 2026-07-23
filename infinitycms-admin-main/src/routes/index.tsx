@@ -28,26 +28,46 @@ export const Route = createFileRoute("/")({
 
 function AdminDashboard() {
   const navigate = useNavigate();
+  const [isMounted, setIsMounted] = useState(false);
   const [view, setView]         = useState<View>("overview");
   const [ready, setReady]       = useState(false);
   const [adminEmail, setAdminEmail] = useState("");
 
   useEffect(() => {
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
-      if (!session) { navigate({ to: "/login" }); return; }
-      if (MASTER_EMAIL && session.user.email !== MASTER_EMAIL) {
-        await supabase.auth.signOut();
-        navigate({ to: "/login" });
-        return;
-      }
-      setAdminEmail(session.user.email ?? "");
-      setReady(true);
-    });
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, s) => {
-      if (!s) navigate({ to: "/login" });
-    });
-    return () => subscription.unsubscribe();
-  }, [navigate]);
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isMounted) return;
+    try {
+      supabase.auth.getSession().then(async ({ data: { session }, error }) => {
+        if (error) console.error("Session error:", error);
+        if (!session) { navigate({ to: "/login" }); return; }
+        if (MASTER_EMAIL && session.user.email !== MASTER_EMAIL) {
+          await supabase.auth.signOut();
+          navigate({ to: "/login" });
+          return;
+        }
+        setAdminEmail(session.user.email ?? "");
+        setReady(true);
+      }).catch(err => console.error("Session catch error:", err));
+      
+      const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, s) => {
+        if (!s) navigate({ to: "/login" });
+      });
+      return () => subscription.unsubscribe();
+    } catch (e) {
+      console.error("Auth check error:", e);
+    }
+  }, [isMounted, navigate]);
+
+  if (!isMounted) {
+    return (
+      <div className="dark flex min-h-screen items-center justify-center bg-zinc-950">
+        <Loader2 className="h-6 w-6 animate-spin text-zinc-600" />
+      </div>
+    );
+  }
 
   if (!ready) return (
     <div className="dark flex min-h-screen items-center justify-center bg-zinc-950">
@@ -157,6 +177,10 @@ function OverviewView() {
           supabase.from('admin_portfolios_per_day').select('*'),
         ]);
 
+        if (usersRes.error) console.error("Signups query error:", usersRes.error);
+        if (cvsRes.error) console.error("CVs query error:", cvsRes.error);
+        if (portsRes.error) console.error("Portfolios query error:", portsRes.error);
+
         const totalSignups = usersRes.data?.reduce((acc, row) => acc + Number(row.signups), 0) || 0;
         const totalCVs = cvsRes.data?.reduce((acc, row) => acc + Number(row.cvs_saved), 0) || 0;
         const totalPorts = portsRes.data?.reduce((acc, row) => acc + Number(row.portfolios_deployed), 0) || 0;
@@ -261,11 +285,13 @@ function MarketingView() {
   useEffect(() => {
     async function loadData() {
       setLoading(true);
-      const { data, error } = await supabase.from('site_settings').select('*');
-      if (data) {
-        const promo = data.find(d => d.key === 'active_promo')?.value;
-        if (promo) {
-          setPromoOn(promo.enabled);
+      try {
+        const { data, error } = await supabase.from('site_settings').select('*');
+        if (error) console.error("Site settings error:", error);
+        if (data) {
+          const promo = data.find(d => d.key === 'active_promo')?.value;
+          if (promo) {
+            setPromoOn(promo.enabled);
           setPromoLabel(promo.label);
           setDiscount(promo.discount_pct);
         }
@@ -279,7 +305,11 @@ function MarketingView() {
           setPricingTiers(pricing);
         }
       }
-      setLoading(false);
+      } catch (err) {
+        console.error("Site settings fetch exception:", err);
+      } finally {
+        setLoading(false);
+      }
     }
     loadData();
   }, []);
@@ -389,9 +419,15 @@ function TemplatesView() {
   useEffect(() => {
     async function loadTemplates() {
       setLoading(true);
-      const { data, error } = await supabase.from('dynamic_templates').select('*').order('sort_order', { ascending: true });
-      if (data) setRows(data);
-      setLoading(false);
+      try {
+        const { data, error } = await supabase.from('dynamic_templates').select('*').order('sort_order', { ascending: true });
+        if (error) console.error("Templates error:", error);
+        if (data) setRows(data);
+      } catch (err) {
+        console.error("Templates fetch exception:", err);
+      } finally {
+        setLoading(false);
+      }
     }
     loadTemplates();
   }, []);
@@ -472,13 +508,20 @@ function UsersView() {
 
   async function loadUsers() {
     setLoading(true);
-    const { data, error } = await supabase.functions.invoke('list-users');
-    if (data && data.users) {
-      setUsers(data.users);
-    } else if (error) {
-      toast.error("Failed to load users: " + error.message);
+    try {
+      const { data, error } = await supabase.functions.invoke('list-users');
+      if (data && data.users) {
+        setUsers(data.users);
+      } else if (error) {
+        console.error("List users error:", error);
+        toast.error("Failed to load users: " + error.message);
+      }
+    } catch (err: any) {
+      console.error("List users exception:", err);
+      toast.error("Failed to load users: " + err.message);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }
 
   useEffect(() => {
