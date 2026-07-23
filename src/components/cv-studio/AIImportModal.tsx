@@ -65,7 +65,7 @@ export function AIImportModal({ onStart, accessToken }: AIImportModalProps) {
           <AnimatePresence mode="wait">
             <motion.div key={phase === "done" ? "done" : stageIdx} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} className="space-y-2">
               <p className="font-display text-xl font-semibold text-foreground">{phase === "done" ? "Import complete!" : AI_STAGES[stageIdx]}</p>
-              {phase !== "done" && <p className="text-sm text-muted-foreground">Nexus AI is reading your career history…</p>}
+              {phase !== "done" && <p className="text-sm text-muted-foreground">CareerOS AI is reading your career history…</p>}
             </motion.div>
           </AnimatePresence>
           {phase !== "done" && (
@@ -89,7 +89,7 @@ export function AIImportModal({ onStart, accessToken }: AIImportModalProps) {
       <motion.div initial={{ opacity: 0, scale: 0.92, y: 24 }} animate={{ opacity: 1, scale: 1, y: 0 }} transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }} className="relative w-full max-w-2xl px-4">
         <div className="mb-8 text-center">
           <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-xs font-semibold text-muted-foreground">
-            <Sparkles size={12} className="text-violet-400" />Nexus CV Studio
+            <Sparkles size={12} className="text-violet-400" />CareerOS CV Studio
           </div>
           <h1 className="font-display text-3xl font-bold tracking-tight sm:text-4xl">How do you want to build your CV?</h1>
           <p className="mt-3 text-muted-foreground">Start from scratch or let AI extract your information instantly.</p>

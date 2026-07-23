@@ -237,7 +237,7 @@ function CvStudioPage() {
                   >
                     <Sparkles size={13} className="text-white" />
                   </div>
-                  <span className="text-sm font-semibold text-foreground">Nexus CV Studio</span>
+                  <span className="text-sm font-semibold text-foreground">CareerOS CV Studio</span>
                   <span
                     className="rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider"
                     style={{ background: "oklch(0.72 0.24 300 / 0.15)", color: "oklch(0.85 0.2 300)", border: "1px solid oklch(0.72 0.24 300 / 0.3)" }}

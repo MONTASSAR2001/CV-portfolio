@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS public.site_settings (
 
 -- Seed default values
 INSERT INTO public.site_settings (key, value) VALUES
-  ('site_name',       '"Nexus AI"'),
+  ('site_name',       '"CareerOS"'),
   ('site_tagline',    '"Build a portfolio that gets you hired — in minutes."'),
   ('active_promo',    '{"enabled": false, "label": "Happy Week", "discount_pct": 30, "expires_at": null}'),
   ('pricing_tiers',   '[{"id":"free","name":"Starter","price_monthly":0,"price_annual":0,"features":["3 CV exports","1 portfolio","Community support"]},{"id":"pro","name":"Pro","price_monthly":19,"price_annual":149,"features":["Unlimited exports","5 live portfolios","AI auto-fill","Priority support"]},{"id":"enterprise","name":"Enterprise","price_monthly":49,"price_annual":399,"features":["Everything in Pro","Custom domain","SSO","Dedicated manager"]}]'),

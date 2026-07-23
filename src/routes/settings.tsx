@@ -271,7 +271,7 @@ function SettingsPage() {
         <Section
           icon={User}
           title="Account Information"
-          subtitle="Your identity on Nexus."
+          subtitle="Your identity on CareerOS."
           hue="275"
         >
           <div className="space-y-4">

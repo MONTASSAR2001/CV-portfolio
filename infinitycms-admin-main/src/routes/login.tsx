@@ -97,7 +97,7 @@ function AdminLoginPage() {
           </div>
           <div className="text-center">
             <p className="text-[10px] uppercase tracking-[0.3em] text-zinc-600 mb-1">
-              Infinity Bugs · God Mode
+              CareerOS · God Mode
             </p>
             <h1 className="text-xl font-semibold text-zinc-100 tracking-tight">
               Master Control Panel

@@ -79,10 +79,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Nexus — Your Career, Engineered by AI" },
+      { title: "CareerOS — Your Career, Engineered by AI" },
       { name: "description", content: "Autonomous AI agents that craft your perfect CV and instantly deploy your dynamic web portfolio to the cloud." },
-      { name: "author", content: "Nexus" },
-      { property: "og:title", content: "Nexus — Your Career, Engineered by AI" },
+      { name: "author", content: "CareerOS" },
+      { property: "og:title", content: "CareerOS — Your Career, Engineered by AI" },
       { property: "og:description", content: "Autonomous AI agents that craft your perfect CV and instantly deploy your dynamic web portfolio." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -90,8 +90,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     links: [
       { rel: "stylesheet", href: appCss },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      /* Non-blocking font load: preconnect first, then fetch with display=swap */
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
+      { rel: "preload", as: "style", href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" },
       { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" },
     ],
   }),

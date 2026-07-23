@@ -213,7 +213,7 @@ const Nav = memo(function Nav() {
             <div className="absolute inset-[3px] rounded-md bg-background/70 backdrop-blur" />
             <div className="absolute inset-0 grid place-items-center font-display text-sm font-bold text-gradient">N</div>
           </div>
-          <span className="font-display text-lg font-semibold tracking-tight">Nexus</span>
+          <span className="font-display text-lg font-semibold tracking-tight">CareerOS</span>
         </div>
         <div className="hidden items-center gap-7 text-sm text-muted-foreground md:flex">
           <a href="#features" className="hover:text-foreground transition">Architecture</a>
@@ -312,7 +312,7 @@ function Hero() {
                 <span className="h-2.5 w-2.5 rounded-full bg-white/20" />
                 <span className="h-2.5 w-2.5 rounded-full bg-white/20" />
                 <span className="h-2.5 w-2.5 rounded-full bg-white/20" />
-                <span className="ml-3 text-xs text-muted-foreground">nexus.ai / studio</span>
+          <span className="ml-3 text-xs text-muted-foreground">careeros.ai / studio</span>
               </div>
               <div className="grid gap-4 sm:grid-cols-[1.2fr_1fr]">
                 <div className="glass rounded-2xl p-5">
@@ -672,9 +672,9 @@ const Footer = memo(function Footer() {
             <div className="absolute inset-0 rounded-md" style={{ background: "var(--gradient-kinetic)" }} />
             <div className="absolute inset-[2px] rounded bg-background/70 grid place-items-center text-[10px] font-bold text-gradient font-display">N</div>
           </div>
-          <span className="font-display text-sm">Nexus · Agentic Career OS</span>
+          <span className="font-display text-sm">CareerOS · Agentic Career Platform</span>
         </div>
-        <div className="text-xs text-muted-foreground">© {new Date().getFullYear()} Nexus Labs. Engineered on the edge.</div>
+        <div className="text-xs text-muted-foreground">© {new Date().getFullYear()} CareerOS. Engineered on the edge.</div>
       </div>
     </footer>
   );

@@ -205,7 +205,7 @@ function PortfolioBuilderPage() {
               <div className="absolute inset-0 rounded-md" style={{ background: "conic-gradient(from 0deg, oklch(0.72 0.24 300), oklch(0.85 0.18 210), oklch(0.72 0.24 300))" }} />
               <div className="absolute inset-[2px] rounded grid place-items-center font-display text-[10px] font-bold text-white/90 bg-black/70">N</div>
             </div>
-            <span className="font-display text-sm font-semibold text-white">Nexus <span className="text-white/30">/ Portfolio Builder</span></span>
+            <span className="font-display text-sm font-semibold text-white">CareerOS <span className="text-white/30">/ Portfolio Builder</span></span>
           </div>
           <div className="flex h-7 w-7 items-center justify-center rounded-full text-[11px] font-bold text-white"
             style={{ background: "linear-gradient(135deg, oklch(0.72 0.24 300), oklch(0.85 0.18 210))" }}>

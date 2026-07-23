@@ -12,4 +12,21 @@ export default defineConfig({
     // nitro/vite builds from this
     server: { entry: "server" },
   },
+  vite: {
+    build: {
+      rollupOptions: {
+        output: {
+          manualChunks(id) {
+            if (id.includes("framer-motion")) return "vendor-framer-motion";
+            if (id.includes("recharts") || id.includes("d3-")) return "vendor-recharts";
+            if (id.includes("lucide-react")) return "vendor-lucide";
+            if (id.includes("@supabase")) return "vendor-supabase";
+            if (id.includes("@tanstack/react-query")) return "vendor-react-query";
+            if (id.includes("@tanstack/react-router") || id.includes("@tanstack/start")) return "vendor-router";
+            if (id.includes("node_modules")) return "vendor-misc";
+          }
+        }
+      }
+    }
+  }
 });

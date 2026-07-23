@@ -395,7 +395,7 @@ function DashboardPage() {
                 N
               </div>
             </div>
-            <span className="font-display text-lg font-semibold tracking-tight">Nexus</span>
+            <span className="font-display text-lg font-semibold tracking-tight">CareerOS</span>
           </Link>
 
           <div className="flex items-center gap-3">

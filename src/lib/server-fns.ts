@@ -136,7 +136,7 @@ footer{font-size:.75rem;opacity:.4;text-align:center;padding-top:2rem;border-top
   <p class="bio">${esc(c.bio)}</p>
   ${c.projects.length ? `<h2>Projects</h2><div class="grid">${projects}</div>` : ""}
   ${c.skills.length ? `<h2>Skills</h2><div class="skills">${skills}</div>` : ""}
-  <footer>Built with Nexus AI Portfolio Builder</footer>
+  <footer>Built with CareerOS Portfolio Builder</footer>
 </div>
 </body>
 </html>`;

@@ -547,7 +547,7 @@ function UsersView() {
 
   return (
     <div className="space-y-6">
-      <PageHeader title="User Accounts" sub="All registered accounts on the Nexus platform." />
+      <PageHeader title="User Accounts" sub="All registered accounts on the CareerOS platform." />
       
       {loading && users.length === 0 ? (
         <div className="flex h-64 items-center justify-center">

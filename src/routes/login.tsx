@@ -86,7 +86,7 @@ function LoginPage() {
             </div>
           </div>
           <span className="font-display text-xl font-semibold tracking-tight">
-            Welcome back to Nexus
+            Welcome back to CareerOS
           </span>
           <p className="text-sm text-muted-foreground">
             Sign in to continue building your career

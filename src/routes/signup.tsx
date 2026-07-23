@@ -105,7 +105,7 @@ function SignupPage() {
             </div>
           </div>
           <span className="font-display text-xl font-semibold tracking-tight">
-            Create your Nexus account
+            Create your CareerOS account
           </span>
           <p className="text-sm text-muted-foreground">
             Let AI engineer your career
