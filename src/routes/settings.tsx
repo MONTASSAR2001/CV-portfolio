@@ -509,19 +509,30 @@ function SettingsPage() {
             </div>
             <button
               id="settings-delete-account"
-              onClick={() =>
-                toast.error("Account deletion requires admin approval.", {
-                  description: "Contact support@nexus.ai to request account deletion.",
-                })
-              }
+              onClick={async () => {
+                if (!confirm("Are you absolutely sure you want to permanently delete your account and all associated data? This action cannot be undone.")) return;
+                
+                toast.loading("Deleting account...");
+                const { error } = await supabase.functions.invoke('delete-user', {
+                  body: { target_user_id: user.id }
+                });
+                
+                if (error) {
+                  toast.dismiss();
+                  toast.error(`Failed to delete account: ${error.message}`);
+                } else {
+                  toast.dismiss();
+                  await supabase.auth.signOut();
+                  navigate({ to: "/" });
+                }
+              }}
               className="ml-4 shrink-0 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-2 text-xs font-semibold text-red-400 transition hover:bg-red-500/20 hover:text-red-300 active:scale-95"
             >
               Delete account
             </button>
           </div>
           <p className="mt-3 text-[11px] text-muted-foreground/60">
-            Account deletion is handled by support. Contact us at{" "}
-            <span className="text-muted-foreground">support@nexus.ai</span>
+            Once you delete your account, there is no going back. Please be certain.
           </p>
         </motion.div>
       </div>

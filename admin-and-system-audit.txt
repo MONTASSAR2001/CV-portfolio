@@ -1,0 +1,623 @@
+================================================================================
+  PHASE 11 — FULL SYSTEM & ADMIN CMS DIAGNOSTIC AUDIT
+  Generated: 2026-07-23  |  Engineer: Antigravity (Lead QA / Systems Architect)
+  Scope: infinitycms-admin-main/ (Admin CMS) + src/ (Main Client App)
+================================================================================
+
+────────────────────────────────────────────────────────────────────────────────
+SECTION 1 — ADMIN CMS APP DEEP AUDIT
+  Path: /infinitycms-admin-main/
+  Stack: TanStack Start + Vite + Supabase JS + Recharts + Radix UI
+────────────────────────────────────────────────────────────────────────────────
+
+1.1  SUPABASE INSTANCE & CONFIGURATION
+─────────────────────────────────────
+  File: infinitycms-admin-main/src/lib/supabase.ts
+
+  The admin app creates its Supabase client using:
+    VITE_SUPABASE_URL   (import.meta.env)
+    VITE_SUPABASE_ANON_KEY  (import.meta.env)
+
+  ✅ CORRECT: These are the same credentials used by the main client app.
+     Both apps share the same Supabase project/instance, which is the correct
+     single-source-of-truth architecture for a SaaS platform.
+
+  ✅ CORRECT: The client is created with persistSession: true,
+     autoRefreshToken: true, detectSessionInUrl: true — proper config.
+
+  ⚠️  RISK: The admin app has NO dedicated environment file. It relies on the
+     same .env or Vercel project settings as the main app. In a production
+     monorepo, the admin app should have its own separate .env or be hosted
+     on an isolated Vercel project with separately scoped env vars. Currently,
+     there is nothing preventing someone from deploying both apps from the
+     same env context.
+
+
+1.2  AUTHENTICATION FLOW ANALYSIS
+──────────────────────────────────
+  Files: login.tsx, routes/index.tsx (AdminDashboard)
+
+  WHAT IS WORKING:
+  ✅ login.tsx calls supabase.auth.signInWithPassword() — real Supabase auth.
+  ✅ On success, navigates to "/" (dashboard).
+  ✅ AdminDashboard (index.tsx) runs a session check on mount via
+     supabase.auth.getSession(). If no session → redirects to /login.
+  ✅ An onAuthStateChange listener watches for token expiry or logout from
+     another tab — correctly handles session invalidation reactively.
+  ✅ "Block render until session confirmed" pattern prevents admin UI flash.
+  ✅ Logout button calls supabase.auth.signOut() and redirects to /login.
+
+  🔴 CRITICAL SECURITY GAP — NO ADMIN ROLE CHECK:
+  The auth flow only verifies that *a* Supabase session exists. It does NOT
+  verify that the authenticated user has an 'admin' role or belongs to an
+  admin group. This means:
+
+    - ANY user who has a valid Nexus account (free tier, regular signup) could
+      theoretically access the admin panel at the admin app's URL if they know it.
+    - There is no call to supabase.from("profiles").select("role") or
+      check of user.app_metadata.role or custom claims.
+
+  REQUIRED FIX:
+  In AdminDashboard's useEffect, after confirming a session exists, add:
+
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", session.user.id)
+      .single();
+
+    if (profile?.role !== "admin") {
+      await supabase.auth.signOut();
+      navigate({ to: "/login" });
+      return; // show "Access denied" error on login page
+    }
+
+  Alternatively, use Supabase custom JWT claims (app_metadata.role = "admin")
+  set server-side, and check user.app_metadata.role in the client.
+
+  🔴 SECONDARY GAP — login.tsx has no role check either:
+  After signInWithPassword() succeeds, login.tsx immediately navigates to "/".
+  It should perform the same role check before redirecting.
+
+  🟡 COSMETIC ISSUE: The sidebar user widget (bottom-left) shows a hardcoded
+  avatar name "Daniel Rhodes" and email "daniel@infinitybugs.io". This should
+  be populated from supabase.auth.getUser() dynamically.
+
+
+1.3  MOCK DATA vs. LIVE SUPABASE DATA — FULL AUDIT
+────────────────────────────────────────────────────
+  File: infinitycms-admin-main/src/routes/index.tsx
+
+  The following data is 100% HARDCODED and NOT wired to Supabase:
+
+  ── OVERVIEW VIEW ──────────────────────────────────────────────────────
+  [MOCK] revenueData (lines 61-73):
+    - 12 months of fake revenue figures ($42k-$167k)
+    - Shown in the AreaChart "Revenue growth" panel
+    - Real source needed: Stripe webhook events table or an aggregated
+      billing_events table in Supabase
+
+  [MOCK] KPI metric cards (lines 271-275):
+    - "Total Revenue: $1.2M", "Active Users: 24,891",
+      "Generated CVs: 84,203", "Generated Portfolios: 31,540"
+    - Real source needed:
+        • Active Users → COUNT(*) FROM auth.users WHERE last_sign_in > now()-30d
+        • Generated CVs → COUNT(*) FROM cvs (main app table)
+        • Generated Portfolios → COUNT(*) FROM portfolios
+        • Revenue → Stripe dashboard API or billing_events table
+
+  [MOCK] Plan mix bars (lines 360-374):
+    - "Pro Annual: 46%", "Pro Monthly: 31%", "Free: 19%", "Trial: 4%"
+    - Churn: 2.4%
+    - Real source needed: user_subscriptions table with plan_type field,
+      or Stripe customer data synced to Supabase
+
+  [MOCK] recentActivity table (lines 75-82):
+    - 6 hardcoded fake user emails, actions, plans, and relative times
+    - Real source needed: An audit_log or activity_events table in Supabase,
+      or a view joining auth.users with cvs + portfolios tables ordered by
+      created_at DESC LIMIT 50
+
+  ── TEMPLATE MANAGER VIEW ──────────────────────────────────────────────
+  [MOCK] templates array (lines 84-91):
+    - 6 hardcoded template objects (Monolith, Aperture, Serif Standard, etc.)
+    - These bear NO relation to the actual 13 CV templates in the main app
+    - Toggle switches only update local React state — NOT persisted to DB
+
+    Real source needed: A "templates" table in Supabase with columns:
+      id, name, type (CV/Portfolio), status (boolean), updated_at,
+      preview_gradient (or thumbnail_url)
+
+    CRITICAL: The "Upload template" button and "Edit" / "Upload" action
+    buttons are UI-only dead ends — they have no onClick handlers beyond
+    visual state changes.
+
+  ── CONTENT & PROMPTS VIEW ──────────────────────────────────────────────
+  [MOCK] All text fields use defaultValue (not value + state):
+    - Landing Page Headline, Subheadline, Pricing tier names
+    - System AI Prompt textarea
+    - "Publish changes" button only sets local saved=true for 1.6s — it does
+      NOT write anything to Supabase or a CMS backend.
+
+    Real source needed: A "site_content" table (key/value pairs) or a
+    "prompt_config" table. The Publish button should call:
+      supabase.from("site_content").upsert({ key: "headline", value: ... })
+
+  [MOCK] Safety flags panel:
+    - "Block hallucinated employers", "Enforce PII redaction", etc.
+    - ToggleStatic updates local state only, not persisted.
+
+  [MOCK] Deployment metadata:
+    - "Content version: v128", "Last publish: Nov 09, 06:41"
+    - Hardcoded strings with no DB backing.
+
+  [MOCK] Model label: "gpt-infinity-4o" — this is fictional. The actual
+    model used in server-fns.ts is "llama-3.3-70b-versatile" (Groq).
+
+  ── USERS & BILLING VIEW ──────────────────────────────────────────────
+  [MOCK] users array (lines 93-101):
+    - 7 hardcoded fake user records with emails, tiers, token counts,
+      join dates, and status flags.
+    - Local email filter works, but only on fake data.
+    - "Revoke" and "Ban" action buttons are UI stubs — no onClick handlers.
+
+    Real source needed:
+      supabase.from("profiles")
+        .select("id, email, plan_type, token_balance, created_at, status")
+        .order("created_at", { ascending: false })
+
+    The auth.users table cannot be queried client-side via anon key.
+    A server function (or admin-specific Supabase edge function using the
+    SERVICE_ROLE_KEY) is required to list all users.
+
+
+1.4  VIEW-BY-VIEW WIRING REQUIREMENTS SUMMARY
+──────────────────────────────────────────────
+  OVERVIEW:
+    Effort: HIGH
+    Required:
+      - billing_events or Stripe sync table for revenue chart
+      - DB query: SELECT date_trunc('month', created_at), COUNT(*) FROM cvs
+      - DB query: SELECT date_trunc('month', created_at), COUNT(*) FROM portfolios
+      - DB query: COUNT active auth.users (needs service role key or edge fn)
+      - activity_events table for recent activity feed
+
+  TEMPLATE MANAGER:
+    Effort: MEDIUM
+    Required:
+      - Create "templates" table in Supabase
+      - Wire toggle to UPDATE templates SET status=... WHERE id=...
+      - Implement real file upload for template ZIP/HTML assets (Supabase Storage)
+      - Wire "Edit" button to a template editing modal
+
+  CONTENT & PROMPTS:
+    Effort: LOW-MEDIUM
+    Required:
+      - Create "site_content" table (key TEXT PRIMARY KEY, value TEXT, updated_at)
+      - Fetch all keys on mount: SELECT * FROM site_content
+      - Wire "Publish changes" to upsert batch of key/value pairs
+      - Store actual model name and prompt version in DB
+
+  USERS & BILLING:
+    Effort: HIGH
+    Required:
+      - Create admin-only Supabase Edge Function to list auth.users using
+        service_role key (cannot be done client-side with anon key)
+      - Create "profiles" table with role, plan_type, token_balance, status
+      - Wire "Revoke" to UPDATE profiles SET status='suspended'
+      - Wire "Ban" to supabase.auth.admin.deleteUser() via edge function
+      - Stripe webhook integration to sync subscription tier to profiles table
+
+
+================================================================================
+SECTION 2 — MAIN CLIENT APP FINAL VERIFICATION
+  Path: /src/
+================================================================================
+
+2.1  NEW ATS TEMPLATES — INTEGRATION CHECK
+───────────────────────────────────────────
+  Files checked:
+    src/components/cv-templates.tsx
+    src/components/cv-studio/types.ts
+    src/routes/cv-studio.tsx
+
+  ✅ ATSClassicTemplate: Exported from cv-templates.tsx, uses Arial, full
+     single-column, black-on-white, ruled section dividers. ATS-safe. ✓
+
+  ✅ ATSModernTemplate: Exported from cv-templates.tsx, uses Inter, slim 4px
+     violet left-bar accent on section titles. Single-column. ATS-safe. ✓
+
+  ✅ HarvardStandardTemplate: Exported from cv-templates.tsx, uses Times New
+     Roman, Harvard OCS format (education first, centred name, small-caps
+     headers). Single-column. ATS-safe. ✓
+
+  ✅ TEMPLATE_LIST in types.ts: All 3 new templates are registered:
+     { id: "atsclassic", label: "ATS Classic", emoji: "▣" }
+     { id: "atsmodern", label: "ATS Modern", emoji: "▤" }
+     { id: "harvardstandard", label: "Harvard Standard", emoji: "⬛" }
+
+  ✅ renderTemplate() in cv-studio.tsx: All 3 new IDs are handled in the
+     switch statement with correct imports. ✓
+
+  ✅ TemplateSwitcher carousel in cv-studio.tsx: Iterates TEMPLATE_LIST
+     dynamically, so all 13 templates appear automatically. ✓
+
+  ⚠️  MINOR: cv-studio.tsx still imports and defines local type duplicates
+     (PersonalInfo, Experience, Education, CvState) via the DEMO_CV_STATE
+     import from types.ts. These are now unified — no circular dependency. ✓
+
+  STATUS: ATS template integration is COMPLETE and correct.
+
+
+2.2  parseResumeWithAI — SECURITY & CORRECTNESS AUDIT
+───────────────────────────────────────────────────────
+  File: src/lib/server-fns.ts (lines 273-368)
+
+  SECURITY:
+  ✅ validateSessionToken() called FIRST, before any Groq API call.
+     It creates a server-side Supabase client and calls getUser(accessToken),
+     which validates the JWT against Supabase auth servers. Invalid tokens
+     throw "Unauthorized" and abort the request. ✓
+
+  ✅ Input validated with Zod before handler runs:
+     - cvText: min 80 chars, max 12,000 chars (prevents prompt injection via
+       extremely large payloads)
+     - accessToken: min 1 char (required)
+
+  ✅ GROQ_API_KEY is server-only (no VITE_ prefix) — never shipped to client
+     bundle. ✓
+
+  ✅ AI response uses response_format: { type: "json_object" } which forces
+     Groq to return valid JSON, reducing hallucination risk. ✓
+
+  ✅ Structural validation of AI response before returning to client:
+     Checks personalInfo, experience (Array), skills (Array). ✓
+
+  ✅ Temperature 0.3 — correct for deterministic extraction (not creative
+     generation). ✓
+
+  PDF PIPELINE:
+  ✅ pdf-extractor.ts uses pdfjs-dist with proper worker setup via Vite's
+     import.meta.url pattern. ✓
+  ✅ Page-by-page text extraction with page.cleanup() after each page to
+     prevent memory leaks. ✓
+  ✅ Minimum 80-char guard in AIImportModal before calling the server function,
+     protecting against scanned/image-only PDFs. ✓
+  ✅ Text is sliced to 12,000 chars before the API call, staying within
+     Groq's context window safely. ✓
+
+  🟡 MINOR ISSUE — No rate limiting:
+     The server function has no per-user rate limiting. A user could spam the
+     endpoint repeatedly. Recommended: add a simple token-bucket check against
+     a "api_usage" table in Supabase, or use Groq's built-in rate limits as
+     the backstop (acceptable for MVP).
+
+  🟡 MINOR ISSUE — No education null-guard:
+     The structural validation checks personalInfo, experience, and skills,
+     but NOT education. If Groq returns { education: null } instead of [],
+     the client may crash when trying to map over it.
+     Recommended: add `&& Array.isArray(parsed.education)` to the check.
+
+  STATUS: parseResumeWithAI is SECURE and functionally correct for production.
+  Two minor improvements recommended but not blocking.
+
+
+2.3  REMAINING UI/UX DEAD ENDS & MISSING FEATURES
+───────────────────────────────────────────────────
+
+  [SETTINGS PAGE — settings.tsx]
+  ✅ Change Password: FULLY WIRED — calls supabase.auth.updateUser({password})
+  ✅ Update Email: FULLY WIRED — calls supabase.auth.updateUser({email})
+     Sends a confirmation email to the new address before applying the change.
+     This is correct Supabase behavior.
+
+  🔴 Delete Account Button: Is a UI STUB
+     Currently shows a toast saying "Account deletion requires admin approval."
+     and instructs users to email support@nexus.ai.
+     This is an acceptable manual-process placeholder for MVP, but for
+     production it should call a Supabase Edge Function that invokes
+     supabase.auth.admin.deleteUser(userId) using the service role key.
+     The edge function would also CASCADE delete the user's rows in:
+       cvs, portfolios, profiles tables.
+
+  [CV STUDIO — cv-studio.tsx]
+  🟡 "My CVs" feature (previously in sidebar): The old sidebar nav item
+     for "My CVs" has been removed in the Phase 10 rewrite. There is currently
+     no way for users to load a previously saved CV from the cloud back into
+     the editor. The save-to-cloud button writes to Supabase (cvs table) but
+     there is no corresponding load-from-cloud flow.
+     Required: A "Load saved CV" button in the AIImportModal or editor header
+     that fetches from cvs WHERE user_id = current_user.id.
+
+  🟡 Template strip has no ATS category label: All 13 templates appear in a
+     flat horizontal strip. Users have no visual indication that the last 3
+     (ATS Classic, ATS Modern, Harvard Standard) are specifically ATS-optimised.
+     Recommended: Add a thin separator + "ATS Optimised" label badge between
+     the creative templates and ATS templates.
+
+  [DASHBOARD — dashboard.tsx]
+  ✅ Deployment History table: FULLY WIRED to Supabase.
+     Queries portfolios table with columns: id, deployed_url, template_id,
+     created_at. Displays correctly with timeAgo() and formatDate(). ✓
+  ✅ Stat cards (Saved CVs, Live Portfolios, Latest Deploy): FULLY WIRED
+     to real Supabase counts from cvs and portfolios tables. ✓
+  ✅ Latest portfolio URL banner: FULLY WIRED. ✓
+
+  [PORTFOLIO BUILDER — portfolio-builder.tsx]
+  ✅ All 4 steps work end-to-end.
+  ✅ Deploy saves to portfolios table in Supabase. ✓
+  🟡 No "re-deploy" or "edit + redeploy" flow. Each deployment creates a new
+     record. Users cannot update an existing deployment.
+
+  [LANDING PAGE — index.tsx]
+  🟡 Not audited in this pass (31KB, no breaking changes reported).
+
+  [AUTH FLOWS]
+  ✅ Login, signup, forgot-password: All route to Supabase auth correctly.
+  ✅ beforeLoad guards on protected routes: cv-studio, dashboard, settings,
+     portfolio-builder all use supabase.auth.getSession() + redirect. ✓
+
+
+================================================================================
+SECTION 3 — DATABASE & SECURITY REQUIREMENTS
+  Based on code analysis of both apps.
+================================================================================
+
+3.1  REQUIRED SUPABASE TABLES (CLIENT APP)
+────────────────────────────────────────────
+
+  TABLE: cvs
+  ───────────
+  Purpose: Store saved CV data from CV Studio
+  Referenced by: cv-studio.tsx (save), dashboard.tsx (count)
+  Schema:
+    id          UUID DEFAULT gen_random_uuid() PRIMARY KEY
+    user_id     UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE
+    cv_data_json JSONB NOT NULL   -- full CvState object
+    updated_at  TIMESTAMPTZ DEFAULT now()
+    created_at  TIMESTAMPTZ DEFAULT now()
+  Constraint: UNIQUE(user_id)  -- one CV per user (upsert on conflict)
+
+  RLS Policies required:
+    ENABLE ROW LEVEL SECURITY on cvs;
+    CREATE POLICY "Users can read own CV"
+      ON cvs FOR SELECT USING (auth.uid() = user_id);
+    CREATE POLICY "Users can upsert own CV"
+      ON cvs FOR INSERT WITH CHECK (auth.uid() = user_id);
+    CREATE POLICY "Users can update own CV"
+      ON cvs FOR UPDATE USING (auth.uid() = user_id);
+
+
+  TABLE: portfolios
+  ──────────────────
+  Purpose: Store deployed portfolio records from Portfolio Builder
+  Referenced by: portfolio-builder.tsx (insert), dashboard.tsx (select)
+  Schema:
+    id           UUID DEFAULT gen_random_uuid() PRIMARY KEY
+    user_id      UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE
+    template_id  TEXT NOT NULL        -- e.g. "vogue", "architect"
+    content_json JSONB NOT NULL       -- PortfolioContent object
+    deployed_url TEXT NOT NULL        -- full Vercel URL
+    created_at   TIMESTAMPTZ DEFAULT now()
+
+  RLS Policies required:
+    ENABLE ROW LEVEL SECURITY on portfolios;
+    CREATE POLICY "Users can read own portfolios"
+      ON portfolios FOR SELECT USING (auth.uid() = user_id);
+    CREATE POLICY "Users can insert own portfolios"
+      ON portfolios FOR INSERT WITH CHECK (auth.uid() = user_id);
+    -- No UPDATE/DELETE needed for MVP (immutable deployment records)
+
+
+3.2  REQUIRED SUPABASE TABLES (SHARED / ADMIN)
+────────────────────────────────────────────────
+
+  TABLE: profiles
+  ────────────────
+  Purpose: Extended user metadata (role, plan, token balance, status)
+  Referenced by: Admin Users & Billing view, future client subscription gating
+  Schema:
+    id            UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE
+    email         TEXT                    -- denormalised for admin queries
+    role          TEXT DEFAULT 'user'     -- 'user' | 'admin'
+    plan_type     TEXT DEFAULT 'free'     -- 'free' | 'pro' | 'enterprise'
+    token_balance INTEGER DEFAULT 0
+    status        TEXT DEFAULT 'active'   -- 'active' | 'suspended' | 'flagged'
+    created_at    TIMESTAMPTZ DEFAULT now()
+    updated_at    TIMESTAMPTZ DEFAULT now()
+
+  RLS Policies required:
+    ENABLE ROW LEVEL SECURITY on profiles;
+    CREATE POLICY "Users can read own profile"
+      ON profiles FOR SELECT USING (auth.uid() = id);
+    CREATE POLICY "Users can update own profile (limited fields)"
+      ON profiles FOR UPDATE USING (auth.uid() = id)
+      WITH CHECK (role = 'user');  -- prevent self-promotion to admin
+    CREATE POLICY "Admins can read all profiles"
+      ON profiles FOR SELECT USING (
+        EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin')
+      );
+    CREATE POLICY "Admins can update all profiles"
+      ON profiles FOR UPDATE USING (
+        EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin')
+      );
+
+  Trigger: Auto-create profile row on new user signup:
+    CREATE OR REPLACE FUNCTION public.handle_new_user()
+    RETURNS TRIGGER AS $$
+    BEGIN
+      INSERT INTO public.profiles (id, email)
+      VALUES (NEW.id, NEW.email);
+      RETURN NEW;
+    END;
+    $$ LANGUAGE plpgsql SECURITY DEFINER;
+
+    CREATE TRIGGER on_auth_user_created
+      AFTER INSERT ON auth.users
+      FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
+
+
+3.3  REQUIRED SUPABASE TABLES (ADMIN CMS ONLY)
+───────────────────────────────────────────────
+
+  TABLE: templates
+  ─────────────────
+  Purpose: Persist template registry for Admin Template Manager
+  Schema:
+    id           TEXT PRIMARY KEY        -- e.g. "tpl_01"
+    name         TEXT NOT NULL
+    type         TEXT NOT NULL           -- 'CV' | 'Portfolio'
+    status       BOOLEAN DEFAULT true    -- active/disabled toggle
+    preview_url  TEXT                    -- thumbnail image URL
+    updated_at   TIMESTAMPTZ DEFAULT now()
+
+  RLS Policy: Admins only (no client access needed)
+
+
+  TABLE: site_content
+  ────────────────────
+  Purpose: CMS key/value store for Content & Prompts manager
+  Schema:
+    key          TEXT PRIMARY KEY        -- e.g. "headline", "system_prompt"
+    value        TEXT NOT NULL
+    updated_by   UUID REFERENCES auth.users(id)
+    updated_at   TIMESTAMPTZ DEFAULT now()
+
+  RLS Policy: Admins only for write; optionally public for SELECT on
+    specific keys (e.g. landing page copy fetched by main app).
+
+
+  TABLE: activity_events  (optional for MVP, recommended for production)
+  ──────────────────────────────────────────────────────────────────────
+  Purpose: Audit log for Recent Activity feed in Admin Overview
+  Schema:
+    id          UUID DEFAULT gen_random_uuid() PRIMARY KEY
+    user_id     UUID REFERENCES auth.users(id)
+    user_email  TEXT
+    action      TEXT                    -- "Generated CV", "Deployed Portfolio"
+    plan        TEXT
+    created_at  TIMESTAMPTZ DEFAULT now()
+
+  This table should be populated by a Supabase Database Trigger that fires
+  on INSERT into cvs and portfolios tables.
+
+
+3.4  EDGE FUNCTIONS REQUIRED (SERVICE ROLE OPERATIONS)
+────────────────────────────────────────────────────────
+  The following operations require the Supabase service_role key and CANNOT
+  be done client-side safely. They must be implemented as Supabase Edge
+  Functions (Deno) deployed to the Supabase project:
+
+  1. list-users
+     Calls supabase.auth.admin.listUsers() to return all auth.users
+     for the Admin Users & Billing view.
+     Auth guard: verify caller has role='admin' in profiles.
+
+  2. delete-user
+     Calls supabase.auth.admin.deleteUser(userId) for account deletion.
+     Used by both the "Delete account" button in settings.tsx (user self-
+     deletion) and the "Ban" button in the admin Users view.
+     Auth guard for admin use: verify caller has role='admin'.
+     Auth guard for self-deletion: verify userId = caller's own ID.
+
+  3. update-user-role  (admin only)
+     Updates profiles.role for a given user.
+     Auth guard: verify caller has role='admin'.
+
+
+================================================================================
+SECTION 4 — CRITICAL FINDINGS SUMMARY & PRIORITY MATRIX
+================================================================================
+
+  PRIORITY 1 — SECURITY (Fix before any public launch)
+  ──────────────────────────────────────────────────────
+  [P1-A] Admin role check missing in AdminDashboard and admin login.
+         Any authenticated Nexus user can access the admin panel URL.
+         FIX: Add profiles.role === 'admin' check after session validation.
+
+  [P1-B] profiles table does not exist in DB yet.
+         Without it, the role check (P1-A) cannot function.
+         FIX: Create profiles table + trigger (see Section 3.2).
+
+  [P1-C] parseResumeWithAI — education not validated in AI response guard.
+         FIX: Add `&& Array.isArray(parsed.education)` to line 363.
+
+
+  PRIORITY 2 — DATA INTEGRITY (Fix before Demo/Investor review)
+  ──────────────────────────────────────────────────────────────
+  [P2-A] Admin Overview: All 4 KPI cards show hardcoded mock data.
+         FIX: Wire to Supabase COUNT queries + Stripe API.
+
+  [P2-B] Admin Recent Activity: Hardcoded fake user emails.
+         FIX: Create activity_events table + DB trigger.
+
+  [P2-C] Admin Template Manager: Toggle state is not persisted.
+         FIX: Create templates table, wire toggle to Supabase UPDATE.
+
+  [P2-D] Admin Content & Prompts: "Publish changes" is a no-op.
+         FIX: Create site_content table, wire Publish to Supabase upsert.
+
+  [P2-E] Admin Users & Billing: Shows fake user records.
+         FIX: Create list-users Edge Function, render real auth.users.
+
+
+  PRIORITY 3 — UX COMPLETENESS (Fix in next sprint)
+  ────────────────────────────────────────────────────
+  [P3-A] No load-saved-CV flow in CV Studio.
+         Users cannot retrieve cloud-saved CVs.
+
+  [P3-B] Admin sidebar avatar is hardcoded ("Daniel Rhodes").
+         Should be populated from supabase.auth.getUser().
+
+  [P3-C] "Delete account" in settings.tsx is a manual process stub.
+         Should call a delete-user Edge Function.
+
+  [P3-D] Portfolio Builder has no re-deploy / edit-and-redeploy flow.
+
+  [P3-E] No ATS category label in CV Studio template carousel strip.
+
+
+  PRIORITY 4 — INFRASTRUCTURE (Nice to have)
+  ────────────────────────────────────────────
+  [P4-A] Admin app has no dedicated .env file — shares env context.
+  [P4-B] No per-user rate limiting on AI server functions.
+  [P4-C] Admin app has no separate Vercel project (isolation risk).
+  [P4-D] Revenue chart needs Stripe webhook sync pipeline (billing_events).
+
+
+================================================================================
+SECTION 5 — IMPLEMENTATION ORDER (RECOMMENDED SPRINT PLAN)
+================================================================================
+
+  SPRINT 1 — SECURITY HARDENING (1-2 days)
+    1. Create profiles table + trigger in Supabase SQL editor
+    2. Create admin user manually: UPDATE profiles SET role='admin' WHERE email='...'
+    3. Add role check to AdminDashboard useEffect and login.tsx
+    4. Fix education null-guard in parseResumeWithAI (1 line)
+
+  SPRINT 2 — ADMIN LIVE DATA (3-5 days)
+    1. Create templates, site_content, activity_events tables
+    2. Wire Admin Template Manager toggle to Supabase UPDATE
+    3. Wire Admin Content & Prompts "Publish" to Supabase upsert
+    4. Wire Admin Overview KPIs to real DB COUNT queries
+    5. Create list-users Edge Function for Users & Billing view
+
+  SPRINT 3 — CLIENT UX COMPLETION (2-3 days)
+    1. Add load-saved-CV flow to CV Studio (fetch from cvs table)
+    2. Add ATS category label to template carousel
+    3. Wire admin sidebar avatar to real authenticated user
+    4. Implement delete-user Edge Function + connect to settings.tsx
+
+  SPRINT 4 — MONETISATION FOUNDATION (ongoing)
+    1. Stripe integration: webhook → billing_events table
+    2. Revenue chart wired to real billing data
+    3. Plan gating: check profiles.plan_type before allowing AI generation
+    4. Token balance tracking (decrement on each AI call)
+
+
+================================================================================
+END OF AUDIT REPORT
+Audited by: Antigravity — AI Lead QA / Systems Architect
+Date: 2026-07-23
+Files inspected: 18 source files across both apps (read-only, no code modified)
+================================================================================
