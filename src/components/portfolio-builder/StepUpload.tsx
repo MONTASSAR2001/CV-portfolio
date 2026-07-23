@@ -65,7 +65,7 @@ export function StepUpload({
     e.preventDefault();
     setDragging(false);
     const f = e.dataTransfer.files[0];
-    if (f) onFile(f);
+    if (f && f.type === "application/pdf") onFile(f);
   };
 
   return (

@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate, redirect } from "@tanstack/react-router";
 import { useState, useRef, forwardRef, useEffect } from "react";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/use-auth";
@@ -24,11 +24,27 @@ import {
 } from "@/components/cv-templates";
 
 export const Route = createFileRoute("/cv-studio")({
+  beforeLoad: async () => {
+    if (typeof window !== "undefined") {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) throw redirect({ to: "/login" });
+    }
+  },
   component: CvStudioPage,
 });
 
 /* ─── Types ─────────────────────────────────────────────── */
-type NavItem = { icon: React.ReactNode; label: string; id: string };
+type NavAction = "active" | "navigate" | "coming-soon";
+type NavItem = {
+  icon: React.ReactNode;
+  label: string;
+  id: string;
+  action: NavAction;
+  /** Destination path — used when action === "navigate" */
+  to?: string;
+  /** Short badge text rendered inside the tooltip */
+  badge?: string;
+};
 
 export type PersonalInfo = {
   fullName: string;
@@ -64,11 +80,13 @@ export type CvState = {
 
 /* ─── Static Data ────────────────────────────────────────── */
 const NAV_ITEMS: NavItem[] = [
-  { icon: <FileText size={20} />, label: "Builder", id: "builder" },
-  { icon: <LayoutTemplate size={20} />, label: "Templates", id: "templates" },
-  { icon: <FolderOpen size={20} />, label: "My CVs", id: "mycvs" },
-  { icon: <Bot size={20} />, label: "AI Assistant", id: "ai" },
-  { icon: <Settings size={20} />, label: "Settings", id: "settings" },
+  { icon: <FileText size={20} />,      label: "Builder",      id: "builder",   action: "active" },
+  { icon: <LayoutTemplate size={20} />, label: "Templates",   id: "templates", action: "active" },
+  // My CVs and AI Assistant are not yet implemented — show a Coming Soon toast
+  { icon: <FolderOpen size={20} />,    label: "My CVs",       id: "mycvs",     action: "coming-soon", badge: "Soon" },
+  { icon: <Bot size={20} />,           label: "AI Assistant", id: "ai",        action: "coming-soon", badge: "Soon" },
+  // Settings navigates to the /settings route
+  { icon: <Settings size={20} />,      label: "Settings",     id: "settings",  action: "navigate",    to: "/settings" },
 ];
 
 const initialState: CvState = {
@@ -107,6 +125,27 @@ const initialState: CvState = {
 /* ─── Sub-components ─────────────────────────────────────── */
 
 function Sidebar({ active }: { active: string }) {
+  const navigate = useNavigate();
+
+  function handleNavClick(item: NavItem) {
+    switch (item.action) {
+      case "navigate":
+        if (item.to) navigate({ to: item.to as "/" });
+        break;
+      case "coming-soon":
+        toast.info(`${item.label} — coming soon!`, {
+          description: "This feature is currently in development. Stay tuned!",
+          duration: 3500,
+        });
+        break;
+      case "active":
+      default:
+        // Active items are visual-state indicators only (Builder / Templates).
+        // Clicking them is a no-op since the sidebar has no sub-route support yet.
+        break;
+    }
+  }
+
   return (
     <aside className="flex w-16 flex-col items-center justify-between border-r border-slate-800 bg-gray-950 py-5">
       <div className="flex flex-col items-center gap-5">
@@ -116,20 +155,31 @@ function Sidebar({ active }: { active: string }) {
         <nav className="mt-6 flex flex-col items-center gap-1">
           {NAV_ITEMS.map((item) => {
             const isActive = item.id === active;
+            const isComingSoon = item.action === "coming-soon";
             return (
               <button
                 key={item.id}
+                id={`cv-studio-nav-${item.id}`}
                 title={item.label}
+                onClick={() => handleNavClick(item)}
                 className={`group relative flex h-10 w-10 items-center justify-center rounded-xl transition-all duration-200 ${
                   isActive
                     ? "bg-violet-600/20 text-violet-400 shadow-inner shadow-violet-600/10"
+                    : isComingSoon
+                    ? "cursor-not-allowed text-slate-600 hover:bg-slate-800/50 hover:text-slate-500"
                     : "text-slate-500 hover:bg-slate-800 hover:text-slate-300"
                 }`}
               >
                 {isActive && <span className="absolute left-0 h-5 w-0.5 rounded-r-full bg-violet-500" />}
                 {item.icon}
-                <span className="pointer-events-none absolute left-12 z-50 whitespace-nowrap rounded-md bg-slate-800 px-2 py-1 text-xs text-slate-200 opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
+                {/* Tooltip */}
+                <span className="pointer-events-none absolute left-12 z-50 flex items-center gap-1.5 whitespace-nowrap rounded-md bg-slate-800 px-2 py-1 text-xs text-slate-200 opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
                   {item.label}
+                  {item.badge && (
+                    <span className="rounded-full bg-violet-700/60 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-violet-300">
+                      {item.badge}
+                    </span>
+                  )}
                 </span>
               </button>
             );

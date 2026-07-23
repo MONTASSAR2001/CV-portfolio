@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate, redirect } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/hooks/use-auth";
@@ -13,7 +13,16 @@ import { StepTemplate } from "@/components/portfolio-builder/StepTemplate";
 import { StepGenerate } from "@/components/portfolio-builder/StepGenerate";
 import { StepDeploy } from "@/components/portfolio-builder/StepDeploy";
 
-export const Route = createFileRoute("/portfolio-builder")({ component: PortfolioBuilderPage });
+export const Route = createFileRoute("/portfolio-builder")({
+  beforeLoad: async () => {
+    // Client-side guard: SSR skips (no localStorage), client redirects immediately
+    if (typeof window !== "undefined") {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) throw redirect({ to: "/login" });
+    }
+  },
+  component: PortfolioBuilderPage,
+});
 
 /* ─── Re-export types for consumers ─────────────────────────────────────── */
 export type { PortfolioContent };
@@ -63,7 +72,7 @@ function StepDots({ active, done }: { active: number; done: Set<number> }) {
 
 /* ─── Main Page ──────────────────────────────────────────────────────────── */
 function PortfolioBuilderPage() {
-  const { user, loading } = useAuth();
+  const { user, session, loading } = useAuth();
   const navigate = useNavigate();
 
   // ── Wizard state ──────────────────────────────────────────────────────────
@@ -113,7 +122,13 @@ function PortfolioBuilderPage() {
       const tone = TEMPLATE_TONES[selectedTemplate] ?? "Professional and polished.";
 
       setGenerationStage(STAGES[2]);
-      const parsed = await generatePortfolioContent({ data: { cvText: cvText.slice(0, 14000), templateTone: tone } });
+      const parsed = await generatePortfolioContent({
+        data: {
+          cvText: cvText.slice(0, 14000),
+          templateTone: tone,
+          accessToken: session?.access_token ?? "",
+        },
+      });
 
       setGenerationStage(STAGES[3]);
       if (!parsed.bio || !Array.isArray(parsed.projects) || !Array.isArray(parsed.skills)) {
@@ -137,7 +152,13 @@ function PortfolioBuilderPage() {
     setDeployError(null);
 
     try {
-      const { url } = await deployPortfolioToVercel({ data: { content: generatedContent, templateId: selectedTemplate } });
+      const { url } = await deployPortfolioToVercel({
+        data: {
+          content: generatedContent,
+          templateId: selectedTemplate,
+          accessToken: session?.access_token ?? "",
+        },
+      });
       setDeployedUrl(url);
       setIsDeploying(false);
 

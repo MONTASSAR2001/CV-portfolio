@@ -1,0 +1,487 @@
+================================================================================
+  NEXUS AI — SYSTEM FUNCTIONAL DIAGNOSTIC & AUDIT REPORT
+  Date: 2026-07-23  |  Auditor: Lead QA / Systems Architect (AI)
+  Codebase: /home/montassar/Desktop/projects/AI-WEB/CV-portfolio
+================================================================================
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 1 — COMPREHENSIVE CODEBASE SCAN
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+FRAMEWORK STACK
+  Runtime:    TanStack Start (SSR) + Vite 8 + React 19 + TypeScript 5.8
+  Auth:       Supabase JS v2 (client-side + server functions)
+  DB:         Supabase PostgreSQL (tables: cvs, portfolios)
+  AI:         Groq API — llama-3.3-70b-versatile (server-side only)
+  Deploy:     Vercel REST API v13 (server-side only)
+  UI:         Tailwind CSS v4, Framer Motion v12, Radix UI, shadcn/ui
+  PDF Export: react-to-print v3, pdfjs-dist v5
+
+ROUTE INVENTORY (12 routes registered in routeTree.gen.ts)
+  /                    → src/routes/index.tsx         (Landing page)
+  /login               → src/routes/login.tsx         (Auth)
+  /signup              → src/routes/signup.tsx         (Auth)
+  /dashboard           → src/routes/dashboard.tsx     (Protected)
+  /cv-studio           → src/routes/cv-studio.tsx     (Protected)
+  /portfolio-builder   → src/routes/portfolio-builder.tsx (Protected)
+  /settings            → src/routes/settings.tsx      (Protected)
+  /templates/vogue     → src/routes/templates/vogue.tsx
+  /templates/architect → src/routes/templates/architect.tsx
+  /templates/biotech   → src/routes/templates/biotech.tsx
+  /templates/lumina    → src/routes/templates/lumina.tsx
+  /templates/sterling  → src/routes/templates/sterling.tsx
+
+COMPONENT INVENTORY
+  src/components/portfolio-builder/
+    StepUpload.tsx     — Drag-and-drop PDF dropzone with 3D tilt (TiltCard)
+    StepTemplate.tsx   — 5-template picker with external preview links
+    StepGenerate.tsx   — AI generation UI with stage indicators
+    StepDeploy.tsx     — Vercel deploy UI with URL clipboard copy
+    types.ts           — Shared PortfolioContent, TEMPLATE_TONES, STAGES
+  src/components/cv-templates.tsx — 10 CV templates (Minimalist→Visual)
+  src/components/ui/  — 46 shadcn/Radix primitives (complete)
+
+LIBRARY INVENTORY
+  src/lib/supabase.ts       — Supabase client singleton (browser)
+  src/lib/server-fns.ts     — Two server functions (generate + deploy)
+  src/lib/pdf-extractor.ts  — pdfjs-dist text extraction
+  src/lib/vercel-deploy.ts  — DEPRECATED stub (correctly gutted)
+  src/lib/error-capture.ts  — SSR error capture for h3 swallowing
+  src/lib/error-page.ts     — Fallback 500 HTML renderer
+  src/lib/lovable-error-reporting.ts — Error boundary integration
+  src/lib/utils.ts          — clsx/cn utility
+
+HOOKS INVENTORY
+  src/hooks/use-auth.tsx  — AuthContext (session, user, loading, signIn, signUp, signOut)
+  src/hooks/use-mobile.tsx — Mobile breakpoint hook
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 2 — FUNCTIONALITY CHECKOUT (WORKING vs. MISSING/BROKEN)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+──────────────────────────────────────────────────────────────────────────────
+2A. AUTHENTICATION — src/hooks/use-auth.tsx, login.tsx, signup.tsx
+──────────────────────────────────────────────────────────────────────────────
+
+STATUS: ✅ LARGELY FUNCTIONAL — 2 minor gaps
+
+WORKING:
+  [✅] Supabase client initialisation with correct VITE_ env var pattern
+        → persistSession:true, autoRefreshToken:true, detectSessionInUrl:true
+  [✅] AuthProvider wraps entire app via __root.tsx RootComponent
+  [✅] onAuthStateChange subscription with proper cleanup (subscription.unsubscribe)
+  [✅] getSession() called on mount to hydrate initial state immediately
+  [✅] loading flag prevents flash-of-unauthenticated-content
+  [✅] Login page: signIn → error display → redirect to /dashboard
+  [✅] Signup page: signUp → email-confirmation notice OR auto-redirect to /dashboard
+  [✅] Client-side auth guards in dashboard, cv-studio, portfolio-builder, settings:
+        useEffect pattern: if (!loading && !user) navigate({ to: "/login" })
+  [✅] Already-authenticated redirect on login/signup pages
+  [✅] Sign-out from dashboard navigates to /
+  [✅] Password validation: min 8 chars + confirm match on signup
+
+MISSING / GAPS:
+  [⚠️] NO ROUTE-LEVEL LOADER GUARDS — Auth protection is 100% client-side via
+        useEffect. There is no beforeLoad or loader guard at the TanStack Router
+        level. This means SSR can momentarily render protected page HTML to
+        unauthenticated users before the client-side redirect fires. For a
+        production SaaS, beforeLoad guards should be added to protected routes.
+
+  [⚠️] NO PASSWORD RESET / FORGOT PASSWORD FLOW — The login page has no
+        "Forgot password?" link or route. supabase.auth.resetPasswordForEmail()
+        is never called anywhere in the codebase. Users who forget their
+        password have no self-service recovery path.
+
+  [⚠️] SETTINGS PAGE — "currentPass" field is declared in state (line 116) but
+        is never rendered in the UI form and is never used in the updateUser
+        call. The password change does NOT re-authenticate before updating.
+        Supabase's updateUser() works within an active session, but the presence
+        of an unused state variable indicates an incomplete "verify current
+        password" UX that was planned but not implemented.
+
+  [⚠️] SOCIAL AUTH — No OAuth providers (Google, GitHub) are wired up. The
+        auth_provider badge in Settings is purely display-only.
+
+──────────────────────────────────────────────────────────────────────────────
+2B. CV STUDIO — src/routes/cv-studio.tsx, src/components/cv-templates.tsx
+──────────────────────────────────────────────────────────────────────────────
+
+STATUS: ✅ LARGELY FUNCTIONAL — 3 notable gaps
+
+WORKING:
+  [✅] Auth guard present (useEffect pattern)
+  [✅] 4-step accordion form: Personal Info → Experience → Education → Skills
+  [✅] Live preview pane with real-time reactive updates (cvData state)
+  [✅] 10 templates selectable via horizontal scroller (Minimalist to Visual)
+  [✅] Template switching dynamically swaps renderTemplate() — all 10 branches
+        map to imported components from cv-templates.tsx
+  [✅] PDF export via react-to-print (useReactToPrint) with contentRef correctly
+        wired to printRef. Document title uses personalInfo.fullName.
+  [✅] Print CSS: @page { size: A4; margin: 0 } + exact color printing enabled
+  [✅] Desktop / Mobile preview toggle (794px vs 360px canvas)
+  [✅] Save to Cloud: supabase.from("cvs").upsert() with user_id + cv_data_json
+  [✅] Upsert with onConflict: "user_id" — saves one CV per user (intentional)
+  [✅] Toast notifications: loading → success/error with sonner
+  [✅] Skill add/remove (Enter key), experience/education add/remove with IDs
+  [✅] Progress bar (% complete across 4 steps) in form footer
+
+MISSING / GAPS:
+  [⚠️] UPSERT CONFLICT KEY ASSUMPTION — The upsert uses onConflict: "user_id",
+        which means the "cvs" table must have a UNIQUE constraint on user_id.
+        If the Supabase schema has no such constraint, the upsert will INSERT
+        duplicates instead of updating. The schema needs to be verified.
+        Action needed: confirm `ALTER TABLE cvs ADD CONSTRAINT cvs_user_id_key
+        UNIQUE (user_id);` exists, or switch to upsert with the primary key.
+
+  [⚠️] "MY CVs" NAV ITEM IS DEAD — The sidebar has 5 nav items (Builder,
+        Templates, My CVs, AI Assistant, Settings). Only "Builder" (activeNav
+        is hardcoded to "builder" via useState("builder") — it never changes).
+        The other 4 sidebar items are purely decorative buttons with no onClick
+        logic. Clicking them has no effect.
+
+  [⚠️] "AI ASSISTANT" NAV ITEM IS STUB — No AI-assisted CV writing feature
+        exists. The Bot icon in the sidebar does nothing.
+
+  [⚠️] "SETTINGS" NAV ITEM IN CV STUDIO is separate from the /settings route —
+        clicking it in the sidebar does nothing.
+
+  [⚠️] MOBILE PREVIEW SCALING — The mobile canvas uses scale(0.85) with a
+        fixed 360px width but the outer container still shows the desktop
+        shadow/glow. Minor visual artifact.
+
+  [⚠️] NO AI IMPORT — The CV studio has no feature to import/parse an existing
+        CV PDF to pre-fill the form (contrast with Portfolio Builder which
+        does have PDF extraction). Users must fill all fields manually.
+
+──────────────────────────────────────────────────────────────────────────────
+2C. PORTFOLIO BUILDER — src/routes/portfolio-builder.tsx
+         + src/components/portfolio-builder/{StepUpload, StepTemplate,
+           StepGenerate, StepDeploy}.tsx
+──────────────────────────────────────────────────────────────────────────────
+
+STATUS: ✅ FULLY FUNCTIONAL END-TO-END — 2 edge-case gaps
+
+WORKING:
+  [✅] Auth guard present
+  [✅] 4-step wizard state machine: step (1-4) + completed (Set<number>)
+  [✅] Step 1 — StepUpload: drag-and-drop + file picker, PDF-only enforcement,
+        file state hoisted to parent, Continue button appears after file selected,
+        3D TiltCard with framer-motion useMotionValue/useSpring/useTransform
+  [✅] Step 2 — StepTemplate: 5 templates rendered from types.ts TEMPLATES const,
+        Unsplash cover images, TiltCard 3D effect per card, active highlight with
+        layoutId animation, external preview link to /templates/:id routes
+  [✅] Step 3 — StepGenerate: calls generatePortfolioContent server function
+        → pdfjs-dist text extraction → Groq API → structured JSON parse →
+        4-stage progress labels → error display + retry → "Preview & Deploy" CTA
+  [✅] Step 4 — StepDeploy: calls deployPortfolioToVercel server function →
+        Vercel REST API v13 → returns deployed URL → supabase.from("portfolios")
+        .insert() saves user_id, template_id, content_json, deployed_url →
+        URL display with clipboard copy + external link buttons
+  [✅] Server functions are SSR-only (createServerFn) — GROQ_API_KEY and
+        VERCEL_ACCESS_TOKEN are never exposed to browser bundle ✅ SECURE
+  [✅] Input validation with zod schemas on both server functions
+  [✅] HTML escaping (esc()) in buildHtml prevents XSS in generated site
+  [✅] 5 theme maps (vogue/architect/biotech/lumina/sterling) used in buildHtml
+  [✅] Back navigation and Skip buttons between steps
+  [✅] vercel-deploy.ts is correctly deprecated and empty — no client leak
+  [✅] "Deployed but DB save failed" error surfaced to user — non-blocking
+  [✅] "Saved to your dashboard" confirmation in StepDeploy once DB insert succeeds
+
+MISSING / GAPS:
+  [⚠️] NO REDEPLOY / UPDATE FLOW — Once a portfolio is deployed, the user
+        cannot re-trigger deployment. The Deploy button is permanently disabled
+        after first deployment (deployedUrl check). If content needs updating,
+        the user must refresh the entire page and go through all 4 steps again,
+        losing their current session state. A "Redeploy" or "Update content"
+        button is needed.
+
+  [⚠️] STEP 1 DOES NOT VALIDATE PDF TYPE ON DROP — The handleDrop function in
+        StepUpload.tsx calls onFile(f) on any dropped file without checking
+        f.type. The validation (file.type !== "application/pdf") only occurs
+        in handleGenerate at Step 3. A user can "upload" a .docx and not see
+        the error until Step 3.
+        Fix: add `if (f.type !== "application/pdf") return;` in handleDrop.
+
+  [⚠️] NO SUPABASE SESSION CHECK IN SERVER FUNCTIONS — generatePortfolioContent
+        and deployPortfolioToVercel do NOT verify that the caller is an
+        authenticated Supabase user. Any user who can reach the server endpoint
+        (e.g., via direct HTTP POST or a dev tools trick) can consume Groq API
+        and Vercel API credits without being logged in. The functions should
+        validate the Supabase session via a service-role client call.
+
+  [⚠️] VERCEL DEPLOYMENT NAME UNIQUENESS — The deployment name is
+        `nexus-portfolio-${Date.now()}`. If two requests fire within the same
+        millisecond (unlikely in production, but possible in load tests), names
+        collide. Using crypto.randomUUID() or a user-ID prefix would be safer.
+
+──────────────────────────────────────────────────────────────────────────────
+2D. DASHBOARD — src/routes/dashboard.tsx
+──────────────────────────────────────────────────────────────────────────────
+
+STATUS: ✅ FULLY FUNCTIONAL — 1 minor gap
+
+WORKING:
+  [✅] Auth guard present
+  [✅] Parallel Supabase queries via Promise.all:
+        - supabase.from("cvs").select("id", count:exact) → cvCount
+        - supabase.from("portfolios").select("id", count:exact) → portfolioCount
+        - supabase.from("portfolios").select("deployed_url, template_id,
+          created_at").order(created_at desc).limit(1) → latest deploy URL
+  [✅] statsLoading state with spinner in StatCard during fetch
+  [✅] Graceful degradation: stats fetch is wrapped in try/catch with silent
+        failure — page never crashes if Supabase is unreachable
+  [✅] Dynamic "Latest live portfolio" URL banner (only shown if URL exists)
+  [✅] timeAgo() helper for human-readable "last activity" display
+  [✅] Template badge shown on portfolio URL banner
+  [✅] 3 quick-action cards linking to /cv-studio, /portfolio-builder, /settings
+  [✅] Sign-out button clears session and navigates to /
+  [✅] Avatar initials from user.email
+
+MISSING / GAPS:
+  [⚠️] STATS SILENTLY FAIL — The catch block in fetchStats() swallows all
+        errors silently. If the "cvs" or "portfolios" table doesn't exist in
+        Supabase (schema not yet created), the stats show as 0 with no error
+        message. A console.error at minimum, or a UI error badge, would help
+        during development and staging.
+
+  [⚠️] LATEST PORTFOLIO URL shows the MOST RECENTLY CREATED, not MOST RECENTLY
+        UPDATED. If the user has deployed 3 portfolios and wants to see all of
+        them, there is no list/history view. Only 1 portfolio URL is surfaced.
+
+──────────────────────────────────────────────────────────────────────────────
+2E. SETTINGS — src/routes/settings.tsx
+──────────────────────────────────────────────────────────────────────────────
+
+STATUS: ✅ FUNCTIONAL — 2 gaps
+
+WORKING:
+  [✅] Auth guard present
+  [✅] User email displayed (disabled input)
+  [✅] Member since + Last sign-in derived from user.created_at / last_sign_in_at
+  [✅] Auth provider badge (email/password or OAuth provider)
+  [✅] Password change: supabase.auth.updateUser({ password: newPass })
+  [✅] Validation: min 8 chars, confirm match, done with toast success/error
+  [✅] Password strength indicator (3-segment bar at 8/12/16 chars)
+  [✅] Password visibility toggle (show/hide) for both fields
+  [✅] Danger Zone "Delete account" button intentionally disabled with tooltip
+  [✅] pwdDone flag auto-resets after 4 seconds
+
+MISSING / GAPS:
+  [⚠️] UNUSED STATE: currentPass (line 116 of settings.tsx) is declared but
+        never rendered or used. The "current password" field does not appear in
+        the UI. Either it should be rendered and verified before calling
+        updateUser(), or the dead state should be removed.
+
+  [⚠️] NO EMAIL CHANGE FLOW — The hint says "Contact support if needed" but no
+        support link or email change form is provided. supabase.auth.updateUser()
+        supports email changes with verification; this is missing.
+
+  [⚠️] ACCOUNT DELETION IS FULLY DISABLED — The button is permanently
+        `disabled`. No actual deletion path exists (support email is hardcoded
+        as support@nexus.ai which may not be a real address). For GDPR
+        compliance (right to erasure), this needs to be a real flow.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 3 — PROGRESS & ROADMAP EVALUATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+OVERALL COMPLETION ESTIMATE: ~72–75%
+
+Module-by-module breakdown:
+
+  Authentication ............... 75%  (missing: route-level guards, password
+                                        reset, social auth, re-auth before pwd)
+  CV Studio .................... 70%  (missing: working nav sidebar, AI import,
+                                        DB schema verification for upsert)
+  Portfolio Builder ............ 88%  (missing: server auth check, redeploy,
+                                        drop-zone type validation)
+  Dashboard .................... 85%  (missing: portfolio history list, error
+                                        visibility on stats failure)
+  Settings ..................... 65%  (missing: email change, account deletion,
+                                        current-password field, unused state)
+  Landing Page (/).............. 90%  (appears complete based on file size;
+                                        not audited in detail)
+  Template Preview Routes ....... 90%  (5 routes exist with full components)
+  Infrastructure/SSR ........... 90%  (server.ts, error-capture, error-page
+                                        well-structured)
+
+──────────────────────────────────────────────────────────────────────────────
+CRITICAL BLOCKERS FOR PRODUCTION LAUNCH (must fix before go-live)
+──────────────────────────────────────────────────────────────────────────────
+
+[BLOCKER-1] .env FILE CONTAINS PLACEHOLDER VALUES
+  File: .env
+  VITE_SUPABASE_URL=your_supabase_project_url
+  VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+  GROQ_API_KEY=your_groq_api_key
+  VERCEL_ACCESS_TOKEN=your_vercel_access_token
+  All 4 values are placeholder strings. The app will throw at startup:
+  "[Supabase] Missing environment variables." No feature works without real
+  credentials. This is likely a dev-machine issue but must be confirmed.
+
+[BLOCKER-2] SUPABASE SCHEMA NOT VERIFIED
+  The app queries "cvs" and "portfolios" tables. If these tables do not exist
+  or lack the expected columns (user_id, cv_data_json, deployed_url,
+  template_id, content_json, created_at), all DB operations will silently
+  return errors. The upsert onConflict:"user_id" requires a UNIQUE constraint.
+  Required schema (SQL):
+    CREATE TABLE IF NOT EXISTS cvs (
+      id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+      user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE UNIQUE,
+      cv_data_json JSONB,
+      updated_at TIMESTAMPTZ DEFAULT now()
+    );
+    CREATE TABLE IF NOT EXISTS portfolios (
+      id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+      user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+      template_id TEXT,
+      content_json JSONB,
+      deployed_url TEXT,
+      created_at TIMESTAMPTZ DEFAULT now()
+    );
+    -- RLS policies must be enabled and configured.
+
+[BLOCKER-3] NO SERVER-SIDE AUTH ON SERVER FUNCTIONS
+  generatePortfolioContent and deployPortfolioToVercel are public endpoints
+  with no session validation. Any caller can hit them directly. This is a
+  security and cost-control risk (unauthorized Groq/Vercel API usage).
+
+[BLOCKER-4] NO PASSWORD RESET FLOW
+  Users with forgotten passwords have no recovery option. This is a
+  hard launch blocker for any public SaaS.
+
+──────────────────────────────────────────────────────────────────────────────
+HIGH-PRIORITY IMPROVEMENTS (fix before beta)
+──────────────────────────────────────────────────────────────────────────────
+
+[HIGH-1] Add TanStack Router beforeLoad guards to /dashboard, /cv-studio,
+          /portfolio-builder, /settings to prevent SSR rendering protected
+          HTML to unauthenticated requests.
+
+[HIGH-2] StepUpload.tsx: validate file.type on drop (handleDrop), not only
+          at generation time.
+
+[HIGH-3] Settings: remove or implement currentPass state. Add "current
+          password" re-authentication if keeping it.
+
+[HIGH-4] Implement "Redeploy" / update portfolio flow in Portfolio Builder.
+
+[HIGH-5] Implement RLS (Row Level Security) policies in Supabase so users
+          can only read/write their own rows in cvs and portfolios.
+
+──────────────────────────────────────────────────────────────────────────────
+MEDIUM-PRIORITY IMPROVEMENTS (polish sprint)
+──────────────────────────────────────────────────────────────────────────────
+
+[MED-1] CV Studio sidebar: wire My CVs, AI Assistant, Settings nav items to
+         real functionality or remove them from the UI.
+
+[MED-2] Dashboard: add a portfolio history list (all deployed portfolios,
+         not just the latest one).
+
+[MED-3] Settings: implement email change flow via supabase.auth.updateUser().
+
+[MED-4] Settings: implement real account deletion (admin API or support flow).
+
+[MED-5] Dashboard: surface fetch errors to user rather than silently failing.
+
+[MED-6] vercel-deploy.ts: this deprecated file should be deleted entirely
+         to avoid confusion.
+
+[MED-7] Portfolio Builder: use crypto.randomUUID() in deployment name instead
+         of Date.now() to guarantee uniqueness.
+
+──────────────────────────────────────────────────────────────────────────────
+LOW-PRIORITY / POLISH
+──────────────────────────────────────────────────────────────────────────────
+
+[LOW-1] CV Studio: add AI-assisted CV import (parse uploaded PDF into form
+         fields) — would complete the feature parity with Portfolio Builder.
+
+[LOW-2] Social auth (Google, GitHub) via Supabase OAuth.
+
+[LOW-3] Multi-CV support: current upsert overwrites one CV per user. Allow
+         named CV slots.
+
+[LOW-4] CV Studio mobile preview scaling artifact (scale+glow mismatch).
+
+[LOW-5] Add meta og:image tags for social sharing on landing page.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 4 — ARCHITECTURE STRENGTHS (WHAT'S DONE WELL)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  [✅] SECRET HANDLING — GROQ_API_KEY and VERCEL_ACCESS_TOKEN are exclusively
+        in server functions (no VITE_ prefix). They never reach the browser
+        bundle. This is correctly implemented.
+
+  [✅] MODULAR PORTFOLIO BUILDER — The StepUpload/StepTemplate/StepGenerate/
+        StepDeploy component split is clean, well-typed, and each component
+        receives only the props it needs. The orchestration in portfolio-
+        builder.tsx is clear and readable.
+
+  [✅] ZOD VALIDATION ON SERVER — Both server functions validate input with zod
+        before any external API call. This protects against malformed payloads.
+
+  [✅] ERROR BOUNDARIES — The root route has a proper ErrorComponent with
+        reportLovableError integration, NotFoundComponent, and the server.ts
+        has h3-swallowed-error recovery logic. The SSR error handling chain is
+        sophisticated and production-grade.
+
+  [✅] NON-BLOCKING STATS — Dashboard stats fetch is wrapped in try/catch and
+        doesn't block the page from rendering. Silent degradation is appropriate.
+
+  [✅] XSS PROTECTION IN GENERATED HTML — The esc() function in server-fns.ts
+        escapes all user-derived content before injecting it into the generated
+        portfolio HTML. Correct.
+
+  [✅] AUTH CONTEXT PATTERN — Single AuthProvider at root, onAuthStateChange
+        subscription lifecycle is correctly managed with cleanup. Loading state
+        prevents flash. This is textbook Supabase + React integration.
+
+  [✅] DEPRECATED FILE MANAGEMENT — vercel-deploy.ts is correctly stubbed with
+        a @deprecated JSDoc and export {} to prevent accidental imports.
+
+  [✅] REACT 19 + PDFJS-DIST WORKER — The pdfjs-dist worker is correctly
+        resolved via new URL("pdfjs-dist/build/pdf.worker.min.mjs",
+        import.meta.url) which works with Vite's static asset handling.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SUMMARY TABLE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Module               Status        Completion   Critical Issues
+─────────────────────────────────────────────────────────────────────────────
+Authentication       ✅ Functional     75%      No pwd-reset, no route guards
+CV Studio            ✅ Functional     70%      Dead nav items, upsert schema
+Portfolio Builder    ✅ Functional     88%      No server auth, no redeploy
+Dashboard            ✅ Functional     85%      Silent stat errors
+Settings             ✅ Functional     65%      Dead state, no email change
+Server Functions     ✅ Functional     90%      No caller auth check
+Infrastructure/SSR   ✅ Functional     90%      —
+Landing Page (/)     ✅ Functional     90%      —
+Template Routes      ✅ Functional     90%      —
+ENV / Credentials    🚫 BLOCKED       0%       Placeholder values in .env
+DB Schema            ❓ UNVERIFIED    ?%       Tables may not exist
+─────────────────────────────────────────────────────────────────────────────
+OVERALL                              ~73%      4 critical blockers before launch
+
+RECOMMENDED NEXT ACTIONS (in order):
+  1. Set real values in .env (Supabase URL/key, Groq key, Vercel token)
+  2. Verify/create Supabase DB schema (cvs + portfolios tables + RLS)
+  3. Add server-side auth validation to server functions
+  4. Implement password reset flow (/forgot-password route)
+  5. Add TanStack Router beforeLoad guards to protected routes
+  6. Fix StepUpload drop-zone PDF-type validation
+  7. Remove/implement currentPass state in settings
+  8. Wire or remove dead sidebar nav items in CV Studio
+
+================================================================================
+END OF AUDIT REPORT
+Audit performed via static code analysis of all source files.
+No application code was modified during this diagnostic.
+================================================================================

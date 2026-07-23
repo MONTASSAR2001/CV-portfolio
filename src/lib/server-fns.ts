@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+import { createClient } from "@supabase/supabase-js";
 import { z } from "zod";
 
 /* ─── Shared Types ───────────────────────────────────────────────────────── */
@@ -17,11 +18,42 @@ export type PortfolioContent = {
   skills: string[];
 };
 
+/* ─── Server-side Supabase auth validator ────────────────────────────────── */
+//
+// We create a short-lived Supabase client using the same credentials that the
+// browser client uses (VITE_ vars ARE available via process.env on the server).
+// We call getUser(token) — which validates the JWT against Supabase's auth
+// server — before allowing any downstream API call to proceed.
+//
+async function validateSessionToken(accessToken: string): Promise<void> {
+  const url = process.env.VITE_SUPABASE_URL;
+  const key = process.env.VITE_SUPABASE_ANON_KEY;
+
+  if (!url || !key) {
+    throw new Error("Server misconfiguration: Supabase credentials unavailable.");
+  }
+
+  // Use a transient client — no session storage needed server-side
+  const serverClient = createClient(url, key, {
+    auth: { persistSession: false, autoRefreshToken: false },
+  });
+
+  const { data, error } = await serverClient.auth.getUser(accessToken);
+
+  if (error || !data.user) {
+    throw new Error(
+      "Unauthorized: a valid authenticated session is required to use this service."
+    );
+  }
+}
+
 /* ─── Input validation schemas ───────────────────────────────────────────── */
 
 const GenerateInput = z.object({
   cvText: z.string().min(80).max(14000),
   templateTone: z.string().max(400),
+  // Access token forwarded from the client session — validated server-side
+  accessToken: z.string().min(1, "Access token is required"),
 });
 
 const DeployInput = z.object({
@@ -39,6 +71,8 @@ const DeployInput = z.object({
     skills: z.array(z.string()),
   }),
   templateId: z.string().max(50),
+  // Access token forwarded from the client session — validated server-side
+  accessToken: z.string().min(1, "Access token is required"),
 });
 
 /* ─── Theme map (server-side copy) ──────────────────────────────────────── */
@@ -113,6 +147,9 @@ footer{font-size:.75rem;opacity:.4;text-align:center;padding-top:2rem;border-top
 export const generatePortfolioContent = createServerFn({ method: "POST" })
   .validator((data: unknown) => GenerateInput.parse(data))
   .handler(async ({ data }) => {
+    // ── [SECURITY] Validate caller session BEFORE touching any API key ──────
+    await validateSessionToken(data.accessToken);
+
     const apiKey = process.env.GROQ_API_KEY;
     if (!apiKey) {
       throw new Error("AI service is not configured on the server. Contact support.");
@@ -191,6 +228,9 @@ Rules:
 export const deployPortfolioToVercel = createServerFn({ method: "POST" })
   .validator((data: unknown) => DeployInput.parse(data))
   .handler(async ({ data }) => {
+    // ── [SECURITY] Validate caller session BEFORE touching any API key ──────
+    await validateSessionToken(data.accessToken);
+
     const token = process.env.VERCEL_ACCESS_TOKEN;
     if (!token) {
       throw new Error(
@@ -201,7 +241,8 @@ export const deployPortfolioToVercel = createServerFn({ method: "POST" })
     const html = buildHtml(data.content as PortfolioContent, data.templateId);
     // base64-encode so Vercel accepts it as a binary-safe payload
     const encoded = Buffer.from(html, "utf-8").toString("base64");
-    const name = `nexus-portfolio-${Date.now()}`;
+    // Use randomUUID for guaranteed uniqueness (avoids Date.now() collisions)
+    const name = `nexus-portfolio-${crypto.randomUUID().slice(0, 8)}`;
 
     const res = await fetch("https://api.vercel.com/v13/deployments", {
       method: "POST",

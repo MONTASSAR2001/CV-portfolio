@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate, redirect } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
@@ -6,10 +6,16 @@ import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/lib/supabase";
 import {
   User, Lock, Mail, ArrowLeft, Loader2,
-  CheckCircle2, Eye, EyeOff, ShieldCheck,
+  CheckCircle2, Eye, EyeOff, ShieldCheck, Send,
 } from "lucide-react";
 
 export const Route = createFileRoute("/settings")({
+  beforeLoad: async () => {
+    if (typeof window !== "undefined") {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) throw redirect({ to: "/login" });
+    }
+  },
   component: SettingsPage,
 });
 
@@ -112,14 +118,18 @@ function SettingsPage() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
 
-  // Password form state
-  const [currentPass, setCurrentPass] = useState("");
+  // ── Password form state ───────────────────────────────────────────────
   const [newPass, setNewPass] = useState("");
   const [confirmPass, setConfirmPass] = useState("");
   const [showNew, setShowNew] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [pwdLoading, setPwdLoading] = useState(false);
   const [pwdDone, setPwdDone] = useState(false);
+
+  // ── Email update state ────────────────────────────────────────────────
+  const [newEmail, setNewEmail] = useState("");
+  const [emailLoading, setEmailLoading] = useState(false);
+  const [emailDone, setEmailDone] = useState(false);
 
   // ── Auth guard ────────────────────────────────────────────────────────
   useEffect(() => {
@@ -151,10 +161,30 @@ function SettingsPage() {
     } else {
       toast.success("Password updated successfully!");
       setPwdDone(true);
-      setCurrentPass("");
       setNewPass("");
       setConfirmPass("");
       setTimeout(() => setPwdDone(false), 4000);
+    }
+  };
+
+  // ── Update email ──────────────────────────────────────────────────────
+  const handleEmailChange = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newEmail.trim() || newEmail === user.email) {
+      toast.error("Please enter a different email address.");
+      return;
+    }
+    setEmailLoading(true);
+    const { error } = await supabase.auth.updateUser({ email: newEmail.trim() });
+    setEmailLoading(false);
+
+    if (error) {
+      toast.error(`Email update failed: ${error.message}`);
+    } else {
+      toast.success("Confirmation email sent! Check your new inbox to verify the change.");
+      setEmailDone(true);
+      setNewEmail("");
+      setTimeout(() => setEmailDone(false), 6000);
     }
   };
 
@@ -241,17 +271,17 @@ function SettingsPage() {
         <Section
           icon={User}
           title="Account Information"
-          subtitle="Your identity on Nexus. Email changes require re-verification."
+          subtitle="Your identity on Nexus."
           hue="275"
         >
           <div className="space-y-4">
             <InputField
-              label="Email address"
+              label="Current email"
               id="settings-email"
               type="email"
               value={user.email ?? ""}
               disabled
-              hint="Email address cannot be changed directly. Contact support if needed."
+              hint="This is your current verified email address."
               suffix={
                 <Mail size={15} className="text-muted-foreground/60" />
               }
@@ -289,6 +319,56 @@ function SettingsPage() {
               </span>
             </div>
           </div>
+        </Section>
+
+        {/* ── Section 2: Update Email ── */}
+        <Section
+          icon={Mail}
+          title="Update Email"
+          subtitle="A confirmation link will be sent to your new address before the change takes effect."
+          hue="210"
+        >
+          <form
+            id="settings-email-form"
+            onSubmit={handleEmailChange}
+            className="space-y-4"
+            noValidate
+          >
+            <InputField
+              label="New email address"
+              id="settings-new-email"
+              type="email"
+              value={newEmail}
+              onChange={setNewEmail}
+              placeholder="new@example.com"
+              suffix={
+                <Mail size={15} className="text-muted-foreground/60" />
+              }
+            />
+            <button
+              id="settings-update-email"
+              type="submit"
+              disabled={emailLoading || emailDone || !newEmail.trim()}
+              className="btn-kinetic glow-pulse relative mt-2 w-full rounded-2xl py-3.5 font-display text-sm font-semibold disabled:opacity-60 disabled:cursor-not-allowed"
+              style={{
+                // Override gradient to use the 210 hue for this section
+                background: emailDone
+                  ? "oklch(0.75 0.2 150 / 0.15)"
+                  : undefined,
+              }}
+            >
+              <span className="btn-kinetic-sweep" />
+              <span className="relative z-10 flex items-center justify-center gap-2">
+                {emailLoading ? (
+                  <><Loader2 size={15} className="animate-spin" />Sending verification…</>
+                ) : emailDone ? (
+                  <><CheckCircle2 size={15} />Verification sent!</>
+                ) : (
+                  <><Send size={15} />Send verification email</>
+                )}
+              </span>
+            </button>
+          </form>
         </Section>
 
         {/* ── Section 2: Change Password ── */}
@@ -422,18 +502,19 @@ function SettingsPage() {
 
           <div className="flex items-center justify-between rounded-xl border border-red-500/15 bg-red-500/5 px-5 py-4">
             <div>
-              <p className="text-sm font-medium text-foreground">
-                Delete account
-              </p>
+              <p className="text-sm font-medium text-foreground">Delete account</p>
               <p className="mt-0.5 text-xs text-muted-foreground">
                 Permanently delete your account and all associated data.
               </p>
             </div>
             <button
               id="settings-delete-account"
-              disabled
-              title="Contact support to delete your account"
-              className="ml-4 shrink-0 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-2 text-xs font-semibold text-red-400 opacity-60 cursor-not-allowed transition"
+              onClick={() =>
+                toast.error("Account deletion requires admin approval.", {
+                  description: "Contact support@nexus.ai to request account deletion.",
+                })
+              }
+              className="ml-4 shrink-0 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-2 text-xs font-semibold text-red-400 transition hover:bg-red-500/20 hover:text-red-300 active:scale-95"
             >
               Delete account
             </button>
