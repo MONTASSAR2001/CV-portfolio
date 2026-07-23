@@ -635,7 +635,9 @@ function Toggle({ on, onToggle, small }: { on: boolean; onToggle: () => void; sm
   );
 }
 
-/* Inject a global admin-input style */
-const style = document.createElement("style");
-style.textContent = `.admin-input{width:100%;border-radius:.5rem;border:1px solid #3f3f46;background:#18181b;padding:.5rem .75rem;font-size:.875rem;color:#f4f4f5;outline:none;transition:border-color .15s}.admin-input:focus{border-color:#71717a}`;
-document.head.appendChild(style);
+/* Inject a global admin-input style (safe for SSR) */
+if (typeof document !== "undefined") {
+  const style = document.createElement("style");
+  style.textContent = `.admin-input{width:100%;border-radius:.5rem;border:1px solid #3f3f46;background:#18181b;padding:.5rem .75rem;font-size:.875rem;color:#f4f4f5;outline:none;transition:border-color .15s}.admin-input:focus{border-color:#71717a}`;
+  document.head.appendChild(style);
+}
