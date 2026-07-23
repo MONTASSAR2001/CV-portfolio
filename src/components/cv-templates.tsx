@@ -1435,3 +1435,326 @@ function VisualContactRow({ icon, text, teal }: { icon: React.ReactNode; text: s
     </div>
   );
 }
+
+/* ══════════════════════════════════════════════════════════
+   TEMPLATE 11 — ATS CLASSIC
+   Pure single-column, black-on-white, clean ruled sections.
+   Zero graphical elements — maximises ATS parse score.
+══════════════════════════════════════════════════════════ */
+export const ATSClassicTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
+  ({ data }, ref) => {
+    const { personalInfo: p, experience, education, skills } = data;
+    return (
+      <div
+        ref={ref}
+        className="cv-root w-full h-full bg-white text-slate-900 overflow-hidden"
+        style={{ fontFamily: "'Arial', 'Helvetica Neue', sans-serif" }}
+      >
+        <style>{PRINT_STYLES}</style>
+        <div className="px-12 py-10 flex flex-col h-full gap-0">
+          {/* ── Header ── */}
+          <div className="text-center mb-4">
+            <h1 className="text-2xl font-bold tracking-wide text-slate-900 uppercase">
+              {p.fullName || "Your Name"}
+            </h1>
+            {p.jobTitle && (
+              <p className="text-[11px] text-slate-600 mt-0.5 font-medium">{p.jobTitle}</p>
+            )}
+            <p className="mt-2 text-[10px] text-slate-600 leading-relaxed">
+              {[p.email, p.phone, p.location, p.linkedin].filter(Boolean).join("  |  ")}
+            </p>
+          </div>
+
+          {/* ── Summary ── */}
+          {p.summary && (
+            <div className="mb-4">
+              <ATSSectionRule label="Professional Summary" />
+              <p className="mt-2 text-[11px] leading-relaxed text-slate-700">{p.summary}</p>
+            </div>
+          )}
+
+          {/* ── Experience ── */}
+          {experience.length > 0 && (
+            <div className="mb-4">
+              <ATSSectionRule label="Work Experience" />
+              <div className="mt-2 space-y-4">
+                {experience.map((exp) => (
+                  <div key={exp.id}>
+                    <div className="flex justify-between items-baseline">
+                      <p className="text-[12px] font-bold text-slate-900">{exp.role}</p>
+                      <span className="text-[10px] text-slate-600 shrink-0">{exp.period}</span>
+                    </div>
+                    <p className="text-[11px] font-semibold text-slate-700">{exp.company}</p>
+                    {exp.bullets && (
+                      <ul className="mt-1.5 space-y-1 pl-5 list-disc">
+                        {exp.bullets.split("\n").map((b, i) => b.trim() && (
+                          <li key={i} className="text-[11px] text-slate-600 leading-relaxed">{b.trim()}</li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* ── Education ── */}
+          {education.length > 0 && (
+            <div className="mb-4">
+              <ATSSectionRule label="Education" />
+              <div className="mt-2 space-y-3">
+                {education.map((edu) => (
+                  <div key={edu.id} className="flex justify-between items-baseline">
+                    <div>
+                      <p className="text-[12px] font-bold text-slate-900">{edu.degree}</p>
+                      <p className="text-[11px] text-slate-600">{edu.school}</p>
+                    </div>
+                    <span className="text-[10px] text-slate-600 shrink-0">{edu.year}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* ── Skills ── */}
+          {skills.length > 0 && (
+            <div>
+              <ATSSectionRule label="Technical Skills" />
+              <p className="mt-2 text-[11px] text-slate-700 leading-relaxed">
+                {skills.join(" · ")}
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+);
+ATSClassicTemplate.displayName = "ATSClassicTemplate";
+
+/* ══════════════════════════════════════════════════════════
+   TEMPLATE 12 — ATS MODERN
+   Single-column with a slim 4 px violet left-border accent on
+   section titles. Still fully text-parseable by ATS engines.
+══════════════════════════════════════════════════════════ */
+export const ATSModernTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
+  ({ data }, ref) => {
+    const { personalInfo: p, experience, education, skills } = data;
+    const ACCENT = "#5b21b6"; // deep violet — readable when printed B&W
+
+    return (
+      <div
+        ref={ref}
+        className="cv-root w-full h-full bg-white text-slate-900 overflow-hidden"
+        style={{ fontFamily: "'Inter', 'Arial', sans-serif" }}
+      >
+        <style>{PRINT_STYLES}</style>
+        <div className="px-12 py-10 flex flex-col h-full">
+          {/* ── Header ── */}
+          <div className="mb-6">
+            <h1 className="text-[28px] font-extrabold tracking-tight text-slate-900">
+              {p.fullName || "Your Name"}
+            </h1>
+            {p.jobTitle && (
+              <p className="text-[12px] font-semibold mt-0.5" style={{ color: ACCENT }}>{p.jobTitle}</p>
+            )}
+            <div className="mt-2 flex flex-wrap gap-x-5 gap-y-0.5">
+              {p.email    && <span className="text-[10px] text-slate-500">{p.email}</span>}
+              {p.phone    && <span className="text-[10px] text-slate-500">{p.phone}</span>}
+              {p.location && <span className="text-[10px] text-slate-500">{p.location}</span>}
+              {p.linkedin && <span className="text-[10px] text-slate-500">{p.linkedin}</span>}
+            </div>
+          </div>
+
+          {/* ── Summary ── */}
+          {p.summary && (
+            <div className="mb-5">
+              <ATSModernSectionTitle label="Summary" accent={ACCENT} />
+              <p className="mt-2 text-[11px] leading-relaxed text-slate-600">{p.summary}</p>
+            </div>
+          )}
+
+          {/* ── Experience ── */}
+          {experience.length > 0 && (
+            <div className="mb-5">
+              <ATSModernSectionTitle label="Experience" accent={ACCENT} />
+              <div className="mt-3 space-y-4">
+                {experience.map((exp) => (
+                  <div key={exp.id}>
+                    <div className="flex justify-between items-baseline">
+                      <p className="text-[12px] font-bold text-slate-900">{exp.role}</p>
+                      <span className="text-[10px] text-slate-500 shrink-0">{exp.period}</span>
+                    </div>
+                    <p className="text-[11px] font-semibold mt-0.5" style={{ color: ACCENT }}>{exp.company}</p>
+                    {exp.bullets && (
+                      <ul className="mt-2 space-y-1 pl-4">
+                        {exp.bullets.split("\n").map((b, i) => b.trim() && (
+                          <li key={i} className="text-[11px] text-slate-600 leading-relaxed relative pl-3 before:content-['▸'] before:absolute before:left-0 before:text-[9px]" style={{ "--tw-before-color": ACCENT } as React.CSSProperties}>
+                            {b.trim()}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* ── Education ── */}
+          {education.length > 0 && (
+            <div className="mb-5">
+              <ATSModernSectionTitle label="Education" accent={ACCENT} />
+              <div className="mt-3 space-y-3">
+                {education.map((edu) => (
+                  <div key={edu.id} className="flex justify-between">
+                    <div>
+                      <p className="text-[12px] font-bold text-slate-900">{edu.degree}</p>
+                      <p className="text-[11px] text-slate-500">{edu.school}</p>
+                    </div>
+                    <span className="text-[10px] text-slate-500 shrink-0">{edu.year}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* ── Skills ── */}
+          {skills.length > 0 && (
+            <div>
+              <ATSModernSectionTitle label="Skills" accent={ACCENT} />
+              <div className="mt-3 flex flex-wrap gap-x-3 gap-y-1">
+                {skills.map((s) => (
+                  <span key={s} className="text-[11px] text-slate-700 font-medium before:content-['·'] before:mr-1.5 before:text-slate-400">{s}</span>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+);
+ATSModernTemplate.displayName = "ATSModernTemplate";
+
+/* ══════════════════════════════════════════════════════════
+   TEMPLATE 13 — HARVARD STANDARD
+   Mirrors the Harvard OCS résumé format: name centred, small-
+   caps bold section headers, underline rules, hanging-indent
+   bullets. Widely accepted by corporate & finance recruiters.
+══════════════════════════════════════════════════════════ */
+export const HarvardStandardTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
+  ({ data }, ref) => {
+    const { personalInfo: p, experience, education, skills } = data;
+    return (
+      <div
+        ref={ref}
+        className="cv-root w-full h-full bg-white text-slate-900 overflow-hidden"
+        style={{ fontFamily: "'Times New Roman', 'Georgia', serif" }}
+      >
+        <style>{PRINT_STYLES}</style>
+        <div className="px-14 py-10 flex flex-col h-full">
+          {/* ── Centred header ── */}
+          <div className="text-center mb-5">
+            <h1 className="text-[22px] font-bold tracking-widest text-slate-900 uppercase">
+              {p.fullName || "Your Name"}
+            </h1>
+            <p className="mt-1 text-[10px] text-slate-600">
+              {[p.location, p.phone, p.email, p.linkedin].filter(Boolean).join("  ·  ")}
+            </p>
+          </div>
+
+          {/* ── Education (Harvard puts edu first) ── */}
+          {education.length > 0 && (
+            <div className="mb-4">
+              <HarvardSectionTitle label="Education" />
+              <div className="mt-2 space-y-3">
+                {education.map((edu) => (
+                  <div key={edu.id} className="flex justify-between items-baseline">
+                    <div>
+                      <p className="text-[12px] font-bold text-slate-900">{edu.school}</p>
+                      <p className="text-[11px] italic text-slate-700">{edu.degree}</p>
+                    </div>
+                    <span className="text-[10px] text-slate-600 shrink-0">{edu.year}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* ── Experience ── */}
+          {experience.length > 0 && (
+            <div className="mb-4">
+              <HarvardSectionTitle label="Experience" />
+              <div className="mt-2 space-y-4">
+                {experience.map((exp) => (
+                  <div key={exp.id}>
+                    <div className="flex justify-between items-baseline">
+                      <p className="text-[12px] font-bold text-slate-900">{exp.company}</p>
+                      <span className="text-[10px] text-slate-600 shrink-0">{exp.period}</span>
+                    </div>
+                    <p className="text-[11px] italic text-slate-700">{exp.role}</p>
+                    {exp.bullets && (
+                      <ul className="mt-1.5 space-y-0.5 pl-5 list-disc">
+                        {exp.bullets.split("\n").map((b, i) => b.trim() && (
+                          <li key={i} className="text-[11px] leading-relaxed text-slate-700">{b.trim()}</li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* ── Summary / Profile ── */}
+          {p.summary && (
+            <div className="mb-4">
+              <HarvardSectionTitle label="Profile" />
+              <p className="mt-2 text-[11px] leading-relaxed text-slate-700">{p.summary}</p>
+            </div>
+          )}
+
+          {/* ── Skills ── */}
+          {skills.length > 0 && (
+            <div>
+              <HarvardSectionTitle label="Skills" />
+              <p className="mt-2 text-[11px] leading-relaxed text-slate-700">{skills.join(", ")}</p>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+);
+HarvardStandardTemplate.displayName = "HarvardStandardTemplate";
+
+/* ─── ATS template small helpers ─────────────────────────── */
+function ATSSectionRule({ label }: { label: string }) {
+  return (
+    <div>
+      <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-800">{label}</p>
+      <div className="mt-1 h-px bg-slate-800" />
+    </div>
+  );
+}
+
+function ATSModernSectionTitle({ label, accent }: { label: string; accent: string }) {
+  return (
+    <div className="flex items-center gap-3">
+      <div className="w-1 h-4 rounded-full shrink-0" style={{ backgroundColor: accent }} />
+      <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-slate-800">{label}</p>
+      <div className="flex-1 h-px bg-slate-200" />
+    </div>
+  );
+}
+
+function HarvardSectionTitle({ label }: { label: string }) {
+  return (
+    <div>
+      <p className="text-[11px] font-bold uppercase tracking-[0.15em] text-slate-900"
+         style={{ fontVariant: "small-caps" }}>{label}</p>
+      <div className="mt-0.5 h-[1.5px] bg-slate-900" />
+    </div>
+  );
+}

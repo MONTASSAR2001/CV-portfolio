@@ -269,3 +269,100 @@ export const deployPortfolioToVercel = createServerFn({ method: "POST" })
     if (!json.url) throw new Error("Vercel did not return a deployment URL.");
     return { url: `https://${json.url}` };
   });
+
+/* ─── Server Function: parseResumeWithAI ─────────────────────────────────── */
+// Parses raw CV text into a structured CvState object.
+// Used by the CV Studio's AI Import feature (AIImportModal.tsx).
+
+const ParseResumeInput = z.object({
+  cvText: z.string().min(80).max(12000),
+  accessToken: z.string().min(1, "Access token is required"),
+});
+
+export const parseResumeWithAI = createServerFn({ method: "POST" })
+  .validator((data: unknown) => ParseResumeInput.parse(data))
+  .handler(async ({ data }) => {
+    // ── [SECURITY] Validate caller session before any API call ──────────
+    await validateSessionToken(data.accessToken);
+
+    const apiKey = process.env.GROQ_API_KEY;
+    if (!apiKey) throw new Error("AI service is not configured on the server.");
+
+    const systemPrompt = `You are an expert CV parser. Extract the information from the provided CV text and return it as a valid JSON object matching this exact structure:
+
+{
+  "personalInfo": {
+    "fullName": "Full name from CV",
+    "jobTitle": "Current or most recent job title",
+    "email": "Email address or empty string",
+    "phone": "Phone number or empty string",
+    "location": "City, Country or empty string",
+    "linkedin": "LinkedIn URL or empty string",
+    "summary": "Professional summary or objective, or synthesise one from their background if absent"
+  },
+  "experience": [
+    {
+      "id": "unique_string_1",
+      "role": "Job title",
+      "company": "Company name",
+      "period": "Start – End (e.g. 2022 – Present)",
+      "bullets": "Achievement 1\\nAchievement 2\\nAchievement 3"
+    }
+  ],
+  "education": [
+    {
+      "id": "unique_string_1",
+      "degree": "Degree name",
+      "school": "Institution name",
+      "year": "Graduation year or date range"
+    }
+  ],
+  "skills": ["Skill1", "Skill2", "Skill3"]
+}
+
+Rules:
+- Return ONLY the JSON object — no markdown, no commentary, no code fences.
+- Include up to 6 experience entries and all education entries.
+- Skills: flat array, max 15.
+- For bullets: separate each bullet with a literal newline character (\\n).
+- IDs must be unique strings (use "exp_1", "exp_2", "edu_1", etc.).
+- Never invent information not present in the CV.`;
+
+    const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model: "llama-3.3-70b-versatile",
+        response_format: { type: "json_object" },
+        temperature: 0.3,
+        max_tokens: 2048,
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: `Parse this CV:\n\n---\n${data.cvText}\n---` },
+        ],
+      }),
+    });
+
+    if (!response.ok) {
+      const err = (await response.json().catch(() => ({}))) as { error?: { message?: string } };
+      throw new Error(err?.error?.message ?? `AI service error (HTTP ${response.status}).`);
+    }
+
+    const json = (await response.json()) as { choices: { message: { content: string } }[] };
+    const raw = json.choices?.[0]?.message?.content ?? "";
+    const parsed = JSON.parse(raw) as {
+      personalInfo: { fullName: string; jobTitle: string; email: string; phone: string; location: string; linkedin: string; summary: string };
+      experience: { id: string; role: string; company: string; period: string; bullets: string }[];
+      education: { id: string; degree: string; school: string; year: string }[];
+      skills: string[];
+    };
+
+    if (!parsed.personalInfo || !Array.isArray(parsed.experience) || !Array.isArray(parsed.skills)) {
+      throw new Error("Unexpected AI response format. Please try again.");
+    }
+
+    return parsed;
+  });
