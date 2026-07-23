@@ -1,6 +1,25 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion";
-import { useRef } from "react";
+import { memo, useRef } from "react";
+
+/* ── CSS keyframes injected once — all infinite animations live here (GPU) ── */
+const PERF_STYLES = `
+  @keyframes spin-slow   { to { transform: rotate(360deg); } }
+  @keyframes shard-spin-0 { to { transform: translateX(-50%) translateY(-50%) rotate(360deg); } }
+  @keyframes shard-spin-1 { to { transform: translateX(-50%) translateY(-50%) rotate(360deg); } }
+  @keyframes shard-spin-2 { to { transform: translateX(-50%) translateY(-50%) rotate(360deg); } }
+  @keyframes shard-spin-3 { to { transform: translateX(-50%) translateY(-50%) rotate(360deg); } }
+  @keyframes shard-spin-4 { to { transform: translateX(-50%) translateY(-50%) rotate(360deg); } }
+  @keyframes float-blob-0 { 0%,100% { transform:translate(0,0);      } 50% { transform:translate(15px,-30px); } }
+  @keyframes float-blob-1 { 0%,100% { transform:translate(0,0);      } 50% { transform:translate(15px,-30px); } }
+  @keyframes float-blob-2 { 0%,100% { transform:translate(0,0);      } 50% { transform:translate(15px,-30px); } }
+  @keyframes float-blob-3 { 0%,100% { transform:translate(0,0);      } 50% { transform:translate(15px,-30px); } }
+  @keyframes float-glass-a { 0%,100% { transform:rotate(-12deg) translateY(0);  } 50% { transform:rotate(-8deg) translateY(-20px);  } }
+  @keyframes float-glass-b { 0%,100% { transform:rotate(9deg)  translateY(0);  } 50% { transform:rotate(14deg) translateY(18px);   } }
+  @keyframes rotate-border  { to { --angle: 360deg; } }
+  @keyframes pulse-dot      { 0%,100% { box-shadow: 0 0 0 0 currentColor; } 50% { box-shadow: 0 0 0 8px transparent; } }
+  @keyframes ping-once      { 0% { transform: scale(1); opacity: 0.7; } 75%,100% { transform: scale(2); opacity: 0; } }
+`;
 
 export const Route = createFileRoute("/")({
   component: Landing,
@@ -8,7 +27,7 @@ export const Route = createFileRoute("/")({
 
 /* ---------- Custom kinetic ornaments (no stock icons) ---------- */
 
-function OrbitNode({ className = "" }: { className?: string }) {
+const OrbitNode = memo(function OrbitNode({ className = "" }: { className?: string }) {
   return (
     <div className={`relative ${className}`}>
       <div className="absolute inset-0 rounded-full blur-2xl opacity-70"
@@ -19,31 +38,31 @@ function OrbitNode({ className = "" }: { className?: string }) {
       <div className="absolute inset-6 rounded-full border border-white/5" />
     </div>
   );
-}
+});
 
-function DataExtractionGlyph() {
+const DataExtractionGlyph = memo(function DataExtractionGlyph() {
+  const reduce = useReducedMotion();
   return (
     <div className="relative h-56 w-full">
-      {/* central node */}
-      <motion.div
+      {/* central node — CSS spin, no JS frame loop */}
+      <div
         className="absolute left-1/2 top-1/2 h-24 w-24 -translate-x-1/2 -translate-y-1/2"
-        animate={{ rotate: 360 }}
-        transition={{ duration: 24, repeat: Infinity, ease: "linear" }}
+        style={{ animation: reduce ? "none" : "spin-slow 24s linear infinite", willChange: "transform" }}
       >
         <OrbitNode className="h-full w-full" />
-      </motion.div>
-      {/* orbiting shards */}
+      </div>
+      {/* orbiting shards — CSS, no JS */}
       {[0, 1, 2, 3, 4].map((i) => (
-        <motion.div
+        <div
           key={i}
-          className="absolute left-1/2 top-1/2 h-1.5 w-10 -translate-x-1/2 -translate-y-1/2 rounded-full"
+          className="absolute left-1/2 top-1/2 h-1.5 w-10 rounded-full"
           style={{
             background: "linear-gradient(90deg, transparent, oklch(0.85 0.18 210), transparent)",
             transformOrigin: "0 50%",
+            transform: `translateX(-50%) translateY(-50%) rotate(${i * 72}deg)`,
+            animation: reduce ? "none" : `shard-spin-${i} ${10 + i}s linear infinite`,
+            willChange: "transform",
           }}
-          initial={{ rotate: i * 72, x: 60 }}
-          animate={{ rotate: [i * 72, i * 72 + 360] }}
-          transition={{ duration: 10 + i, repeat: Infinity, ease: "linear" }}
         />
       ))}
       {/* extracted lines */}
@@ -53,7 +72,7 @@ function DataExtractionGlyph() {
             key={i}
             initial={{ width: 0, opacity: 0 }}
             whileInView={{ width: `${w}%`, opacity: 1 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "0px" }}
             transition={{ delay: 0.3 + i * 0.15, duration: 0.9 }}
             className="h-1 rounded-full"
             style={{ background: "linear-gradient(90deg, oklch(0.72 0.24 300), oklch(0.85 0.18 210))" }}
@@ -62,9 +81,9 @@ function DataExtractionGlyph() {
       </div>
     </div>
   );
-}
+});
 
-function WebMeshGlyph() {
+const WebMeshGlyph = memo(function WebMeshGlyph() {
   const nodes = [
     { x: 20, y: 30 }, { x: 78, y: 22 }, { x: 50, y: 55 },
     { x: 25, y: 78 }, { x: 82, y: 70 }, { x: 60, y: 15 },
@@ -106,72 +125,80 @@ function WebMeshGlyph() {
           }}
         />
       ))}
-      {/* deploy pulse */}
-      <motion.div
+      {/* deploy pulse — CSS, no JS */}
+      <div
         className="absolute left-1/2 top-1/2 h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full"
-        animate={{ scale: [1, 8, 1], opacity: [0.8, 0, 0.8] }}
-        transition={{ duration: 3, repeat: Infinity }}
-        style={{ background: "oklch(0.85 0.18 210)", boxShadow: "0 0 30px oklch(0.85 0.18 210)" }}
+        style={{
+          background: "oklch(0.85 0.18 210)",
+          boxShadow: "0 0 20px oklch(0.85 0.18 210)",
+          animation: "spin-slow 3s ease-in-out infinite",
+          willChange: "transform",
+        }}
       />
     </div>
   );
-}
+});
 
-function FloatingShapes() {
+const FloatingShapes = memo(function FloatingShapes() {
+  const reduce = useReducedMotion();
   const shapes = [
-    { size: 380, x: "-8%", y: "6%", delay: 0, hue: "300" },
-    { size: 260, x: "72%", y: "12%", delay: 1.2, hue: "275" },
-    { size: 200, x: "55%", y: "60%", delay: 0.6, hue: "210" },
-    { size: 140, x: "10%", y: "70%", delay: 1.8, hue: "340" },
+    { size: 380, x: "-8%",  y: "6%",  hue: "300", dur: 10 },
+    { size: 260, x: "72%",  y: "12%", hue: "275", dur: 12 },
+    { size: 200, x: "55%",  y: "60%", hue: "210", dur: 14 },
+    { size: 140, x: "10%",  y: "70%", hue: "340", dur: 16 },
   ];
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden">
       {shapes.map((s, i) => (
-        <motion.div
+        <div
           key={i}
           className="absolute rounded-full"
           style={{
             width: s.size, height: s.size, left: s.x, top: s.y,
-            background: `radial-gradient(circle at 30% 30%, oklch(0.75 0.22 ${s.hue} / 0.55), oklch(0.75 0.22 ${s.hue} / 0.05) 60%, transparent 75%)`,
-            filter: "blur(30px)",
+            background: `radial-gradient(circle at 30% 30%, oklch(0.75 0.22 ${s.hue} / 0.45), oklch(0.75 0.22 ${s.hue} / 0.04) 60%, transparent 75%)`,
+            filter: "blur(28px)",
+            animation: reduce ? "none" : `float-blob-${i} ${s.dur}s ease-in-out infinite`,
+            willChange: "transform",
           }}
-          animate={{ y: [0, -30, 0], x: [0, 15, 0] }}
-          transition={{ duration: 10 + i * 2, repeat: Infinity, ease: "easeInOut", delay: s.delay }}
         />
       ))}
-      {/* glass shard */}
-      <motion.div
+      {/* glass shards — CSS float, no JS */}
+      <div
         className="glass absolute rounded-3xl"
-        style={{ width: 220, height: 140, left: "62%", top: "48%", transform: "rotate(-12deg)" }}
-        animate={{ y: [0, -20, 0], rotate: [-12, -8, -12] }}
-        transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
+        style={{
+          width: 220, height: 140, left: "62%", top: "48%",
+          animation: reduce ? "none" : "float-glass-a 9s ease-in-out infinite",
+          willChange: "transform",
+        }}
       />
-      <motion.div
+      <div
         className="glass absolute rounded-2xl"
-        style={{ width: 140, height: 90, left: "8%", top: "38%", transform: "rotate(9deg)" }}
-        animate={{ y: [0, 18, 0], rotate: [9, 14, 9] }}
-        transition={{ duration: 11, repeat: Infinity, ease: "easeInOut" }}
+        style={{
+          width: 140, height: 90, left: "8%", top: "38%",
+          animation: reduce ? "none" : "float-glass-b 11s ease-in-out infinite",
+          willChange: "transform",
+        }}
       />
     </div>
   );
-}
+});
 
-function KineticBorder({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+const KineticBorder = memo(function KineticBorder({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
     <div className={`kinetic-border relative ${className}`}>
-      <motion.div
+      {/* CSS animation — zero JS overhead */}
+      <div
         className="kinetic-border-inner rounded-[inherit]"
-        animate={{ ["--angle" as never]: ["0deg", "360deg"] }}
-        transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+        style={{ animation: "rotate-border 8s linear infinite", willChange: "transform" }}
       />
       {children}
     </div>
   );
-}
+});
 
 /* ---------- Sections ---------- */
 
-function Nav() {
+const Nav = memo(function Nav() {
   return (
     <motion.nav
       initial={{ y: -30, opacity: 0 }}
@@ -208,7 +235,7 @@ function Nav() {
       </div>
     </motion.nav>
   );
-}
+});
 
 function Hero() {
   const ref = useRef<HTMLDivElement>(null);
@@ -225,9 +252,10 @@ function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
           className="glass mx-auto inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs text-muted-foreground"
+          style={{ willChange: "opacity, transform" }}
         >
           <span className="relative flex h-2 w-2">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full opacity-70" style={{ background: "oklch(0.72 0.24 300)" }} />
+            <span className="absolute inline-flex h-full w-full rounded-full opacity-70" style={{ background: "oklch(0.72 0.24 300)", animation: "ping-once 1.5s cubic-bezier(0,0,0.2,1) infinite" }} />
             <span className="relative inline-flex h-2 w-2 rounded-full" style={{ background: "oklch(0.72 0.24 300)" }} />
           </span>
           Agentic AI · v3.1 released
@@ -238,6 +266,7 @@ function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
           className="mt-6 font-display text-[13vw] leading-[0.95] font-bold tracking-tight sm:text-7xl lg:text-8xl"
+          style={{ willChange: "opacity, transform" }}
         >
           Your Career,
           <br />
@@ -467,13 +496,11 @@ function Dashboard() {
                       </div>
                     </div>
                     <div className="absolute inset-0 flex items-center justify-center rounded-xl"
-                      style={{ backdropFilter: "blur(8px) saturate(140%)", background: "oklch(0.14 0.03 280 / 0.35)" }}>
+                      style={{ background: "oklch(0.10 0.03 280 / 0.82)" }}>
                       <div className="glass flex items-center gap-3 rounded-full px-4 py-2">
-                        <motion.span
-                          animate={{ boxShadow: ["0 0 0 0 oklch(0.72 0.24 300 / .8)","0 0 0 14px oklch(0.72 0.24 300 / 0)","0 0 0 0 oklch(0.72 0.24 300 / 0)"] }}
-                          transition={{ duration: 2, repeat: Infinity }}
+                        <span
                           className="h-2.5 w-2.5 rounded-full"
-                          style={{ background: "oklch(0.72 0.24 300)" }}
+                          style={{ background: "oklch(0.72 0.24 300)", animation: "pulse-dot 2s ease-in-out infinite", color: "oklch(0.72 0.24 300 / 0.5)" }}
                         />
                         <span className="text-xs font-semibold tracking-wide">Unlock Pro · High-res PDF</span>
                       </div>
@@ -515,13 +542,11 @@ function Dashboard() {
                       <div className="mt-2 font-mono text-sm text-foreground/70">ari-kim.nexus.app</div>
                     </div>
                     <div className="absolute inset-0 flex items-center justify-center rounded-xl"
-                      style={{ backdropFilter: "blur(8px) saturate(140%)", background: "oklch(0.14 0.03 280 / 0.35)" }}>
+                      style={{ background: "oklch(0.10 0.03 280 / 0.82)" }}>
                       <div className="glass flex items-center gap-3 rounded-full px-4 py-2">
-                        <motion.span
-                          animate={{ boxShadow: ["0 0 0 0 oklch(0.85 0.18 210 / .8)","0 0 0 14px oklch(0.85 0.18 210 / 0)","0 0 0 0 oklch(0.85 0.18 210 / 0)"] }}
-                          transition={{ duration: 2, repeat: Infinity }}
+                        <span
                           className="h-2.5 w-2.5 rounded-full"
-                          style={{ background: "oklch(0.85 0.18 210)" }}
+                          style={{ background: "oklch(0.85 0.18 210)", animation: "pulse-dot 2s ease-in-out infinite", color: "oklch(0.85 0.18 210 / 0.5)" }}
                         />
                         <span className="text-xs font-semibold tracking-wide">Unlock Pro · Live custom link</span>
                       </div>
@@ -599,7 +624,7 @@ function Pricing() {
   );
 }
 
-function TierBody({ t }: { t: { name: string; price: string; cadence: string; pitch: string; features: string[]; cta: string; highlight: boolean } }) {
+const TierBody = memo(function TierBody({ t }: { t: { name: string; price: string; cadence: string; pitch: string; features: string[]; cta: string; highlight: boolean } }) {
   return (
     <div className={`h-full rounded-3xl p-8 sm:p-10 ${t.highlight ? "glass-strong" : "glass"}`}>
       <div className="flex items-baseline justify-between">
@@ -636,9 +661,9 @@ function TierBody({ t }: { t: { name: string; price: string; cadence: string; pi
       </button>
     </div>
   );
-}
+});
 
-function Footer() {
+const Footer = memo(function Footer() {
   return (
     <footer className="relative border-t border-white/5 py-12">
       <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-6 sm:flex-row">
@@ -653,11 +678,13 @@ function Footer() {
       </div>
     </footer>
   );
-}
+});
 
 function Landing() {
   return (
     <main className="relative min-h-screen overflow-x-clip">
+      {/* Inject performance CSS keyframes once */}
+      <style dangerouslySetInnerHTML={{ __html: PERF_STYLES }} />
       <Nav />
       <Hero />
       <SplitPath />
