@@ -1,6 +1,30 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion";
 import { memo, useRef } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/lib/supabase";
+import { Loader2 } from "lucide-react";
+
+/* ── SWR Data Fetching ── */
+function useLandingData() {
+  return useQuery({
+    queryKey: ["landing_data"],
+    queryFn: async () => {
+      const [sessionRes, settingsRes, templatesRes] = await Promise.all([
+        supabase.auth.getSession(),
+        supabase.from("site_settings").select("*"),
+        supabase.from("dynamic_templates").select("*").eq("status", true)
+      ]);
+      return {
+        session: sessionRes.data?.session || null,
+        settings: settingsRes.data || [],
+        templates: templatesRes.data || []
+      };
+    },
+    staleTime: 1000 * 60 * 5, // 5 min memory cache
+  });
+}
+
 
 /* ── CSS keyframes injected once — all infinite animations live here (GPU) ── */
 const PERF_STYLES = `
@@ -199,6 +223,8 @@ const KineticBorder = memo(function KineticBorder({ children, className = "" }: 
 /* ---------- Sections ---------- */
 
 const Nav = memo(function Nav() {
+  const { data, isLoading } = useLandingData();
+
   return (
     <motion.nav
       initial={{ y: -30, opacity: 0 }}
@@ -220,18 +246,35 @@ const Nav = memo(function Nav() {
           <a href="#dashboard" className="hover:text-foreground transition">Studio</a>
           <a href="#pricing" className="hover:text-foreground transition">Pricing</a>
         </div>
-          <Link
-            to="/login"
-            className="hidden items-center gap-1 text-sm text-muted-foreground transition hover:text-foreground md:flex"
-          >
-            Sign in
-          </Link>
-          <Link
-            to="/signup"
-            className="btn-kinetic relative rounded-xl px-4 py-2 text-sm font-semibold"
-          >
-            <span className="relative z-10">Launch app</span>
-          </Link>
+        <div className="flex items-center gap-2">
+          {isLoading ? (
+            <div className="flex h-9 w-24 items-center justify-center rounded-xl bg-white/5">
+              <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+            </div>
+          ) : data?.session ? (
+            <Link
+              to="/dashboard"
+              className="btn-kinetic relative rounded-xl px-4 py-2 text-sm font-semibold"
+            >
+              <span className="relative z-10">Dashboard</span>
+            </Link>
+          ) : (
+            <>
+              <Link
+                to="/login"
+                className="hidden items-center gap-1 text-sm text-muted-foreground transition hover:text-foreground md:flex px-4 py-2"
+              >
+                Sign in
+              </Link>
+              <Link
+                to="/signup"
+                className="btn-kinetic relative rounded-xl px-4 py-2 text-sm font-semibold"
+              >
+                <span className="relative z-10">Launch app</span>
+              </Link>
+            </>
+          )}
+        </div>
       </div>
     </motion.nav>
   );
