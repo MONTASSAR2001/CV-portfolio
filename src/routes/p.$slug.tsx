@@ -13,16 +13,26 @@ import { Index as LuminaMed } from "./templates/lumina-med";
 
 export const Route = createFileRoute("/p/$slug")({
   loader: async ({ params }) => {
-    // We search the cvs table for a record where cv_data_json contains our publishMeta slug
+    console.log(`[Loader] Fetching portfolio data for slug: ${params.slug}`);
+
+    // We search the cvs table for a record matching the exact slug inside the JSON payload.
+    // Using explicit JSON property path matching for PostgREST.
     const { data, error } = await supabase
       .from("cvs")
       .select("cv_data_json")
-      .contains("cv_data_json", { publishMeta: { slug: params.slug } })
-      .single();
+      .eq("cv_data_json->publishMeta->>slug", params.slug)
+      .maybeSingle(); // Use maybeSingle to prevent PGRST116 (multiple/no rows) from throwing as a hard error prematurely
 
-    if (error || !data) {
+    if (error) {
+      console.error(`[Loader] Supabase fetch error for ${params.slug}:`, error);
       throw notFound();
     }
+
+    if (!data || !data.cv_data_json) {
+      console.warn(`[Loader] No portfolio found for slug: ${params.slug}`);
+      throw notFound();
+    }
+
     
     return { portfolioData: data.cv_data_json };
   },
