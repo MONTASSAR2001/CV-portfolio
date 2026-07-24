@@ -233,9 +233,19 @@ export const deployPortfolioToVercel = createServerFn({ method: "POST" })
     // Mock delay to simulate processing
     await new Promise((resolve) => setTimeout(resolve, 1500));
 
-    // Generate a clean slug from the user's name or fallback
-    const name = data.content?.headline?.split(" ")[0] || "user";
-    const baseSlug = name.toLowerCase().replace(/[^a-z0-9]/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "");
+    // Generate a clean full-name slug (e.g. "montassar-zarai-4f9a")
+    const fullName =
+      data.content?.personalInfo?.name ||
+      data.content?.personalInfo?.fullName ||
+      data.content?.headline ||
+      "portfolio";
+    const baseSlug = fullName
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9\s]/g, "")
+      .replace(/\s+/g, "-")
+      .replace(/-+/g, "-")
+      .replace(/^-|-$/g, "");
     const randomHash = Math.random().toString(36).substring(2, 6);
     const slug = `${baseSlug}-${randomHash}`;
 
@@ -369,11 +379,21 @@ export const publishPremiumPortfolio = createServerFn({ method: "POST" })
     // ── [SECURITY] Validate caller session BEFORE touching any API key ──────
     await validateSessionToken(data.accessToken);
 
-    // Mock Vercel API deployment delay (3 seconds)
-    await new Promise((resolve) => setTimeout(resolve, 3000));
+    // Simulate a brief processing delay
+    await new Promise((resolve) => setTimeout(resolve, 2500));
 
-    const name = data.data?.personalInfo?.name || data.data?.personalInfo?.fullName || "user";
-    const baseSlug = name.toLowerCase().replace(/[^a-z0-9]/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "");
+    // Generate a full-name slug (e.g. "montassar-zarai-4f9a")
+    const fullName =
+      data.data?.personalInfo?.name ||
+      data.data?.personalInfo?.fullName ||
+      "portfolio";
+    const baseSlug = fullName
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9\s]/g, "")
+      .replace(/\s+/g, "-")
+      .replace(/-+/g, "-")
+      .replace(/^-|-$/g, "");
     const randomHash = Math.random().toString(36).substring(2, 6);
     const slug = `${baseSlug}-${randomHash}`;
 
