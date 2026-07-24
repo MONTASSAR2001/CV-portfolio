@@ -161,6 +161,7 @@ Tone & Style: ${data.templateTone}
 
 Return ONLY a valid JSON object with this exact structure:
 {
+  "name": "Candidate's real full name (First Last). CRITICAL: Do not use job title here.",
   "bio": "2–3 sentence professional bio in first person, tailored to the tone.",
   "headline": "Short punchy hero headline, max 8 words.",
   "projects": [
@@ -175,6 +176,7 @@ Return ONLY a valid JSON object with this exact structure:
 }
 
 Rules:
+- You MUST extract the candidate's actual name. Do not invent a name.
 - Extract up to 6 projects. Include fewer if fewer are present.
 - Skills: flat array of strings, max 12.
 - Never invent employers, dates, or metrics not in the CV.
@@ -235,6 +237,7 @@ export const deployPortfolioToVercel = createServerFn({ method: "POST" })
 
     // Generate a clean full-name slug (e.g. "montassar-zarai-4f9a")
     const fullName =
+      data.content?.name ||
       data.content?.personalInfo?.name ||
       data.content?.personalInfo?.fullName ||
       data.content?.headline ||
@@ -274,7 +277,7 @@ export const parseResumeWithAI = createServerFn({ method: "POST" })
 
 {
   "personalInfo": {
-    "name": "Full name",
+    "name": "Candidate's real full name (First Last). CRITICAL: Do not use job title here.",
     "role": "Current or most recent job title",
     "bio": "Professional summary or objective (2-3 sentences max)",
     "email": "Email address or empty string",
@@ -313,6 +316,7 @@ export const parseResumeWithAI = createServerFn({ method: "POST" })
 
 Rules:
 - Return ONLY the JSON object — no markdown, no commentary, no code fences.
+- You MUST extract the candidate's actual name. Do not invent a name or use a job title in the name field.
 - Include up to 6 experience entries, 6 projects, and all education entries.
 - Skills: flat array of strings, max 15.
 - Never invent information not present in the CV.`;
@@ -383,10 +387,13 @@ export const publishPremiumPortfolio = createServerFn({ method: "POST" })
     await new Promise((resolve) => setTimeout(resolve, 2500));
 
     // Generate a full-name slug (e.g. "montassar-zarai-4f9a")
+    // Fall back to role/headline ONLY if name is completely missing.
     const fullName =
       data.data?.personalInfo?.name ||
       data.data?.personalInfo?.fullName ||
+      data.data?.personalInfo?.role ||
       "portfolio";
+      
     const baseSlug = fullName
       .toLowerCase()
       .trim()
@@ -394,6 +401,7 @@ export const publishPremiumPortfolio = createServerFn({ method: "POST" })
       .replace(/\s+/g, "-")
       .replace(/-+/g, "-")
       .replace(/^-|-$/g, "");
+      
     const randomHash = Math.random().toString(36).substring(2, 6);
     const slug = `${baseSlug}-${randomHash}`;
 

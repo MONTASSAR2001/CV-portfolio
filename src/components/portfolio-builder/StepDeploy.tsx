@@ -13,9 +13,11 @@ export function StepDeploy({
   const [copied, setCopied] = useState(false);
   const locked = !content;
 
+  const absoluteUrl = deployedUrl ? (deployedUrl.startsWith('http') ? deployedUrl : window.location.origin + deployedUrl) : '';
+
   const copyUrl = () => {
-    if (!deployedUrl) return;
-    navigator.clipboard.writeText(deployedUrl);
+    if (!absoluteUrl) return;
+    navigator.clipboard.writeText(absoluteUrl);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -47,14 +49,14 @@ export function StepDeploy({
                   <span className="text-xs font-semibold uppercase tracking-widest text-emerald-400">Live · Global Edge</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <a href={deployedUrl} target="_blank" rel="noopener noreferrer"
+                  <a href={absoluteUrl} target="_blank" rel="noopener noreferrer"
                     className="flex-1 truncate rounded-xl border border-white/10 bg-black/30 px-4 py-2.5 font-mono text-xs text-white/80 transition hover:text-white">
-                    {deployedUrl}
+                    {absoluteUrl}
                   </a>
                   <button onClick={copyUrl} className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-white/50 transition hover:bg-white/10 hover:text-white">
                     {copied ? <CheckCircle2 size={14} className="text-emerald-400" /> : <Copy size={14} />}
                   </button>
-                  <a href={deployedUrl} target="_blank" rel="noopener noreferrer"
+                  <a href={absoluteUrl} target="_blank" rel="noopener noreferrer"
                     className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-white/50 transition hover:bg-white/10 hover:text-white">
                     <ExternalLink size={14} />
                   </a>

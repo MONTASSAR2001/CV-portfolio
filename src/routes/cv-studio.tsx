@@ -216,16 +216,19 @@ function CvStudioPage() {
       setPublishedUrl(url);
       setPublishing(false);
       
+      const absoluteUrl = url.startsWith('http') ? url : window.location.origin + url;
+      
       toast.success(
         <div className="flex flex-col gap-2">
           <span className="font-semibold text-emerald-400">Live! Portfolio published.</span>
+          <a href={absoluteUrl} target="_blank" rel="noopener noreferrer" className="truncate font-mono text-[10px] text-white/80 hover:text-white underline">{absoluteUrl}</a>
           <div className="flex gap-2 mt-1">
-            <button onClick={() => { navigator.clipboard.writeText(window.location.origin + url); toast.success("Copied!"); }} className="flex items-center gap-1 rounded bg-white/10 px-2 py-1 text-[11px] hover:bg-white/20">
+            <button onClick={() => { navigator.clipboard.writeText(absoluteUrl); toast.success("Copied!"); }} className="flex items-center gap-1 rounded bg-white/10 px-2 py-1 text-[11px] hover:bg-white/20">
               <Copy size={11} /> Copy Link
             </button>
-            <Link to={url} target="_blank" className="flex items-center gap-1 rounded bg-violet-500/20 px-2 py-1 text-[11px] text-violet-300 hover:bg-violet-500/30">
+            <a href={absoluteUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 rounded bg-violet-500/20 px-2 py-1 text-[11px] text-violet-300 hover:bg-violet-500/30">
               <ExternalLink size={11} /> Visit
-            </Link>
+            </a>
           </div>
         </div>,
         { id: toastId, duration: 10000 }

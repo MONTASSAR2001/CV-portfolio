@@ -9,6 +9,7 @@ export type PortfolioProject = {
 };
 
 export type PortfolioContent = {
+  name: string;
   bio: string;
   headline: string;
   projects: PortfolioProject[];
