@@ -288,32 +288,41 @@ export const parseResumeWithAI = createServerFn({ method: "POST" })
     const apiKey = process.env.GROQ_API_KEY;
     if (!apiKey) throw new Error("AI service is not configured on the server.");
 
-    const systemPrompt = `You are an expert CV parser. Extract the information from the provided CV text and return it as a valid JSON object matching this exact structure:
+    const systemPrompt = `You are an expert CV parser and career strategist. Extract the information from the provided CV text and return it as a valid JSON object matching this exact structure:
 
 {
   "personalInfo": {
-    "fullName": "Full name from CV",
-    "jobTitle": "Current or most recent job title",
+    "name": "Full name",
+    "role": "Current or most recent job title",
+    "bio": "Professional summary or objective (2-3 sentences max)",
     "email": "Email address or empty string",
-    "phone": "Phone number or empty string",
-    "location": "City, Country or empty string",
-    "linkedin": "LinkedIn URL or empty string",
-    "summary": "Professional summary or objective, or synthesise one from their background if absent"
+    "socials": {
+      "linkedin": "LinkedIn URL or empty string",
+      "github": "GitHub URL or empty string",
+      "twitter": "Twitter URL or empty string",
+      "website": "Personal website URL or empty string"
+    }
   },
   "experience": [
     {
-      "id": "unique_string_1",
       "role": "Job title",
       "company": "Company name",
-      "period": "Start – End (e.g. 2022 – Present)",
-      "bullets": "Achievement 1\\nAchievement 2\\nAchievement 3"
+      "duration": "Start – End (e.g. 2022 – Present)",
+      "description": "Short paragraph summarizing achievements and responsibilities"
+    }
+  ],
+  "projects": [
+    {
+      "title": "Project name",
+      "description": "Short summary of the project and impact",
+      "techStack": ["Tech1", "Tech2"],
+      "highlight": "One standout metric or feature (optional)"
     }
   ],
   "education": [
     {
-      "id": "unique_string_1",
       "degree": "Degree name",
-      "school": "Institution name",
+      "institution": "School or university name",
       "year": "Graduation year or date range"
     }
   ],
@@ -322,10 +331,8 @@ export const parseResumeWithAI = createServerFn({ method: "POST" })
 
 Rules:
 - Return ONLY the JSON object — no markdown, no commentary, no code fences.
-- Include up to 6 experience entries and all education entries.
-- Skills: flat array, max 15.
-- For bullets: separate each bullet with a literal newline character (\\n).
-- IDs must be unique strings (use "exp_1", "exp_2", "edu_1", etc.).
+- Include up to 6 experience entries, 6 projects, and all education entries.
+- Skills: flat array of strings, max 15.
 - Never invent information not present in the CV.`;
 
     const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
@@ -352,17 +359,50 @@ Rules:
     }
 
     const json = (await response.json()) as { choices: { message: { content: string } }[] };
-    const raw = json.choices?.[0]?.message?.content ?? "";
-    const parsed = JSON.parse(raw) as {
-      personalInfo: { fullName: string; jobTitle: string; email: string; phone: string; location: string; linkedin: string; summary: string };
-      experience: { id: string; role: string; company: string; period: string; bullets: string }[];
-      education: { id: string; degree: string; school: string; year: string }[];
-      skills: string[];
-    };
+    let raw = json.choices?.[0]?.message?.content ?? "";
+    
+    // Sanitize in case LLM returns markdown blocks
+    if (raw.startsWith("\`\`\`json")) {
+      raw = raw.replace(/^\`\`\`json\n?/, "").replace(/\n?\`\`\`$/, "");
+    } else if (raw.startsWith("\`\`\`")) {
+      raw = raw.replace(/^\`\`\`\n?/, "").replace(/\n?\`\`\`$/, "");
+    }
+    raw = raw.trim();
+
+    let parsed;
+    try {
+      parsed = JSON.parse(raw);
+    } catch (e) {
+      throw new Error("AI returned malformed JSON. Please try again.");
+    }
 
     if (!parsed.personalInfo || !Array.isArray(parsed.experience) || !Array.isArray(parsed.skills)) {
       throw new Error("Unexpected AI response format. Please try again.");
     }
 
-    return parsed;
+    return parsed as any; // Type matches PortfolioData in client
+  });
+
+/* ─── Server Function: publishPremiumPortfolio ───────────────────────────── */
+
+const PublishPremiumInput = z.object({
+  data: z.any(),
+  templateId: z.string(),
+  accessToken: z.string().min(1, "Access token is required"),
+});
+
+export const publishPremiumPortfolio = createServerFn({ method: "POST" })
+  .validator((data: unknown) => PublishPremiumInput.parse(data))
+  .handler(async ({ data }) => {
+    // ── [SECURITY] Validate caller session BEFORE touching any API key ──────
+    await validateSessionToken(data.accessToken);
+
+    // Mock Vercel API deployment delay (3 seconds)
+    await new Promise((resolve) => setTimeout(resolve, 3000));
+
+    const name = data.data?.personalInfo?.name || data.data?.personalInfo?.fullName || "user";
+    const slug = name.toLowerCase().replace(/[^a-z0-9]/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "");
+    const randomHash = Math.random().toString(36).substring(2, 6);
+
+    return { url: `https://${slug}-${randomHash}.careeros.com` };
   });

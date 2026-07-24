@@ -1,0 +1,38 @@
+
+> build
+> vite build
+
+The plugin "vite-tsconfig-paths" is detected. Vite now supports tsconfig paths resolution natively via the resolve.tsconfigPaths option. You can remove the plugin and set resolve.tsconfigPaths: true in your Vite config instead.
+vite v8.1.4 building client environment for production...
+[2Ktransforming...✓ 2988 modules transformed.
+✗ Build failed in 4.93s
+error during build:
+Build failed with 2 errors:
+
+[31m[builtin:vite-transform] [0mUnexpected token
+    [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m src/components/templates/lumina-med/Testimonials.tsx:32:1 [38;5;246m][0m
+    [38;5;246m│[0m
+ [38;5;246m32 │[0m ][38;5;249m;[0m
+ [38;5;240m   │[0m ┬  
+ [38;5;240m   │[0m ╰── 
+[38;5;246m────╯[0m
+
+[31m[builtin:vite-transform] [0mUnexpected token
+    [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m src/components/templates/kinetic-ink/portfolio/WorkSection.tsx:95:1 [38;5;246m][0m
+    [38;5;246m│[0m
+ [38;5;246m95 │[0m ][38;5;249m;[0m
+ [38;5;240m   │[0m ┬  
+ [38;5;240m   │[0m ╰── 
+[38;5;246m────╯[0m
+
+    at aggregateBindingErrorsIntoJsError (file:///home/montassar/Desktop/projects/AI-WEB/CV-portfolio/node_modules/rolldown/dist/shared/error-BHRSI0R7.mjs:48:18)
+    at unwrapBindingResult (file:///home/montassar/Desktop/projects/AI-WEB/CV-portfolio/node_modules/rolldown/dist/shared/error-BHRSI0R7.mjs:18:128)
+    at #build (file:///home/montassar/Desktop/projects/AI-WEB/CV-portfolio/node_modules/rolldown/dist/shared/rolldown-build-CtPvmZgJ.mjs:3276:34)
+    at async buildEnvironment (file:///home/montassar/Desktop/projects/AI-WEB/CV-portfolio/node_modules/vite/dist/node/chunks/node.js:33011:66)
+    at async Object.build (file:///home/montassar/Desktop/projects/AI-WEB/CV-portfolio/node_modules/vite/dist/node/chunks/node.js:33433:19)
+    at async buildStartViteEnvironments (file:///home/montassar/Desktop/projects/AI-WEB/CV-portfolio/node_modules/@tanstack/start-plugin-core/dist/esm/vite/planning.js:95:23)
+    at async Object.buildApp (file:///home/montassar/Desktop/projects/AI-WEB/CV-portfolio/node_modules/@tanstack/start-plugin-core/dist/esm/vite/plugin.js:113:8)
+    at async Object.buildApp (file:///home/montassar/Desktop/projects/AI-WEB/CV-portfolio/node_modules/vite/dist/node/chunks/node.js:33425:6)
+    at async CAC.<anonymous> (file:///home/montassar/Desktop/projects/AI-WEB/CV-portfolio/node_modules/vite/dist/node/cli.js:776:3) {
+  errors: [Getter/Setter]
+}

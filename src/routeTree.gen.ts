@@ -18,8 +18,17 @@ import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as CvStudioRouteImport } from './routes/cv-studio'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TemplatesVogueRouteImport } from './routes/templates/vogue'
+import { Route as TemplatesVibrantGlassRouteImport } from './routes/templates/vibrant-glass'
 import { Route as TemplatesSterlingRouteImport } from './routes/templates/sterling'
+import { Route as TemplatesNeonCanvasRouteImport } from './routes/templates/neon-canvas'
+import { Route as TemplatesLuminaMedRouteImport } from './routes/templates/lumina-med'
 import { Route as TemplatesLuminaRouteImport } from './routes/templates/lumina'
+import { Route as TemplatesLiquidLensRouteImport } from './routes/templates/liquid-lens'
+import { Route as TemplatesKineticInkMainRouteImport } from './routes/templates/kinetic-ink-main'
+import { Route as TemplatesGoldenLegacyRouteImport } from './routes/templates/golden-legacy'
+import { Route as TemplatesFutureForwardRouteImport } from './routes/templates/future-forward'
+import { Route as TemplatesDataScientistRouteImport } from './routes/templates/data-scientist'
+import { Route as TemplatesBlueprintSphereMainRouteImport } from './routes/templates/blueprint-sphere-main'
 import { Route as TemplatesBiotechRouteImport } from './routes/templates/biotech'
 import { Route as TemplatesArchitectRouteImport } from './routes/templates/architect'
 
@@ -68,9 +77,24 @@ const TemplatesVogueRoute = TemplatesVogueRouteImport.update({
   path: '/templates/vogue',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TemplatesVibrantGlassRoute = TemplatesVibrantGlassRouteImport.update({
+  id: '/templates/vibrant-glass',
+  path: '/templates/vibrant-glass',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TemplatesSterlingRoute = TemplatesSterlingRouteImport.update({
   id: '/templates/sterling',
   path: '/templates/sterling',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TemplatesNeonCanvasRoute = TemplatesNeonCanvasRouteImport.update({
+  id: '/templates/neon-canvas',
+  path: '/templates/neon-canvas',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TemplatesLuminaMedRoute = TemplatesLuminaMedRouteImport.update({
+  id: '/templates/lumina-med',
+  path: '/templates/lumina-med',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TemplatesLuminaRoute = TemplatesLuminaRouteImport.update({
@@ -78,6 +102,37 @@ const TemplatesLuminaRoute = TemplatesLuminaRouteImport.update({
   path: '/templates/lumina',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TemplatesLiquidLensRoute = TemplatesLiquidLensRouteImport.update({
+  id: '/templates/liquid-lens',
+  path: '/templates/liquid-lens',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TemplatesKineticInkMainRoute = TemplatesKineticInkMainRouteImport.update({
+  id: '/templates/kinetic-ink-main',
+  path: '/templates/kinetic-ink-main',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TemplatesGoldenLegacyRoute = TemplatesGoldenLegacyRouteImport.update({
+  id: '/templates/golden-legacy',
+  path: '/templates/golden-legacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TemplatesFutureForwardRoute = TemplatesFutureForwardRouteImport.update({
+  id: '/templates/future-forward',
+  path: '/templates/future-forward',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TemplatesDataScientistRoute = TemplatesDataScientistRouteImport.update({
+  id: '/templates/data-scientist',
+  path: '/templates/data-scientist',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TemplatesBlueprintSphereMainRoute =
+  TemplatesBlueprintSphereMainRouteImport.update({
+    id: '/templates/blueprint-sphere-main',
+    path: '/templates/blueprint-sphere-main',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const TemplatesBiotechRoute = TemplatesBiotechRouteImport.update({
   id: '/templates/biotech',
   path: '/templates/biotech',
@@ -100,8 +155,17 @@ export interface FileRoutesByFullPath {
   '/signup': typeof SignupRoute
   '/templates/architect': typeof TemplatesArchitectRoute
   '/templates/biotech': typeof TemplatesBiotechRoute
+  '/templates/blueprint-sphere-main': typeof TemplatesBlueprintSphereMainRoute
+  '/templates/data-scientist': typeof TemplatesDataScientistRoute
+  '/templates/future-forward': typeof TemplatesFutureForwardRoute
+  '/templates/golden-legacy': typeof TemplatesGoldenLegacyRoute
+  '/templates/kinetic-ink-main': typeof TemplatesKineticInkMainRoute
+  '/templates/liquid-lens': typeof TemplatesLiquidLensRoute
   '/templates/lumina': typeof TemplatesLuminaRoute
+  '/templates/lumina-med': typeof TemplatesLuminaMedRoute
+  '/templates/neon-canvas': typeof TemplatesNeonCanvasRoute
   '/templates/sterling': typeof TemplatesSterlingRoute
+  '/templates/vibrant-glass': typeof TemplatesVibrantGlassRoute
   '/templates/vogue': typeof TemplatesVogueRoute
 }
 export interface FileRoutesByTo {
@@ -115,8 +179,17 @@ export interface FileRoutesByTo {
   '/signup': typeof SignupRoute
   '/templates/architect': typeof TemplatesArchitectRoute
   '/templates/biotech': typeof TemplatesBiotechRoute
+  '/templates/blueprint-sphere-main': typeof TemplatesBlueprintSphereMainRoute
+  '/templates/data-scientist': typeof TemplatesDataScientistRoute
+  '/templates/future-forward': typeof TemplatesFutureForwardRoute
+  '/templates/golden-legacy': typeof TemplatesGoldenLegacyRoute
+  '/templates/kinetic-ink-main': typeof TemplatesKineticInkMainRoute
+  '/templates/liquid-lens': typeof TemplatesLiquidLensRoute
   '/templates/lumina': typeof TemplatesLuminaRoute
+  '/templates/lumina-med': typeof TemplatesLuminaMedRoute
+  '/templates/neon-canvas': typeof TemplatesNeonCanvasRoute
   '/templates/sterling': typeof TemplatesSterlingRoute
+  '/templates/vibrant-glass': typeof TemplatesVibrantGlassRoute
   '/templates/vogue': typeof TemplatesVogueRoute
 }
 export interface FileRoutesById {
@@ -131,8 +204,17 @@ export interface FileRoutesById {
   '/signup': typeof SignupRoute
   '/templates/architect': typeof TemplatesArchitectRoute
   '/templates/biotech': typeof TemplatesBiotechRoute
+  '/templates/blueprint-sphere-main': typeof TemplatesBlueprintSphereMainRoute
+  '/templates/data-scientist': typeof TemplatesDataScientistRoute
+  '/templates/future-forward': typeof TemplatesFutureForwardRoute
+  '/templates/golden-legacy': typeof TemplatesGoldenLegacyRoute
+  '/templates/kinetic-ink-main': typeof TemplatesKineticInkMainRoute
+  '/templates/liquid-lens': typeof TemplatesLiquidLensRoute
   '/templates/lumina': typeof TemplatesLuminaRoute
+  '/templates/lumina-med': typeof TemplatesLuminaMedRoute
+  '/templates/neon-canvas': typeof TemplatesNeonCanvasRoute
   '/templates/sterling': typeof TemplatesSterlingRoute
+  '/templates/vibrant-glass': typeof TemplatesVibrantGlassRoute
   '/templates/vogue': typeof TemplatesVogueRoute
 }
 export interface FileRouteTypes {
@@ -148,8 +230,17 @@ export interface FileRouteTypes {
     | '/signup'
     | '/templates/architect'
     | '/templates/biotech'
+    | '/templates/blueprint-sphere-main'
+    | '/templates/data-scientist'
+    | '/templates/future-forward'
+    | '/templates/golden-legacy'
+    | '/templates/kinetic-ink-main'
+    | '/templates/liquid-lens'
     | '/templates/lumina'
+    | '/templates/lumina-med'
+    | '/templates/neon-canvas'
     | '/templates/sterling'
+    | '/templates/vibrant-glass'
     | '/templates/vogue'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -163,8 +254,17 @@ export interface FileRouteTypes {
     | '/signup'
     | '/templates/architect'
     | '/templates/biotech'
+    | '/templates/blueprint-sphere-main'
+    | '/templates/data-scientist'
+    | '/templates/future-forward'
+    | '/templates/golden-legacy'
+    | '/templates/kinetic-ink-main'
+    | '/templates/liquid-lens'
     | '/templates/lumina'
+    | '/templates/lumina-med'
+    | '/templates/neon-canvas'
     | '/templates/sterling'
+    | '/templates/vibrant-glass'
     | '/templates/vogue'
   id:
     | '__root__'
@@ -178,8 +278,17 @@ export interface FileRouteTypes {
     | '/signup'
     | '/templates/architect'
     | '/templates/biotech'
+    | '/templates/blueprint-sphere-main'
+    | '/templates/data-scientist'
+    | '/templates/future-forward'
+    | '/templates/golden-legacy'
+    | '/templates/kinetic-ink-main'
+    | '/templates/liquid-lens'
     | '/templates/lumina'
+    | '/templates/lumina-med'
+    | '/templates/neon-canvas'
     | '/templates/sterling'
+    | '/templates/vibrant-glass'
     | '/templates/vogue'
   fileRoutesById: FileRoutesById
 }
@@ -194,8 +303,17 @@ export interface RootRouteChildren {
   SignupRoute: typeof SignupRoute
   TemplatesArchitectRoute: typeof TemplatesArchitectRoute
   TemplatesBiotechRoute: typeof TemplatesBiotechRoute
+  TemplatesBlueprintSphereMainRoute: typeof TemplatesBlueprintSphereMainRoute
+  TemplatesDataScientistRoute: typeof TemplatesDataScientistRoute
+  TemplatesFutureForwardRoute: typeof TemplatesFutureForwardRoute
+  TemplatesGoldenLegacyRoute: typeof TemplatesGoldenLegacyRoute
+  TemplatesKineticInkMainRoute: typeof TemplatesKineticInkMainRoute
+  TemplatesLiquidLensRoute: typeof TemplatesLiquidLensRoute
   TemplatesLuminaRoute: typeof TemplatesLuminaRoute
+  TemplatesLuminaMedRoute: typeof TemplatesLuminaMedRoute
+  TemplatesNeonCanvasRoute: typeof TemplatesNeonCanvasRoute
   TemplatesSterlingRoute: typeof TemplatesSterlingRoute
+  TemplatesVibrantGlassRoute: typeof TemplatesVibrantGlassRoute
   TemplatesVogueRoute: typeof TemplatesVogueRoute
 }
 
@@ -264,6 +382,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TemplatesVogueRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/templates/vibrant-glass': {
+      id: '/templates/vibrant-glass'
+      path: '/templates/vibrant-glass'
+      fullPath: '/templates/vibrant-glass'
+      preLoaderRoute: typeof TemplatesVibrantGlassRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/templates/sterling': {
       id: '/templates/sterling'
       path: '/templates/sterling'
@@ -271,11 +396,67 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TemplatesSterlingRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/templates/neon-canvas': {
+      id: '/templates/neon-canvas'
+      path: '/templates/neon-canvas'
+      fullPath: '/templates/neon-canvas'
+      preLoaderRoute: typeof TemplatesNeonCanvasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/templates/lumina-med': {
+      id: '/templates/lumina-med'
+      path: '/templates/lumina-med'
+      fullPath: '/templates/lumina-med'
+      preLoaderRoute: typeof TemplatesLuminaMedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/templates/lumina': {
       id: '/templates/lumina'
       path: '/templates/lumina'
       fullPath: '/templates/lumina'
       preLoaderRoute: typeof TemplatesLuminaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/templates/liquid-lens': {
+      id: '/templates/liquid-lens'
+      path: '/templates/liquid-lens'
+      fullPath: '/templates/liquid-lens'
+      preLoaderRoute: typeof TemplatesLiquidLensRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/templates/kinetic-ink-main': {
+      id: '/templates/kinetic-ink-main'
+      path: '/templates/kinetic-ink-main'
+      fullPath: '/templates/kinetic-ink-main'
+      preLoaderRoute: typeof TemplatesKineticInkMainRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/templates/golden-legacy': {
+      id: '/templates/golden-legacy'
+      path: '/templates/golden-legacy'
+      fullPath: '/templates/golden-legacy'
+      preLoaderRoute: typeof TemplatesGoldenLegacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/templates/future-forward': {
+      id: '/templates/future-forward'
+      path: '/templates/future-forward'
+      fullPath: '/templates/future-forward'
+      preLoaderRoute: typeof TemplatesFutureForwardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/templates/data-scientist': {
+      id: '/templates/data-scientist'
+      path: '/templates/data-scientist'
+      fullPath: '/templates/data-scientist'
+      preLoaderRoute: typeof TemplatesDataScientistRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/templates/blueprint-sphere-main': {
+      id: '/templates/blueprint-sphere-main'
+      path: '/templates/blueprint-sphere-main'
+      fullPath: '/templates/blueprint-sphere-main'
+      preLoaderRoute: typeof TemplatesBlueprintSphereMainRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/templates/biotech': {
@@ -306,8 +487,17 @@ const rootRouteChildren: RootRouteChildren = {
   SignupRoute: SignupRoute,
   TemplatesArchitectRoute: TemplatesArchitectRoute,
   TemplatesBiotechRoute: TemplatesBiotechRoute,
+  TemplatesBlueprintSphereMainRoute: TemplatesBlueprintSphereMainRoute,
+  TemplatesDataScientistRoute: TemplatesDataScientistRoute,
+  TemplatesFutureForwardRoute: TemplatesFutureForwardRoute,
+  TemplatesGoldenLegacyRoute: TemplatesGoldenLegacyRoute,
+  TemplatesKineticInkMainRoute: TemplatesKineticInkMainRoute,
+  TemplatesLiquidLensRoute: TemplatesLiquidLensRoute,
   TemplatesLuminaRoute: TemplatesLuminaRoute,
+  TemplatesLuminaMedRoute: TemplatesLuminaMedRoute,
+  TemplatesNeonCanvasRoute: TemplatesNeonCanvasRoute,
   TemplatesSterlingRoute: TemplatesSterlingRoute,
+  TemplatesVibrantGlassRoute: TemplatesVibrantGlassRoute,
   TemplatesVogueRoute: TemplatesVogueRoute,
 }
 export const routeTree = rootRouteImport

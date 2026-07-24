@@ -8,7 +8,10 @@ import { useReactToPrint } from "react-to-print";
 import {
   ArrowLeft, Monitor, Smartphone, Download, Cloud,
   CheckCircle2, Loader2, ChevronLeft, ChevronRight, Sparkles,
+  Rocket, Copy, ExternalLink,
 } from "lucide-react";
+
+import { publishPremiumPortfolio } from "@/lib/server-fns";
 
 /* ─── New modular components ─── */
 import { AIImportModal } from "@/components/cv-studio/AIImportModal";
@@ -133,6 +136,9 @@ function CvStudioPage() {
   const [device, setDevice]         = useState<"desktop" | "mobile">("desktop");
   const [saving, setSaving]         = useState(false);
   const [saveStatus, setSaveStatus] = useState<"idle" | "saved" | "error">("idle");
+  const [publishing, setPublishing] = useState(false);
+  const [publishStatus, setPublishStatus] = useState<"idle" | "published" | "error">("idle");
+  const [publishedUrl, setPublishedUrl] = useState<string | null>(null);
 
   const printRef = useRef<HTMLDivElement>(null);
 
@@ -165,6 +171,55 @@ function CvStudioPage() {
       setSaveStatus("saved");
       toast.success("CV saved successfully!", { id: toastId });
       setTimeout(() => setSaveStatus("idle"), 4000);
+    }
+  };
+
+  /* ── Publish to Vercel (Premium Templates) ── */
+  const handlePublish = async () => {
+    if (!user) return;
+    setPublishing(true);
+    setPublishStatus("idle");
+    const toastId = toast.loading("Compiling Assets...");
+    
+    try {
+      setTimeout(() => toast.loading("Deploying to Vercel...", { id: toastId }), 1200);
+      
+      const { url } = await publishPremiumPortfolio({
+        data: {
+          data: cvData,
+          templateId: activeTemplate,
+          accessToken: user.id
+        }
+      });
+      
+      // Update DB to mark as published
+      await supabase.from("cvs").upsert(
+        { user_id: user.id, cv_data_json: cvData, published_url: url, updated_at: new Date().toISOString() },
+        { onConflict: "user_id" }
+      );
+      
+      setPublishStatus("published");
+      setPublishedUrl(url);
+      setPublishing(false);
+      
+      toast.success(
+        <div className="flex flex-col gap-2">
+          <span className="font-semibold text-emerald-400">Live! Portfolio published.</span>
+          <div className="flex gap-2 mt-1">
+            <button onClick={() => { navigator.clipboard.writeText(url); toast.success("Copied!"); }} className="flex items-center gap-1 rounded bg-white/10 px-2 py-1 text-[11px] hover:bg-white/20">
+              <Copy size={11} /> Copy Link
+            </button>
+            <a href={url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 rounded bg-violet-500/20 px-2 py-1 text-[11px] text-violet-300 hover:bg-violet-500/30">
+              <ExternalLink size={11} /> Visit
+            </a>
+          </div>
+        </div>,
+        { id: toastId, duration: 10000 }
+      );
+    } catch (err) {
+      setPublishing(false);
+      setPublishStatus("error");
+      toast.error(`Publish failed: ${err instanceof Error ? err.message : "Unknown error"}`, { id: toastId });
     }
   };
 
@@ -288,10 +343,20 @@ function CvStudioPage() {
                 <button
                   id="cv-export-pdf-btn"
                   onClick={() => handlePrint()}
-                  className="flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-bold text-white transition-all active:scale-[0.97]"
-                  style={{ background: "linear-gradient(135deg, oklch(0.72 0.24 300), oklch(0.65 0.25 280))", boxShadow: "0 0 20px oklch(0.72 0.24 300 / 0.4)" }}
+                  className="flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-semibold text-white transition-all hover:border-white/20 hover:bg-white/10 active:scale-[0.97]"
                 >
                   <Download size={13} /> Export PDF
+                </button>
+
+                <button
+                  id="cv-publish-btn"
+                  onClick={handlePublish}
+                  disabled={publishing}
+                  className={`flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-bold text-white transition-all active:scale-[0.97] ${publishing ? "opacity-70" : "hover:scale-105"}`}
+                  style={{ background: "linear-gradient(135deg, oklch(0.72 0.24 300), oklch(0.65 0.25 280))", boxShadow: "0 0 20px oklch(0.72 0.24 300 / 0.4)" }}
+                >
+                  {publishing ? <Loader2 size={13} className="animate-spin" /> : <Rocket size={13} />}
+                  {publishing ? "Publishing…" : publishStatus === "published" ? "Republish" : "Publish"}
                 </button>
               </div>
             </header>

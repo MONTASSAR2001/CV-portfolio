@@ -11,6 +11,18 @@ export type PersonalInfo = {
   location: string;
   linkedin: string;
   summary: string;
+  
+  // PortfolioData mappings
+  name?: string;
+  role?: string;
+  bio?: string;
+  avatarUrl?: string;
+  socials?: {
+    linkedin?: string;
+    github?: string;
+    twitter?: string;
+    website?: string;
+  };
 };
 
 export type Experience = {
@@ -19,6 +31,10 @@ export type Experience = {
   company: string;
   period: string;
   bullets: string;
+  
+  // PortfolioData mappings
+  duration?: string;
+  description?: string;
 };
 
 export type Education = {
@@ -26,6 +42,9 @@ export type Education = {
   degree: string;
   school: string;
   year: string;
+  
+  // PortfolioData mappings
+  institution?: string;
 };
 
 export type CvState = {
@@ -33,6 +52,15 @@ export type CvState = {
   experience: Experience[];
   education: Education[];
   skills: string[];
+  projects?: {
+    title?: string;
+    description?: string;
+    techStack?: string[];
+    tech?: string[];
+    link?: string;
+    imageUrl?: string;
+    highlight?: string;
+  }[];
 };
 
 export const EMPTY_CV_STATE: CvState = {

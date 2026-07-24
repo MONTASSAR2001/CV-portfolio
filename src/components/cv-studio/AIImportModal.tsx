@@ -34,12 +34,48 @@ export function AIImportModal({ onStart, accessToken }: AIImportModalProps) {
       const text = await extractTextFromPDF(file);
       if (!text || text.trim().length < 80) throw new Error("Could not extract enough text. Use a text-based (non-scanned) PDF.");
       const parsed = await parseResumeWithAI({ data: { cvText: text.slice(0, 12000), accessToken } });
+      
+      // Map PortfolioData to CvState
+      const mappedCvData: CvState = {
+        personalInfo: {
+          fullName: parsed.personalInfo.name || "",
+          jobTitle: parsed.personalInfo.role || "",
+          email: parsed.personalInfo.email || "",
+          phone: "",
+          location: "",
+          linkedin: parsed.personalInfo.socials?.linkedin || "",
+          summary: parsed.personalInfo.bio || "",
+          name: parsed.personalInfo.name,
+          role: parsed.personalInfo.role,
+          bio: parsed.personalInfo.bio,
+          socials: parsed.personalInfo.socials,
+        },
+        experience: parsed.experience.map((e, i) => ({
+          id: i.toString(),
+          role: e.role,
+          company: e.company,
+          period: e.duration,
+          bullets: e.description,
+          duration: e.duration,
+          description: e.description,
+        })),
+        education: parsed.education.map((e, i) => ({
+          id: i.toString(),
+          degree: e.degree,
+          school: e.institution,
+          year: e.year,
+          institution: e.institution,
+        })),
+        skills: parsed.skills,
+        projects: parsed.projects,
+      };
+
       clearInterval(timer);
       setStageIdx(AI_STAGES.length - 1);
       setPhase("done");
       await new Promise(r => setTimeout(r, 900));
       toast.success("CV imported! Review and tweak any details below.");
-      onStart(parsed);
+      onStart(mappedCvData);
     } catch (err) {
       clearInterval(timer);
       toast.error(`AI Import failed: ${err instanceof Error ? err.message : "Unknown error"}`);

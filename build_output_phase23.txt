@@ -1,0 +1,215 @@
+
+> build
+> vite build
+
+The plugin "vite-tsconfig-paths" is detected. Vite now supports tsconfig paths resolution natively via the resolve.tsconfigPaths option. You can remove the plugin and set resolve.tsconfigPaths: true in your Vite config instead.
+vite v8.1.4 building client environment for production...
+[2Ktransforming...✓ 2993 modules transformed.
+rendering chunks...
+computing gzip size...
+.output/public/assets/05-CMTVxCyn.jpg                       26.33 kB
+.output/public/assets/02-BGedLM3B.jpg                       37.69 kB
+.output/public/assets/hero-poster-sN1_o744.jpg              45.99 kB
+.output/public/assets/06-CU0xzt5K.jpg                       49.67 kB
+.output/public/assets/04-lLSxayTd.jpg                       51.21 kB
+.output/public/assets/01-C_CH-i2q.jpg                       63.60 kB
+.output/public/assets/03-CM_Vh32G.jpg                      183.11 kB
+.output/public/assets/hero-scales-xP2tz6RR.jpg             250.55 kB
+.output/public/assets/pdf.worker.min-FHbmGBN0.mjs        1,244.25 kB
+.output/public/assets/styles-ByBU0nCc.css                  159.83 kB │ gzip:  24.54 kB
+.output/public/assets/server-fns-DYIiX79j.js                 0.52 kB │ gzip:   0.33 kB
+.output/public/assets/pdf-extractor-BAkxKOm9.js              0.63 kB │ gzip:   0.44 kB
+.output/public/assets/rolldown-runtime-CNC7AqOf.js           0.87 kB │ gzip:   0.50 kB
+.output/public/assets/HeroScene-PEUDSxxQ.js                  1.08 kB │ gzip:   0.56 kB
+.output/public/assets/ProgressShape-Bfnx4Rdu.js              1.43 kB │ gzip:   0.70 kB
+.output/public/assets/DnaScene-BMWyzMec.js                   1.65 kB │ gzip:   0.84 kB
+.output/public/assets/HeroScene-ln1whdk_.js                  2.07 kB │ gzip:   0.95 kB
+.output/public/assets/vendor-react-query-Do8FvU0u.js         2.12 kB │ gzip:   1.06 kB
+.output/public/assets/HeroScene-Cr362ZKr.js                  3.23 kB │ gzip:   1.11 kB
+.output/public/assets/KineticHero-BURWrXP9.js                3.29 kB │ gzip:   1.50 kB
+.output/public/assets/vendor-router-B1LfgNyg.js              3.63 kB │ gzip:   1.52 kB
+.output/public/assets/login-Bw68LNA0.js                      4.61 kB │ gzip:   1.63 kB
+.output/public/assets/forgot-password-Dhhj3KEJ.js            5.65 kB │ gzip:   2.04 kB
+.output/public/assets/signup-BxmpRmUD.js                     5.93 kB │ gzip:   1.91 kB
+.output/public/assets/biotech-BH2dVs0N.js                   10.39 kB │ gzip:   3.64 kB
+.output/public/assets/vogue-DzFxh0wZ.js                     10.58 kB │ gzip:   3.61 kB
+.output/public/assets/lumina-35Sl3erR.js                    10.59 kB │ gzip:   3.31 kB
+.output/public/assets/architect-BJ_jq-V1.js                 10.69 kB │ gzip:   3.40 kB
+.output/public/assets/settings-DIbWNL70.js                  11.75 kB │ gzip:   3.56 kB
+.output/public/assets/dashboard-D8pqSyN_.js                 14.50 kB │ gzip:   4.08 kB
+.output/public/assets/vendor-lucide-DkExDifB.js             15.92 kB │ gzip:   5.90 kB
+.output/public/assets/kinetic-ink-main-0LMHeq3N.js          16.06 kB │ gzip:   5.20 kB
+.output/public/assets/neon-canvas-CEY_s-hc.js               17.12 kB │ gzip:   5.10 kB
+.output/public/assets/golden-legacy-DsP6i-XL.js             17.20 kB │ gzip:   4.64 kB
+.output/public/assets/vibrant-glass-1T93f9dg.js             18.14 kB │ gzip:   5.51 kB
+.output/public/assets/future-forward-b2tejrPF.js            18.92 kB │ gzip:   5.61 kB
+.output/public/assets/sterling-DAuh-z6Q.js                  19.21 kB │ gzip:   5.13 kB
+.output/public/assets/liquid-lens-N0t0Wd8B.js               19.49 kB │ gzip:   6.53 kB
+.output/public/assets/data-scientist-BvO0MW2X.js            20.64 kB │ gzip:   6.38 kB
+.output/public/assets/lumina-med-xd-xJqoA.js                20.82 kB │ gzip:   6.46 kB
+.output/public/assets/blueprint-sphere-main-DruM4IQg.js     24.51 kB │ gzip:   6.93 kB
+.output/public/assets/routes-CFoUx0sW.js                    27.38 kB │ gzip:   6.24 kB
+.output/public/assets/portfolio-builder-D6GUPv09.js         28.98 kB │ gzip:   7.83 kB
+.output/public/assets/cv-studio-C7ocb-j8.js                 79.95 kB │ gzip:  14.39 kB
+.output/public/assets/vendor-framer-motion-GaFlj93X.js     143.76 kB │ gzip:  47.32 kB
+.output/public/assets/index-C0J-Bc2I.js                  2,108.06 kB │ gzip: 606.45 kB
+
+[plugin builtin:vite-reporter] 
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 6.29s
+vite v8.1.4 building ssr environment for production...
+[2Ktransforming...✓ 162 modules transformed.
+rendering chunks...
+computing gzip size...
+node_modules/.nitro/vite/services/ssr/assets/05-CMTVxCyn.jpg                          26.33 kB
+node_modules/.nitro/vite/services/ssr/assets/02-BGedLM3B.jpg                          37.69 kB
+node_modules/.nitro/vite/services/ssr/assets/hero-poster-sN1_o744.jpg                 45.99 kB
+node_modules/.nitro/vite/services/ssr/assets/06-CU0xzt5K.jpg                          49.67 kB
+node_modules/.nitro/vite/services/ssr/assets/04-lLSxayTd.jpg                          51.21 kB
+node_modules/.nitro/vite/services/ssr/assets/01-C_CH-i2q.jpg                          63.60 kB
+node_modules/.nitro/vite/services/ssr/assets/03-CM_Vh32G.jpg                         183.11 kB
+node_modules/.nitro/vite/services/ssr/assets/hero-scales-xP2tz6RR.jpg                250.55 kB
+node_modules/.nitro/vite/services/ssr/assets/styles-ByBU0nCc.css                     159.83 kB │ gzip: 24.54 kB
+node_modules/.nitro/vite/services/ssr/assets/supabase-CeCbonsJ.js                      0.26 kB │ gzip:  0.19 kB
+node_modules/.nitro/vite/services/ssr/assets/rolldown-runtime-D7D4PA-g.js              0.36 kB │ gzip:  0.25 kB
+node_modules/.nitro/vite/services/ssr/assets/start-Dp3GavfG.js                         0.64 kB │ gzip:  0.39 kB
+node_modules/.nitro/vite/services/ssr/assets/vendor-router-DWp4Tfp2.js                 1.25 kB │ gzip:  0.52 kB
+node_modules/.nitro/vite/services/ssr/assets/pdf-extractor-Cier3eZe.js                 1.26 kB │ gzip:  0.70 kB
+node_modules/.nitro/vite/services/ssr/assets/use-auth-BQhLl2dC.js                      1.31 kB │ gzip:  0.58 kB
+node_modules/.nitro/vite/services/ssr/assets/HeroScene-BVP1aXxG.js                     1.70 kB │ gzip:  0.69 kB
+node_modules/.nitro/vite/services/ssr/assets/server-fns-D5_1QkQM.js                    1.96 kB │ gzip:  0.75 kB
+node_modules/.nitro/vite/services/ssr/assets/ProgressShape-A3oAcQKW.js                 2.12 kB │ gzip:  0.87 kB
+node_modules/.nitro/vite/services/ssr/assets/DnaScene-BZ9EK8YG.js                      2.89 kB │ gzip:  1.12 kB
+node_modules/.nitro/vite/services/ssr/assets/HeroScene-DnJLAaIe.js                     3.42 kB │ gzip:  1.17 kB
+node_modules/.nitro/vite/services/ssr/index.js                                         3.43 kB │ gzip:  1.47 kB
+node_modules/.nitro/vite/services/ssr/assets/KineticHero-J4t6UaP3.js                   4.85 kB │ gzip:  1.80 kB
+node_modules/.nitro/vite/services/ssr/assets/_tanstack-start-manifest_v-BZPFwhen.js    5.93 kB │ gzip:  1.11 kB
+node_modules/.nitro/vite/services/ssr/assets/login-BhdHxnVw.js                         6.84 kB │ gzip:  2.02 kB
+node_modules/.nitro/vite/services/ssr/assets/forgot-password-Dhsalazs.js               8.73 kB │ gzip:  2.56 kB
+node_modules/.nitro/vite/services/ssr/assets/signup-DsGyIWCS.js                        8.83 kB │ gzip:  2.35 kB
+node_modules/.nitro/vite/services/ssr/assets/server-fns-BZSUqFco.js                   13.20 kB │ gzip:  4.56 kB
+node_modules/.nitro/vite/services/ssr/assets/lumina-dj99AKyT.js                       14.39 kB │ gzip:  3.93 kB
+node_modules/.nitro/vite/services/ssr/assets/biotech-WQoDv0N9.js                      15.32 kB │ gzip:  4.30 kB
+node_modules/.nitro/vite/services/ssr/assets/architect-BszGuZok.js                    15.87 kB │ gzip:  4.19 kB
+node_modules/.nitro/vite/services/ssr/assets/vogue-COJVFq8u.js                        15.89 kB │ gzip:  4.36 kB
+node_modules/.nitro/vite/services/ssr/assets/settings-C8h4uqBo.js                     17.99 kB │ gzip:  4.48 kB
+node_modules/.nitro/vite/services/ssr/assets/router-Bn5hZDex.js                       20.87 kB │ gzip:  4.66 kB
+node_modules/.nitro/vite/services/ssr/assets/dashboard-Cu_CUdPs.js                    22.25 kB │ gzip:  5.22 kB
+node_modules/.nitro/vite/services/ssr/assets/kinetic-ink-main-B9bjFKeW.js             22.29 kB │ gzip:  6.04 kB
+node_modules/.nitro/vite/services/ssr/assets/golden-legacy-DKVz3FX8.js                23.33 kB │ gzip:  5.54 kB
+node_modules/.nitro/vite/services/ssr/assets/neon-canvas-CIMWvc7r.js                  25.29 kB │ gzip:  6.16 kB
+node_modules/.nitro/vite/services/ssr/assets/future-forward-CxOfEu_E.js               25.44 kB │ gzip:  6.52 kB
+node_modules/.nitro/vite/services/ssr/assets/vibrant-glass-Cu0ewuvQ.js                26.71 kB │ gzip:  6.53 kB
+node_modules/.nitro/vite/services/ssr/assets/liquid-lens-Dz7rNNwj.js                  27.31 kB │ gzip:  7.78 kB
+node_modules/.nitro/vite/services/ssr/assets/sterling-SYFXMyTL.js                     28.13 kB │ gzip:  6.15 kB
+node_modules/.nitro/vite/services/ssr/assets/lumina-med-CovFYtcs.js                   29.24 kB │ gzip:  7.65 kB
+node_modules/.nitro/vite/services/ssr/assets/data-scientist-CSCcQAhR.js               30.17 kB │ gzip:  8.03 kB
+node_modules/.nitro/vite/services/ssr/assets/blueprint-sphere-main-Bw0xjlih.js        36.45 kB │ gzip:  8.40 kB
+node_modules/.nitro/vite/services/ssr/assets/routes-B_JBBU3r.js                       39.91 kB │ gzip:  7.66 kB
+node_modules/.nitro/vite/services/ssr/assets/portfolio-builder-KFborIei.js            43.16 kB │ gzip:  9.74 kB
+node_modules/.nitro/vite/services/ssr/assets/vendor-misc-BV3-XLoM.js                  67.50 kB │ gzip: 17.30 kB
+node_modules/.nitro/vite/services/ssr/assets/cv-studio-BR4LMzVV.js                   122.09 kB │ gzip: 19.19 kB
+
+[33m[PLUGIN_TIMINGS] [0mYour build spent significant time in plugins. Here is a breakdown:
+  - tanstack-start-core:import-protection (32%)
+  - tanstack-start-core:import-protection-transform-cache (22%)
+  - vite-tsconfig-paths (20%)
+  - tanstack-router:code-splitter:compile-reference-file (11%)
+  - tanstack-start-core::server-fn:ssr (5%)
+See https://rolldown.rs/reference/InputOptions.checks#plugintimings for more details.
+
+✓ built in 4.70s
+
+[nitro] ◐ Building [Nitro] (preset: cloudflare-module, compatibility: 2026-07-24)
+[nitro] ✔ Generated public .output/public
+vite v8.1.4 building nitro environment for production...
+
+ WARN  inlineDynamicImports option is ignored because the codeSplitting option is specified.
+
+
+ WARN  manualChunks option is ignored because the codeSplitting option is specified.
+
+[2Ktransforming...✓ 2972 modules transformed.
+rendering chunks...
+computing gzip size...
+.output/server/_ssr/supabase-CeCbonsJ.mjs                   0.36 kB │ gzip:   0.24 kB
+.output/server/_libs/babel__runtime.mjs                     0.39 kB │ gzip:   0.26 kB
+.output/server/_ssr/rolldown-runtime-D7D4PA-g.mjs           0.41 kB │ gzip:   0.29 kB
+.output/server/_chunks/ssr-renderer.mjs                     0.60 kB │ gzip:   0.36 kB
+.output/server/_ssr/start-Dp3GavfG.mjs                      0.69 kB │ gzip:   0.42 kB
+.output/server/_libs/hookable.mjs                           1.16 kB │ gzip:   0.51 kB
+.output/server/_ssr/vendor-router-DWp4Tfp2.mjs              1.29 kB │ gzip:   0.56 kB
+.output/server/_ssr/pdf-extractor-Cier3eZe.mjs              1.34 kB │ gzip:   0.73 kB
+.output/server/_ssr/use-auth-BQhLl2dC.mjs                   1.59 kB │ gzip:   0.69 kB
+.output/server/_runtime.mjs                                 1.75 kB │ gzip:   0.79 kB
+.output/server/_ssr/HeroScene-BVP1aXxG.mjs                  2.10 kB │ gzip:   0.79 kB
+.output/server/_ssr/server-fns-D5_1QkQM.mjs                 2.14 kB │ gzip:   0.82 kB
+.output/server/_ssr/ProgressShape-A3oAcQKW.mjs              2.61 kB │ gzip:   0.96 kB
+.output/server/_libs/embla-carousel-react+[...].mjs         3.11 kB │ gzip:   1.02 kB
+.output/server/_ssr/ssr.mjs                                 3.38 kB │ gzip:   1.47 kB
+.output/server/_ssr/DnaScene-BZ9EK8YG.mjs                   3.40 kB │ gzip:   1.22 kB
+.output/server/_ssr/HeroScene-DnJLAaIe.mjs                  4.08 kB │ gzip:   1.26 kB
+.output/server/_ssr/KineticHero-J4t6UaP3.mjs                5.63 kB │ gzip:   1.89 kB
+.output/server/_tanstack-start-manifest_v-BZPFwhen.mjs      5.98 kB │ gzip:   1.14 kB
+.output/server/_libs/tanstack__react-query.mjs              6.32 kB │ gzip:   1.78 kB
+.output/server/_ssr/login-BhdHxnVw.mjs                      7.86 kB │ gzip:   2.15 kB
+.output/server/_libs/h3-v2+rou3.mjs                         9.81 kB │ gzip:   3.05 kB
+.output/server/_ssr/forgot-password-Dhsalazs.mjs           10.02 kB │ gzip:   2.70 kB
+.output/server/_ssr/signup-DsGyIWCS.mjs                    10.03 kB │ gzip:   2.48 kB
+.output/server/_libs/react-to-print.mjs                    11.85 kB │ gzip:   4.35 kB
+.output/server/_libs/tanstack__history.mjs                 12.09 kB │ gzip:   3.48 kB
+.output/server/_libs/supabase__functions-js.mjs            12.11 kB │ gzip:   3.31 kB
+.output/server/_ssr/server-fns-BZSUqFco.mjs                13.48 kB │ gzip:   4.64 kB
+.output/server/_libs/h3+rou3+srvx.mjs                      14.88 kB │ gzip:   4.42 kB
+.output/server/_ssr/lumina-dj99AKyT.mjs                    16.38 kB │ gzip:   4.06 kB
+.output/server/_ssr/biotech-WQoDv0N9.mjs                   17.49 kB │ gzip:   4.45 kB
+.output/server/_ssr/architect-BszGuZok.mjs                 17.86 kB │ gzip:   4.33 kB
+.output/server/_ssr/vogue-COJVFq8u.mjs                     18.27 kB │ gzip:   4.50 kB
+.output/server/index.mjs                                   19.75 kB │ gzip:   5.54 kB
+.output/server/_ssr/router-Bn5hZDex.mjs                    20.43 kB │ gzip:   4.65 kB
+.output/server/_ssr/settings-C8h4uqBo.mjs                  20.72 kB │ gzip:   4.66 kB
+.output/server/_ssr/dashboard-Cu_CUdPs.mjs                 25.08 kB │ gzip:   5.42 kB
+.output/server/_ssr/kinetic-ink-main-B9bjFKeW.mjs          25.27 kB │ gzip:   6.16 kB
+.output/server/_ssr/golden-legacy-DKVz3FX8.mjs             26.73 kB │ gzip:   5.67 kB
+.output/server/_ssr/neon-canvas-CIMWvc7r.mjs               28.21 kB │ gzip:   6.30 kB
+.output/server/_ssr/future-forward-CxOfEu_E.mjs            28.59 kB │ gzip:   6.71 kB
+.output/server/_ssr/vibrant-glass-Cu0ewuvQ.mjs             29.65 kB │ gzip:   6.67 kB
+.output/server/_ssr/liquid-lens-Dz7rNNwj.mjs               30.55 kB │ gzip:   7.92 kB
+.output/server/_ssr/sterling-SYFXMyTL.mjs                  32.01 kB │ gzip:   6.31 kB
+.output/server/_ssr/lumina-med-CovFYtcs.mjs                32.94 kB │ gzip:   7.80 kB
+.output/server/_ssr/data-scientist-CSCcQAhR.mjs            33.42 kB │ gzip:   8.15 kB
+.output/server/_libs/supabase__supabase-js.mjs             34.04 kB │ gzip:   9.92 kB
+.output/server/_libs/lucide-react.mjs                      34.83 kB │ gzip:   7.07 kB
+.output/server/_ssr/blueprint-sphere-main-Bw0xjlih.mjs     41.91 kB │ gzip:   8.58 kB
+.output/server/_libs/embla-carousel.mjs                    43.12 kB │ gzip:  10.75 kB
+.output/server/_ssr/routes-B_JBBU3r.mjs                    45.54 kB │ gzip:   7.88 kB
+.output/server/_ssr/portfolio-builder-KFborIei.mjs         47.32 kB │ gzip:   9.96 kB
+.output/server/_libs/supabase__phoenix.mjs                 49.12 kB │ gzip:  12.36 kB
+.output/server/_libs/sonner.mjs                            51.96 kB │ gzip:  11.78 kB
+.output/server/_libs/tanstack__query-core.mjs              62.61 kB │ gzip:  13.45 kB
+.output/server/_ssr/vendor-misc-BV3-XLoM.mjs               65.75 kB │ gzip:  17.28 kB
+.output/server/_libs/supabase__realtime-js+unenv.mjs       78.93 kB │ gzip:  20.20 kB
+.output/server/_libs/@tanstack/router-core+[...].mjs       80.17 kB │ gzip:  20.17 kB
+.output/server/_libs/zod.mjs                               99.91 kB │ gzip:  17.27 kB
+.output/server/_libs/supabase__postgrest-js.mjs           105.41 kB │ gzip:  21.66 kB
+.output/server/_libs/@supabase/storage-js+[...].mjs       118.93 kB │ gzip:  22.09 kB
+.output/server/_ssr/cv-studio-BR4LMzVV.mjs                141.18 kB │ gzip:  19.67 kB
+.output/server/_libs/supabase__auth-js+tslib.mjs          301.84 kB │ gzip:  60.25 kB
+.output/server/_libs/framer-motion.mjs                    385.73 kB │ gzip: 100.80 kB
+.output/server/_libs/@react-three/drei+[...].mjs          655.07 kB │ gzip: 167.25 kB
+.output/server/_libs/@tanstack/react-router+[...].mjs     658.32 kB │ gzip: 138.75 kB
+.output/server/_libs/pdfjs-dist.mjs                       716.54 kB │ gzip: 160.30 kB
+.output/server/_libs/@monogrid/gainmap-js+[...].mjs     1,911.08 kB │ gzip: 377.31 kB
+
+✓ built in 2.36s
+[nitro] ℹ Using auto generated worker name: montassar2001-cv-portfolio
+ℹ Generated .output/server/wrangler.json
+ℹ Generated .wrangler/deploy/config.json
+ℹ Generated .output/public/_headers
+ℹ Generated .output/nitro.json
+
+[nitro] ✔ You can preview this build using npx vite preview
+[nitro] ✔ You can deploy this build using npx nitro deploy --prebuilt

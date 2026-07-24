@@ -33,7 +33,7 @@ export function StepTemplate({
       </div>
 
       {/* Grid */}
-      <div className="grid grid-cols-5 gap-3">
+      <div className="grid grid-cols-3 gap-6">
         {TEMPLATES.map((t, i) => {
           const isSel = t.id === selected;
           return (
@@ -43,7 +43,7 @@ export function StepTemplate({
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.07, duration: 0.5 }}
                 onClick={() => setSelected(t.id)}
-                className="relative cursor-pointer overflow-hidden rounded-2xl transition-all duration-500"
+                className="relative cursor-pointer overflow-hidden rounded-2xl transition-all duration-500 h-full flex flex-col"
                 style={{
                   boxShadow: isSel
                     ? `0 20px 60px oklch(0.75 0.22 ${t.hue} / 0.45)`
@@ -53,7 +53,7 @@ export function StepTemplate({
                     : "1px solid oklch(1 0 0 / 0.08)",
                 }}
               >
-                <div className="relative h-32 overflow-hidden">
+                <div className="relative h-48 overflow-hidden shrink-0">
                   <img
                     src={t.img}
                     alt={t.label}
@@ -79,27 +79,39 @@ export function StepTemplate({
                     <motion.div
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
-                      className="absolute top-2 right-2 flex h-5 w-5 items-center justify-center rounded-full"
+                      className="absolute top-3 right-3 flex h-6 w-6 items-center justify-center rounded-full"
                       style={{ background: `oklch(0.75 0.22 ${t.hue})` }}
                     >
-                      <CheckCircle2 size={11} className="text-white" />
+                      <CheckCircle2 size={14} className="text-white" />
                     </motion.div>
                   )}
                   {/* External preview link */}
                   <Link
-                    to={`/templates/${t.id}` as "/templates/vogue"}
+                    to={`/templates/${t.id}`}
                     target="_blank"
                     onClick={(e) => e.stopPropagation()}
-                    className="absolute bottom-2 right-2 flex h-6 w-6 items-center justify-center rounded-full bg-black/60 text-white/60 backdrop-blur transition hover:text-white"
+                    className="absolute bottom-3 right-3 flex h-8 w-8 items-center justify-center rounded-full bg-black/60 text-white/60 backdrop-blur transition hover:text-white hover:bg-black/80"
                   >
-                    <ExternalLink size={10} />
+                    <ExternalLink size={14} />
                   </Link>
                 </div>
 
-                <div className="bg-black/60 p-3 backdrop-blur-sm">
-                  <p className="text-xs font-bold text-white">{t.label}</p>
-                  <p className="mt-0.5 text-[9px] uppercase tracking-wider text-white/40">
-                    {t.tag}
+                <div className="flex-1 bg-black/80 p-5 backdrop-blur-md flex flex-col">
+                  <div className="flex items-start justify-between mb-2">
+                    <h3 className="text-lg font-bold text-white font-display tracking-tight">{t.label}</h3>
+                    <span 
+                      className="inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-semibold tracking-wide"
+                      style={{
+                        background: `oklch(0.75 0.22 ${t.hue} / 0.15)`,
+                        border: `1px solid oklch(0.75 0.22 ${t.hue} / 0.3)`,
+                        color: `oklch(0.85 0.2 ${t.hue})`
+                      }}
+                    >
+                      {t.target_audience}
+                    </span>
+                  </div>
+                  <p className="text-xs text-white/60 leading-relaxed mt-1">
+                    {t.description}
                   </p>
                 </div>
               </motion.div>
@@ -126,7 +138,7 @@ export function StepTemplate({
           />
           <p className="text-sm text-white/70">
             <span className="font-semibold text-white">{active.label}</span> ·{" "}
-            <span className="italic text-white/50">{active.tag}</span>
+            <span className="italic text-white/50">{active.description}</span>
           </p>
         </div>
       </motion.div>
