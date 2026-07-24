@@ -33,6 +33,7 @@ interface DeploymentRow {
   deployed_url: string;
   template_id: string;
   created_at: string;
+  source: "cvs" | "portfolios";
 }
 
 /* ─── Helpers ───────────────────────────────────────────────────────────── */
@@ -170,10 +171,10 @@ function DeploymentHistory({
               Build and deploy your first portfolio to see it here.
             </p>
             <Link
-              to="/portfolio-builder"
+              to="/cv-studio"
               className="mt-1 inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-xs font-semibold text-foreground/70 transition hover:bg-white/10 hover:text-foreground"
             >
-              <Rocket size={12} /> Deploy a portfolio
+              <Rocket size={12} /> Create New Portfolio
             </Link>
           </div>
         ) : (
@@ -249,16 +250,39 @@ function DeploymentHistory({
                           </span>
                         </td>
 
-                        {/* Open button */}
+                        {/* Open / Delete buttons */}
                         <td className="px-6 py-4 text-right">
-                          <a
-                            href={d.deployed_url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex h-7 w-7 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-muted-foreground/50 opacity-0 transition group-hover:opacity-100 hover:bg-white/10 hover:text-foreground"
-                          >
-                            <ExternalLink size={12} />
-                          </a>
+                          <div className="flex items-center justify-end gap-2 opacity-0 transition group-hover:opacity-100">
+                            <button
+                              onClick={async () => {
+                                if (!confirm("Are you sure you want to unpublish this portfolio?")) return;
+                                if (d.source === "portfolios") {
+                                  await supabase.from("portfolios").delete().eq("id", d.id);
+                                } else if (d.source === "cvs") {
+                                  // For CVS, we just remove the publishMeta
+                                  const { data: cv } = await supabase.from("cvs").select("cv_data_json").eq("id", d.id).single();
+                                  if (cv && cv.cv_data_json) {
+                                    const newData = { ...cv.cv_data_json };
+                                    delete newData.publishMeta;
+                                    await supabase.from("cvs").update({ cv_data_json: newData }).eq("id", d.id);
+                                  }
+                                }
+                                toast.success("Portfolio unpublished");
+                                window.location.reload();
+                              }}
+                              className="inline-flex h-7 px-2 items-center justify-center rounded-lg border border-white/10 bg-rose-500/10 text-rose-400 text-[10px] hover:bg-rose-500/20"
+                            >
+                              Delete
+                            </button>
+                            <a
+                              href={d.deployed_url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex h-7 px-2 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-muted-foreground/80 hover:bg-white/10 hover:text-foreground text-[10px]"
+                            >
+                              <ExternalLink size={12} className="mr-1" /> View Live
+                            </a>
+                          </div>
                         </td>
                       </motion.tr>
                     );
@@ -300,20 +324,14 @@ function DashboardPage() {
     async function fetchStats() {
       setStatsLoading(true);
       try {
-        const [cvRes, portfolioRes, allPortfoliosRes] = await Promise.all([
-          // Count saved CVs
+        const [cvsRes, allPortfoliosRes] = await Promise.all([
+          // Get saved CVs
           supabase
             .from("cvs")
-            .select("id", { count: "exact", head: true })
+            .select("id, cv_data_json, updated_at")
             .eq("user_id", user!.id),
 
-          // Count deployed portfolios
-          supabase
-            .from("portfolios")
-            .select("id", { count: "exact", head: true })
-            .eq("user_id", user!.id),
-
-          // All portfolios for history table + latest banner
+          // Get legacy portfolios
           supabase
             .from("portfolios")
             .select("id, deployed_url, template_id, created_at")
@@ -321,18 +339,47 @@ function DashboardPage() {
             .order("created_at", { ascending: false }),
         ]);
 
-        // Surface errors via toast instead of silent swallow
-        if (cvRes.error) throw cvRes.error;
-        if (portfolioRes.error) throw portfolioRes.error;
+        if (cvsRes.error) throw cvsRes.error;
         if (allPortfoliosRes.error) throw allPortfoliosRes.error;
 
-        const rows = (allPortfoliosRes.data ?? []) as DeploymentRow[];
+        const rows: DeploymentRow[] = [];
+
+        // Parse legacy portfolios
+        if (allPortfoliosRes.data) {
+          rows.push(...allPortfoliosRes.data.map(p => ({
+            id: p.id,
+            deployed_url: p.deployed_url.startsWith("http") ? p.deployed_url : window.location.origin + p.deployed_url,
+            template_id: p.template_id,
+            created_at: p.created_at,
+            source: "portfolios" as const,
+          })));
+        }
+
+        // Parse modern CVs
+        if (cvsRes.data) {
+          cvsRes.data.forEach(c => {
+            const pm = c.cv_data_json?.publishMeta;
+            if (pm && pm.url) {
+              rows.push({
+                id: c.id,
+                deployed_url: pm.url.startsWith("http") ? pm.url : window.location.origin + pm.url,
+                template_id: pm.templateId || "modern",
+                created_at: pm.publishedAt || c.updated_at,
+                source: "cvs" as const,
+              });
+            }
+          });
+        }
+
+        // Sort combined array
+        rows.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+        
         const latest = rows[0] ?? null;
 
         setDeployments(rows);
         setStats({
-          cvCount: cvRes.count ?? 0,
-          portfolioCount: portfolioRes.count ?? 0,
+          cvCount: cvsRes.data?.length ?? 0,
+          portfolioCount: rows.length,
           latestPortfolioUrl: latest?.deployed_url ?? null,
           latestPortfolioTemplate: latest?.template_id ?? null,
           lastActivityAt: latest?.created_at ?? null,

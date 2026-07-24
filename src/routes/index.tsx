@@ -3,7 +3,7 @@ import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion
 import { memo, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
-import { Loader2 } from "lucide-react";
+import { Loader2, Upload, Bot, Rocket, CheckCircle2, Layers, ExternalLink } from "lucide-react";
 
 /* ── SWR Data Fetching ── */
 function useLandingData() {
@@ -308,12 +308,13 @@ function Hero() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-          className="mt-6 font-display text-[13vw] leading-[0.95] font-bold tracking-tight sm:text-7xl lg:text-8xl"
+          className="mt-6 font-display text-[11vw] leading-[0.95] font-bold tracking-tight sm:text-7xl lg:text-8xl"
           style={{ willChange: "opacity, transform" }}
         >
-          Your Career,
+          Turn your CV into a
           <br />
-          <span className="text-gradient">Engineered by AI.</span>
+          <span className="text-gradient">3D Portfolio</span>
+          {" "}in seconds.
         </motion.h1>
 
         <motion.p
@@ -322,7 +323,7 @@ function Hero() {
           transition={{ delay: 0.3, duration: 0.7 }}
           className="mx-auto mt-6 max-w-2xl text-base text-muted-foreground sm:text-lg"
         >
-          Autonomous agents that craft your perfect CV and instantly deploy your dynamic web portfolio to the cloud.
+          Powered by AI. No coding required. Stand out to recruiters instantly with a live, edge-deployed portfolio site that renders your premium 3D template in milliseconds.
         </motion.p>
 
         <motion.div
@@ -331,12 +332,12 @@ function Hero() {
           transition={{ delay: 0.5, duration: 0.7 }}
           className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row"
         >
-          <a href="#pricing" className="btn-kinetic glow-pulse group relative inline-flex items-center gap-2 rounded-2xl px-7 py-4 font-display text-base font-semibold">
+          <Link to="/cv-studio" className="btn-kinetic glow-pulse group relative inline-flex items-center gap-2 rounded-2xl px-7 py-4 font-display text-base font-semibold">
             <span className="btn-kinetic-sweep" />
-            <span className="relative z-10">Start building</span>
+            <span className="relative z-10">Start Building for Free</span>
             <span className="relative z-10 transition-transform group-hover:translate-x-1">→</span>
-          </a>
-          <a href="#features" className="glass rounded-2xl px-6 py-4 font-display text-sm font-semibold text-foreground/90 transition hover:text-foreground">
+          </Link>
+          <a href="#how-it-works" className="glass rounded-2xl px-6 py-4 font-display text-sm font-semibold text-foreground/90 transition hover:text-foreground">
             See how it works
           </a>
         </motion.div>
@@ -469,6 +470,216 @@ function SplitPath() {
             </KineticBorder>
           </motion.div>
         </div>
+      </div>
+    </section>
+  );
+}
+
+/* ─── How It Works ──────────────────────────────────────────────────────── */
+function HowItWorks() {
+  const steps = [
+    {
+      icon: Upload,
+      n: "01",
+      title: "Upload Your CV",
+      body: "Drag & drop your PDF resume or paste raw text. Our extractor handles any format — multipage, multi-column, DOCX converted to PDF.",
+      hue: "270",
+    },
+    {
+      icon: Bot,
+      n: "02",
+      title: "AI Structures Your Data",
+      body: "Groq LLaMA 3.3 extracts your name, experience, projects, skills, and education into a strict typed JSON payload — the source of truth for every template.",
+      hue: "210",
+    },
+    {
+      icon: Rocket,
+      n: "03",
+      title: "Deploy to Global Edge",
+      body: "Pick a premium 3D template — Blueprint Sphere, Vibrant Glass, Neon Canvas, and more. Hit publish and get a permanent shareable URL in under 3 seconds.",
+      hue: "150",
+    },
+  ];
+
+  return (
+    <section id="how-it-works" className="relative py-28 sm:py-36">
+      <div className="mx-auto max-w-6xl px-6">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }} transition={{ duration: 0.7 }}
+          className="mx-auto max-w-2xl text-center"
+        >
+          <div className="text-xs uppercase tracking-[0.3em] text-muted-foreground">How it works</div>
+          <h2 className="mt-4 font-display text-4xl font-bold tracking-tight sm:text-5xl">
+            Three steps to <span className="text-gradient">go live.</span>
+          </h2>
+          <p className="mt-4 text-sm text-muted-foreground">
+            From raw PDF to published 3D portfolio — no configuration, no hosting decisions, no code.
+          </p>
+        </motion.div>
+
+        <div className="mt-16 grid gap-6 sm:grid-cols-3">
+          {steps.map((s, i) => {
+            const Icon = s.icon;
+            return (
+              <motion.div
+                key={s.n}
+                initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }} transition={{ delay: i * 0.12, duration: 0.7 }}
+                whileHover={{ y: -6 }}
+                className="glass-strong relative overflow-hidden rounded-3xl p-8"
+              >
+                {/* background hue glow */}
+                <div
+                  className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full"
+                  style={{ background: `radial-gradient(circle, oklch(0.75 0.22 ${s.hue} / 0.25), transparent 70%)`, filter: "blur(24px)" }}
+                />
+                {/* step number */}
+                <div className="absolute right-6 top-6 font-display text-5xl font-bold tracking-tight"
+                  style={{ color: `oklch(0.75 0.22 ${s.hue} / 0.12)` }}>
+                  {s.n}
+                </div>
+                <div
+                  className="relative mb-5 flex h-12 w-12 items-center justify-center rounded-2xl"
+                  style={{
+                    background: `oklch(0.75 0.22 ${s.hue} / 0.15)`,
+                    border: `1px solid oklch(0.75 0.22 ${s.hue} / 0.35)`,
+                  }}
+                >
+                  <Icon size={22} style={{ color: `oklch(0.85 0.2 ${s.hue})` }} />
+                </div>
+                <h3 className="relative font-display text-xl font-semibold tracking-tight">{s.title}</h3>
+                <p className="relative mt-3 text-sm text-muted-foreground leading-relaxed">{s.body}</p>
+                <div className="relative mt-6 h-px w-full" style={{ background: `linear-gradient(90deg, oklch(0.75 0.22 ${s.hue} / 0.4), transparent)` }} />
+                <div className="relative mt-4 flex items-center gap-2 text-xs font-semibold" style={{ color: `oklch(0.85 0.2 ${s.hue})` }}>
+                  <CheckCircle2 size={13} /> Step {parseInt(s.n)} complete
+                </div>
+              </motion.div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ─── Template Showcase ─────────────────────────────────────────────────── */
+function TemplateShowcase() {
+  const templates = [
+    { id: "blueprint-sphere-main", name: "Blueprint Sphere", tag: "3D Interactive", hue: "270", desc: "Immersive Three.js globe with orbital navigation and particle systems." },
+    { id: "vibrant-glass", name: "Vibrant Glass", tag: "Glassmorphism", hue: "210", desc: "Layered backdrop-blur panels with vibrant gradient light sources." },
+    { id: "neon-canvas", name: "Neon Canvas", tag: "Dark & Bold", hue: "300", desc: "High-contrast neon typography over animated scanline backgrounds." },
+    { id: "golden-legacy", name: "Golden Legacy", tag: "Elegant", hue: "45", desc: "Warm gold serif typography — timeless, editorial, print-ready." },
+    { id: "data-scientist", name: "Data Scientist", tag: "Technical", hue: "180", desc: "Monospace grids, live chart aesthetics, and metric-first hierarchy." },
+    { id: "future-forward", name: "Future Forward", tag: "Futuristic", hue: "230", desc: "Holographic UI elements with depth-of-field blur and aurora glows." },
+  ];
+
+  return (
+    <section id="templates" className="relative py-28 sm:py-36">
+      <div className="mx-auto max-w-6xl px-6">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }} transition={{ duration: 0.7 }}
+          className="mx-auto max-w-2xl text-center"
+        >
+          <div className="text-xs uppercase tracking-[0.3em] text-muted-foreground">Template Gallery</div>
+          <h2 className="mt-4 font-display text-4xl font-bold tracking-tight sm:text-5xl">
+            9 premium templates. <span className="text-gradient">Zero compromises.</span>
+          </h2>
+          <p className="mt-4 text-sm text-muted-foreground">
+            Every template is a fully interactive React application, not a static page. Pick yours in the Studio — you can switch anytime without losing your data.
+          </p>
+        </motion.div>
+
+        <div className="mt-16 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {templates.map((t, i) => (
+            <motion.div
+              key={t.id}
+              initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }} transition={{ delay: i * 0.07, duration: 0.6 }}
+              className="group relative overflow-hidden rounded-3xl border border-white/8 bg-white/[0.03] p-6 transition-all duration-300 hover:-translate-y-2 hover:border-white/20 hover:shadow-[0_0_40px_oklch(0.75_0.22_var(--t-hue)/0.15)]"
+              style={{ "--t-hue": t.hue } as React.CSSProperties}
+            >
+              {/* ambient glow */}
+              <div
+                className="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+                style={{ background: `radial-gradient(circle, oklch(0.75 0.22 ${t.hue} / 0.3), transparent 70%)`, filter: "blur(20px)" }}
+              />
+              {/* header */}
+              <div className="flex items-start justify-between">
+                <div
+                  className="flex h-10 w-10 items-center justify-center rounded-xl"
+                  style={{
+                    background: `oklch(0.75 0.22 ${t.hue} / 0.15)`,
+                    border: `1px solid oklch(0.75 0.22 ${t.hue} / 0.3)`,
+                  }}
+                >
+                  <Layers size={18} style={{ color: `oklch(0.85 0.2 ${t.hue})` }} />
+                </div>
+                <span
+                  className="rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-widest"
+                  style={{
+                    background: `oklch(0.75 0.22 ${t.hue} / 0.12)`,
+                    color: `oklch(0.85 0.2 ${t.hue})`,
+                    border: `1px solid oklch(0.75 0.22 ${t.hue} / 0.25)`,
+                  }}
+                >
+                  {t.tag}
+                </span>
+              </div>
+              {/* mock viewport */}
+              <div className="mt-4 h-28 overflow-hidden rounded-xl border border-white/8 bg-white/[0.03]">
+                <div className="flex h-4 items-center gap-1 border-b border-white/5 px-2">
+                  <span className="h-1.5 w-1.5 rounded-full bg-white/15" />
+                  <span className="h-1.5 w-1.5 rounded-full bg-white/15" />
+                  <span className="h-1.5 w-1.5 rounded-full bg-white/15" />
+                  <span className="ml-1 h-1 w-20 rounded bg-white/8" />
+                </div>
+                <div className="grid grid-cols-6 gap-1 p-2">
+                  {Array.from({ length: 12 }).map((_, j) => (
+                    <div
+                      key={j}
+                      className="aspect-square rounded"
+                      style={{
+                        background: j % 4 === 0 ? `oklch(0.75 0.22 ${t.hue} / 0.4)` : "oklch(1 0 0 / 0.05)",
+                        border: "1px solid oklch(1 0 0 / 0.07)",
+                      }}
+                    />
+                  ))}
+                </div>
+                <div className="space-y-1 px-2">
+                  <div className="h-1.5 w-3/4 rounded" style={{ background: `oklch(0.75 0.22 ${t.hue} / 0.3)` }} />
+                  <div className="h-1.5 w-1/2 rounded bg-white/10" />
+                </div>
+              </div>
+              {/* info */}
+              <h3 className="mt-4 font-display text-base font-semibold">{t.name}</h3>
+              <p className="mt-1 text-xs text-muted-foreground leading-relaxed">{t.desc}</p>
+              {/* CTA */}
+              <Link
+                to="/cv-studio"
+                className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 py-2.5 text-xs font-semibold text-foreground/70 opacity-0 transition-all duration-300 group-hover:opacity-100 hover:bg-white/10 hover:text-foreground"
+              >
+                <ExternalLink size={12} /> Use this template
+              </Link>
+            </motion.div>
+          ))}
+        </div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }} transition={{ delay: 0.4, duration: 0.6 }}
+          className="mt-12 text-center"
+        >
+          <Link
+            to="/cv-studio"
+            className="btn-kinetic glow-pulse group relative inline-flex items-center gap-2 rounded-2xl px-8 py-4 font-display text-sm font-semibold"
+          >
+            <span className="btn-kinetic-sweep" />
+            <span className="relative z-10">Browse all templates in the Studio</span>
+            <span className="relative z-10 transition-transform group-hover:translate-x-1">→</span>
+          </Link>
+        </motion.div>
       </div>
     </section>
   );
@@ -697,11 +908,14 @@ const TierBody = memo(function TierBody({ t }: { t: { name: string; price: strin
           </li>
         ))}
       </ul>
-      <button className={`mt-10 w-full rounded-2xl py-4 font-display text-sm font-semibold transition ${
-        t.highlight ? "btn-kinetic glow-pulse" : "glass hover:bg-white/[0.08]"
-      }`}>
+      <Link
+        to="/signup"
+        className={`mt-10 flex w-full items-center justify-center rounded-2xl py-4 font-display text-sm font-semibold transition ${
+          t.highlight ? "btn-kinetic glow-pulse" : "glass hover:bg-white/[0.08]"
+        }`}
+      >
         <span className="relative z-10">{t.cta}</span>
-      </button>
+      </Link>
     </div>
   );
 });
@@ -730,7 +944,9 @@ function Landing() {
       <style dangerouslySetInnerHTML={{ __html: PERF_STYLES }} />
       <Nav />
       <Hero />
+      <HowItWorks />
       <SplitPath />
+      <TemplateShowcase />
       <Dashboard />
       <Pricing />
       <Footer />
