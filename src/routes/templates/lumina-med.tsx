@@ -12,7 +12,7 @@ export const Route = createFileRoute("/templates/lumina-med")({
   component: Index,
 });
 
-function Index({ data }: { data?: PortfolioData }) {
+export function Index({ data }: { data?: PortfolioData }) {
   return (
     <motion.main
       initial={{ opacity: 0, filter: "blur(10px)" }}

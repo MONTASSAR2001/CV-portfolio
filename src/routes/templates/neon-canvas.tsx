@@ -89,7 +89,7 @@ function useHydrated() {
   return h;
 }
 
-function Index({ data }: { data?: PortfolioData }) {
+export function Index({ data }: { data?: PortfolioData }) {
   const hydrated = useHydrated();
   const scrollerRef = useRef<HTMLDivElement>(null);
   const projectsRef = useRef<HTMLDivElement>(null);

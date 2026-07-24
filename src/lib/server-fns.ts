@@ -401,8 +401,9 @@ export const publishPremiumPortfolio = createServerFn({ method: "POST" })
     await new Promise((resolve) => setTimeout(resolve, 3000));
 
     const name = data.data?.personalInfo?.name || data.data?.personalInfo?.fullName || "user";
-    const slug = name.toLowerCase().replace(/[^a-z0-9]/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "");
+    const baseSlug = name.toLowerCase().replace(/[^a-z0-9]/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "");
     const randomHash = Math.random().toString(36).substring(2, 6);
+    const slug = `${baseSlug}-${randomHash}`;
 
-    return { url: `https://${slug}-${randomHash}.careeros.com` };
+    return { url: `/p/${slug}`, slug };
   });

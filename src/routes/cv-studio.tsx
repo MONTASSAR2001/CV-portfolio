@@ -184,7 +184,7 @@ function CvStudioPage() {
     try {
       setTimeout(() => toast.loading("Deploying to Vercel...", { id: toastId }), 1200);
       
-      const { url } = await publishPremiumPortfolio({
+      const { url, slug } = await publishPremiumPortfolio({
         data: {
           data: cvData,
           templateId: activeTemplate,
@@ -192,9 +192,23 @@ function CvStudioPage() {
         }
       });
       
+      const updatedCvData = {
+        ...cvData,
+        publishMeta: {
+          slug,
+          url,
+          templateId: activeTemplate,
+          publishedAt: new Date().toISOString()
+        }
+      };
+      
       // Update DB to mark as published
       await supabase.from("cvs").upsert(
-        { user_id: user.id, cv_data_json: cvData, published_url: url, updated_at: new Date().toISOString() },
+        { 
+          user_id: user.id, 
+          cv_data_json: updatedCvData, 
+          updated_at: new Date().toISOString() 
+        },
         { onConflict: "user_id" }
       );
       
@@ -206,12 +220,12 @@ function CvStudioPage() {
         <div className="flex flex-col gap-2">
           <span className="font-semibold text-emerald-400">Live! Portfolio published.</span>
           <div className="flex gap-2 mt-1">
-            <button onClick={() => { navigator.clipboard.writeText(url); toast.success("Copied!"); }} className="flex items-center gap-1 rounded bg-white/10 px-2 py-1 text-[11px] hover:bg-white/20">
+            <button onClick={() => { navigator.clipboard.writeText(window.location.origin + url); toast.success("Copied!"); }} className="flex items-center gap-1 rounded bg-white/10 px-2 py-1 text-[11px] hover:bg-white/20">
               <Copy size={11} /> Copy Link
             </button>
-            <a href={url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 rounded bg-violet-500/20 px-2 py-1 text-[11px] text-violet-300 hover:bg-violet-500/30">
+            <Link to={url} target="_blank" className="flex items-center gap-1 rounded bg-violet-500/20 px-2 py-1 text-[11px] text-violet-300 hover:bg-violet-500/30">
               <ExternalLink size={11} /> Visit
-            </a>
+            </Link>
           </div>
         </div>,
         { id: toastId, duration: 10000 }

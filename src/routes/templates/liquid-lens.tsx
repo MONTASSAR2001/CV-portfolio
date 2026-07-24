@@ -28,7 +28,7 @@ export const Route = createFileRoute("/templates/liquid-lens")({
   component: Index,
 });
 
-function Index({ data }: { data?: PortfolioData }) {
+export function Index({ data }: { data?: PortfolioData }) {
   const name = data?.personalInfo?.name ?? "A. Vela";
   const bio = data?.personalInfo?.bio ?? "I make images that breathe — slow, deliberate, cut from shadow. Fifteen years behind the lens, from Panavision on a 65mm dolly to a Leica in the rain.";
   const email = data?.personalInfo?.email ?? "hello@studionoir.film";

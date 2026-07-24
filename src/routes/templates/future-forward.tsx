@@ -218,7 +218,7 @@ function HeroFallback() {
   );
 }
 
-function Index({ data }: { data?: PortfolioData }) {
+export function Index({ data }: { data?: PortfolioData }) {
   const name = data?.personalInfo?.name ?? "Yassine";
   const bio = data?.personalInfo?.bio ?? "Telecom & electronics engineering student at the École Nationale d'Électronique et des Télécommunications de Sfax. Building embedded systems, AI projects, and — this summer — defending the Smart Bella robot.";
   const role = data?.personalInfo?.role ?? "Growing into what's next.";

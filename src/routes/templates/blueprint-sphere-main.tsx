@@ -405,7 +405,7 @@ function ProjectModal({ project, onClose }: { project: Project; onClose: () => v
 
 /* ---------- Page ---------- */
 
-function Portfolio({ data }: { data?: PortfolioData }) {
+export function Portfolio({ data }: { data?: PortfolioData }) {
   const [open, setOpen] = useState<Project | null>(null);
   const [view, setView] = useState<"sphere" | "hex">("sphere");
   const [clock, setClock] = useState("");

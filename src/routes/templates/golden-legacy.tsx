@@ -439,7 +439,7 @@ function Footer({ data }: { data?: PortfolioData }) {
   );
 }
 
-function Index({ data }: { data?: PortfolioData }) {
+export function Index({ data }: { data?: PortfolioData }) {
   return (
     <div className="min-h-screen bg-charcoal text-ivory">
       <Header data={data} />

@@ -31,6 +31,7 @@ import { Route as TemplatesDataScientistRouteImport } from './routes/templates/d
 import { Route as TemplatesBlueprintSphereMainRouteImport } from './routes/templates/blueprint-sphere-main'
 import { Route as TemplatesBiotechRouteImport } from './routes/templates/biotech'
 import { Route as TemplatesArchitectRouteImport } from './routes/templates/architect'
+import { Route as PSlugRouteImport } from './routes/p.$slug'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
@@ -143,6 +144,11 @@ const TemplatesArchitectRoute = TemplatesArchitectRouteImport.update({
   path: '/templates/architect',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PSlugRoute = PSlugRouteImport.update({
+  id: '/p/$slug',
+  path: '/p/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -153,6 +159,7 @@ export interface FileRoutesByFullPath {
   '/portfolio-builder': typeof PortfolioBuilderRoute
   '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
+  '/p/$slug': typeof PSlugRoute
   '/templates/architect': typeof TemplatesArchitectRoute
   '/templates/biotech': typeof TemplatesBiotechRoute
   '/templates/blueprint-sphere-main': typeof TemplatesBlueprintSphereMainRoute
@@ -177,6 +184,7 @@ export interface FileRoutesByTo {
   '/portfolio-builder': typeof PortfolioBuilderRoute
   '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
+  '/p/$slug': typeof PSlugRoute
   '/templates/architect': typeof TemplatesArchitectRoute
   '/templates/biotech': typeof TemplatesBiotechRoute
   '/templates/blueprint-sphere-main': typeof TemplatesBlueprintSphereMainRoute
@@ -202,6 +210,7 @@ export interface FileRoutesById {
   '/portfolio-builder': typeof PortfolioBuilderRoute
   '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
+  '/p/$slug': typeof PSlugRoute
   '/templates/architect': typeof TemplatesArchitectRoute
   '/templates/biotech': typeof TemplatesBiotechRoute
   '/templates/blueprint-sphere-main': typeof TemplatesBlueprintSphereMainRoute
@@ -228,6 +237,7 @@ export interface FileRouteTypes {
     | '/portfolio-builder'
     | '/settings'
     | '/signup'
+    | '/p/$slug'
     | '/templates/architect'
     | '/templates/biotech'
     | '/templates/blueprint-sphere-main'
@@ -252,6 +262,7 @@ export interface FileRouteTypes {
     | '/portfolio-builder'
     | '/settings'
     | '/signup'
+    | '/p/$slug'
     | '/templates/architect'
     | '/templates/biotech'
     | '/templates/blueprint-sphere-main'
@@ -276,6 +287,7 @@ export interface FileRouteTypes {
     | '/portfolio-builder'
     | '/settings'
     | '/signup'
+    | '/p/$slug'
     | '/templates/architect'
     | '/templates/biotech'
     | '/templates/blueprint-sphere-main'
@@ -301,6 +313,7 @@ export interface RootRouteChildren {
   PortfolioBuilderRoute: typeof PortfolioBuilderRoute
   SettingsRoute: typeof SettingsRoute
   SignupRoute: typeof SignupRoute
+  PSlugRoute: typeof PSlugRoute
   TemplatesArchitectRoute: typeof TemplatesArchitectRoute
   TemplatesBiotechRoute: typeof TemplatesBiotechRoute
   TemplatesBlueprintSphereMainRoute: typeof TemplatesBlueprintSphereMainRoute
@@ -473,6 +486,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TemplatesArchitectRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/p/$slug': {
+      id: '/p/$slug'
+      path: '/p/$slug'
+      fullPath: '/p/$slug'
+      preLoaderRoute: typeof PSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -485,6 +505,7 @@ const rootRouteChildren: RootRouteChildren = {
   PortfolioBuilderRoute: PortfolioBuilderRoute,
   SettingsRoute: SettingsRoute,
   SignupRoute: SignupRoute,
+  PSlugRoute: PSlugRoute,
   TemplatesArchitectRoute: TemplatesArchitectRoute,
   TemplatesBiotechRoute: TemplatesBiotechRoute,
   TemplatesBlueprintSphereMainRoute: TemplatesBlueprintSphereMainRoute,

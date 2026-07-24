@@ -12,7 +12,7 @@ export const Route = createFileRoute("/templates/data-scientist")({
   component: Page,
 });
 
-function Page({ data }: { data?: PortfolioData }) {
+export function Page({ data }: { data?: PortfolioData }) {
   return (
     <>
       <CyberBackground />

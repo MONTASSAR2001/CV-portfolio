@@ -92,7 +92,7 @@ const SERVICES = [
   { icon: Sparkles, title: "Brand Systems", body: "Identity, iconography, and motion language for products that need to feel alive." },
 ];
 
-function Portfolio({ data }: { data?: PortfolioData }) {
+export function Portfolio({ data }: { data?: PortfolioData }) {
   const { scrollYProgress } = useScroll();
   const heroScale = useTransform(scrollYProgress, [0, 0.2], [1, 0.9]);
   const heroOpacity = useTransform(scrollYProgress, [0, 0.25], [1, 0]);

@@ -32,7 +32,7 @@ export const Route = createFileRoute("/templates/kinetic-ink-main")({
   }),
 });
 
-function Index({ data }: { data?: PortfolioData }) {
+export function Index({ data }: { data?: PortfolioData }) {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
