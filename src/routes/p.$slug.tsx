@@ -15,26 +15,49 @@ export const Route = createFileRoute("/p/$slug")({
   loader: async ({ params }) => {
     console.log(`[Loader] Fetching portfolio data for slug: ${params.slug}`);
 
-    // We search the cvs table for a record matching the exact slug inside the JSON payload.
-    // Using explicit JSON property path matching for PostgREST.
-    const { data, error } = await supabase
+    // 1. Try fetching from the modern 'cvs' table (used by cv-studio.tsx)
+    const { data: cvData, error: cvError } = await supabase
       .from("cvs")
       .select("cv_data_json")
       .eq("cv_data_json->publishMeta->>slug", params.slug)
-      .maybeSingle(); // Use maybeSingle to prevent PGRST116 (multiple/no rows) from throwing as a hard error prematurely
+      .maybeSingle();
 
-    if (error) {
-      console.error(`[Loader] Supabase fetch error for ${params.slug}:`, error);
-      throw notFound();
+    if (cvData?.cv_data_json) {
+      return { portfolioData: cvData.cv_data_json };
     }
 
-    if (!data || !data.cv_data_json) {
-      console.warn(`[Loader] No portfolio found for slug: ${params.slug}`);
-      throw notFound();
+    // 2. Try fetching from the legacy 'portfolios' table (used by portfolio-builder.tsx)
+    const { data: legacyData, error: legacyError } = await supabase
+      .from("portfolios")
+      .select("content_json, template_id")
+      .eq("deployed_url", `/p/${params.slug}`)
+      .maybeSingle();
+
+    if (legacyData?.content_json) {
+      // Map the legacy PortfolioContent to the new PortfolioData format so templates don't crash
+      const legacyContent = legacyData.content_json;
+      const mappedData = {
+        personalInfo: {
+          name: legacyContent.headline?.split(" ")[0] || "Professional",
+          role: legacyContent.headline || "Professional",
+          bio: legacyContent.bio || "",
+          email: "",
+          socials: {}
+        },
+        experience: [],
+        projects: legacyContent.projects || [],
+        education: [],
+        skills: legacyContent.skills || [],
+        publishMeta: {
+          templateId: legacyData.template_id,
+          slug: params.slug
+        }
+      };
+      return { portfolioData: mappedData };
     }
 
-    
-    return { portfolioData: data.cv_data_json };
+    console.warn(`[Loader] No portfolio found in any table for slug: ${params.slug}`);
+    throw notFound();
   },
   component: PublishedPortfolio,
 });
