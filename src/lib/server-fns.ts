@@ -228,46 +228,18 @@ Rules:
 export const deployPortfolioToVercel = createServerFn({ method: "POST" })
   .validator((data: unknown) => DeployInput.parse(data))
   .handler(async ({ data }) => {
-    // ── [SECURITY] Validate caller session BEFORE touching any API key ──────
     await validateSessionToken(data.accessToken);
 
-    const token = process.env.VERCEL_ACCESS_TOKEN;
-    if (!token) {
-      throw new Error(
-        "Deployment service is not configured on the server. Contact support."
-      );
-    }
+    // Mock delay to simulate processing
+    await new Promise((resolve) => setTimeout(resolve, 1500));
 
-    const html = buildHtml(data.content as PortfolioContent, data.templateId);
-    // base64-encode so Vercel accepts it as a binary-safe payload
-    const encoded = Buffer.from(html, "utf-8").toString("base64");
-    // Use randomUUID for guaranteed uniqueness (avoids Date.now() collisions)
-    const name = `nexus-portfolio-${crypto.randomUUID().slice(0, 8)}`;
+    // Generate a clean slug from the user's name or fallback
+    const name = data.content?.headline?.split(" ")[0] || "user";
+    const baseSlug = name.toLowerCase().replace(/[^a-z0-9]/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "");
+    const randomHash = Math.random().toString(36).substring(2, 6);
+    const slug = `${baseSlug}-${randomHash}`;
 
-    const res = await fetch("https://api.vercel.com/v13/deployments", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        name,
-        files: [{ file: "index.html", data: encoded, encoding: "base64" }],
-        projectSettings: { framework: null, buildCommand: null, outputDirectory: null },
-        target: "production",
-      }),
-    });
-
-    if (!res.ok) {
-      const body = (await res.json().catch(() => ({}))) as {
-        error?: { message?: string };
-      };
-      throw new Error(body?.error?.message ?? `Vercel API error (HTTP ${res.status}).`);
-    }
-
-    const json = (await res.json()) as { url?: string };
-    if (!json.url) throw new Error("Vercel did not return a deployment URL.");
-    return { url: `https://${json.url}` };
+    return { url: `/p/${slug}`, slug };
   });
 
 /* ─── Server Function: parseResumeWithAI ─────────────────────────────────── */

@@ -1,0 +1,8 @@
+DIAGNOSTIC REPORT:
+The issue originates because `portfolio-builder.tsx` (and previously `cv-studio.tsx`) relied on `deployPortfolioToVercel` in `src/lib/server-fns.ts`.
+1. The `deployPortfolioToVercel` function takes a `templateId` and calls `buildHtml(content, templateId)`.
+2. The `buildHtml` function generates a legacy, static HTML string (the text-based fallback) instead of compiling the actual React components (like `<BlueprintSphere />`).
+3. This static HTML is sent to the Vercel Deployments API as a single `index.html` file, named `nexus-portfolio-...`.
+4. Therefore, Vercel hosts the raw fallback HTML, completely ignoring the premium 3D React templates which exist within the Vite app's routing system.
+
+To fix this, we must adopt Option A: We will stop using the Vercel API to deploy raw HTML. Instead, the "Publish" action will save the portfolio state into Supabase, and we will route visitors to our internal `p.$slug.tsx` component, which dynamically imports and renders the correct premium template using the live user data.
