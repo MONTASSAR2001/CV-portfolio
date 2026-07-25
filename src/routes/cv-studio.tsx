@@ -66,10 +66,12 @@ function renderTemplate(id: TemplateId, data: CvState, ref: React.Ref<HTMLDivEle
    Template carousel — horizontal strip with overflow scroll
 ═══════════════════════════════════════════════════════════════ */
 function TemplateSwitcher({
-  active, onChange,
+  active, onChange, tier, onUpgrade
 }: {
   active: TemplateId;
   onChange: (id: TemplateId) => void;
+  tier: string;
+  onUpgrade: () => void;
 }) {
   const stripRef = useRef<HTMLDivElement>(null);
 
@@ -94,19 +96,27 @@ function TemplateSwitcher({
       >
         {TEMPLATE_LIST.map((t) => {
           const isActive = active === t.id;
+          const isLocked = t.isPremium && tier !== "premium";
           return (
             <button
               key={t.id}
               id={`cv-template-${t.id}`}
-              onClick={() => onChange(t.id as TemplateId)}
-              className={`flex shrink-0 items-center gap-1.5 rounded-xl px-3 py-1.5 text-[11px] font-semibold transition-all duration-200 ${
+              onClick={() => {
+                if (isLocked) {
+                  onUpgrade();
+                } else {
+                  onChange(t.id as TemplateId);
+                }
+              }}
+              className={`relative flex shrink-0 items-center gap-1.5 rounded-xl px-3 py-1.5 text-[11px] font-semibold transition-all duration-200 ${
                 isActive
                   ? "bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white shadow-md shadow-violet-900/50 scale-[1.04]"
                   : "bg-white/5 text-slate-400 hover:bg-white/10 hover:text-white"
-              }`}
+              } ${isLocked ? "opacity-70" : ""}`}
             >
               <span className="text-[10px] opacity-70">{t.emoji}</span>
               {t.label}
+              {isLocked && <span className="ml-1 rounded bg-emerald-500/20 px-1 py-0.5 text-[8px] uppercase tracking-wider text-emerald-400">Pro</span>}
             </button>
           );
         })}
@@ -139,13 +149,23 @@ function CvStudioPage() {
   const [publishing, setPublishing] = useState(false);
   const [publishStatus, setPublishStatus] = useState<"idle" | "published" | "error">("idle");
   const [publishedUrl, setPublishedUrl] = useState<string | null>(null);
+  const [subscriptionTier, setSubscriptionTier] = useState<string>("free");
 
   const printRef = useRef<HTMLDivElement>(null);
 
   /* ── Auth guard ── */
   useEffect(() => {
     if (!loading && !user) navigate({ to: "/login" });
+    if (user) {
+      supabase.from("profiles").select("subscription_tier").eq("id", user.id).single().then(({ data }) => {
+        if (data) setSubscriptionTier(data.subscription_tier || "free");
+      });
+    }
   }, [user, loading, navigate]);
+
+  const handleUpgrade = () => {
+    navigate({ to: "/pricing" });
+  };
 
   /* ── PDF export ── */
   const handlePrint = useReactToPrint({
@@ -383,7 +403,7 @@ function CvStudioPage() {
               className="z-10 shrink-0 px-4 py-2.5"
               style={{ borderBottom: "1px solid oklch(1 0 0 / 0.05)", background: "oklch(0.07 0.01 280 / 0.6)", backdropFilter: "blur(12px)" }}
             >
-              <TemplateSwitcher active={activeTemplate} onChange={setActiveTemplate} />
+              <TemplateSwitcher active={activeTemplate} onChange={setActiveTemplate} tier={subscriptionTier} onUpgrade={handleUpgrade} />
             </div>
 
             {/* ════════════ Body: form | preview ════════════ */}

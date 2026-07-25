@@ -22,18 +22,29 @@ const AI_STAGES = [
 
 export function AIImportModal({ onStart, accessToken }: AIImportModalProps) {
   const [phase, setPhase] = useState<"select" | "loading" | "done">("select");
+  const [aiTab, setAiTab] = useState<"upload" | "prompt">("upload");
+  const [promptText, setPromptText] = useState("");
   const [stageIdx, setStageIdx] = useState(0);
   const [dragover, setDragover] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
-  async function processFile(file: File) {
-    if (file.type !== "application/pdf") { toast.error("Please upload a PDF file."); return; }
+  async function processAI(input: { file?: File; prompt?: string }) {
+    if (input.file && input.file.type !== "application/pdf") { toast.error("Please upload a PDF file."); return; }
+    if (input.prompt && !input.prompt.trim()) { toast.error("Please enter a prompt."); return; }
+    
     setPhase("loading");
     const timer = setInterval(() => setStageIdx(i => Math.min(i + 1, AI_STAGES.length - 1)), 900);
     try {
-      const text = await extractTextFromPDF(file);
-      if (!text || text.trim().length < 80) throw new Error("Could not extract enough text. Use a text-based (non-scanned) PDF.");
-      const parsed = await parseResumeWithAI({ data: { cvText: text.slice(0, 12000), accessToken } });
+      let reqData: any = { accessToken };
+      if (input.file) {
+        const text = await extractTextFromPDF(input.file);
+        if (!text || text.trim().length < 80) throw new Error("Could not extract enough text. Use a text-based (non-scanned) PDF.");
+        reqData.cvText = text.slice(0, 12000);
+      } else {
+        reqData.prompt = input.prompt?.trim();
+      }
+      
+      const parsed = await parseResumeWithAI({ data: reqData });
       
       // Map PortfolioData to CvState
       const mappedCvData: CvState = {
@@ -50,7 +61,7 @@ export function AIImportModal({ onStart, accessToken }: AIImportModalProps) {
           bio: parsed.personalInfo.bio,
           socials: parsed.personalInfo.socials,
         },
-        experience: parsed.experience.map((e, i) => ({
+        experience: (parsed.experience || []).map((e: any, i: number) => ({
           id: i.toString(),
           role: e.role,
           company: e.company,
@@ -59,26 +70,26 @@ export function AIImportModal({ onStart, accessToken }: AIImportModalProps) {
           duration: e.duration,
           description: e.description,
         })),
-        education: parsed.education.map((e, i) => ({
+        education: (parsed.education || []).map((e: any, i: number) => ({
           id: i.toString(),
           degree: e.degree,
           school: e.institution,
           year: e.year,
           institution: e.institution,
         })),
-        skills: parsed.skills,
-        projects: parsed.projects,
+        skills: parsed.skills || [],
+        projects: parsed.projects || [],
       };
 
       clearInterval(timer);
       setStageIdx(AI_STAGES.length - 1);
       setPhase("done");
       await new Promise(r => setTimeout(r, 900));
-      toast.success("CV imported! Review and tweak any details below.");
+      toast.success(input.file ? "CV imported! Review and tweak any details below." : "CV generated! Review and tweak any details below.");
       onStart(mappedCvData);
     } catch (err) {
       clearInterval(timer);
-      toast.error(`AI Import failed: ${err instanceof Error ? err.message : "Unknown error"}`);
+      toast.error(`AI process failed: ${err instanceof Error ? err.message : "Unknown error"}`);
       setPhase("select"); setStageIdx(0);
     }
   }
@@ -147,18 +158,41 @@ export function AIImportModal({ onStart, accessToken }: AIImportModalProps) {
                 <div className="flex h-12 w-12 items-center justify-center rounded-2xl" style={{ background: "oklch(0.72 0.24 300 / 0.15)", border: "1px solid oklch(0.72 0.24 300 / 0.4)", boxShadow: "0 0 20px oklch(0.72 0.24 300 / 0.3)" }}>
                   <Wand2 size={22} style={{ color: "oklch(0.85 0.2 300)" }} />
                 </div>
-                <span className="rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider" style={{ background: "oklch(0.72 0.24 300 / 0.15)", color: "oklch(0.85 0.2 300)", border: "1px solid oklch(0.72 0.24 300 / 0.3)" }}>AI powered</span>
+                <div className="flex bg-black/40 p-1 rounded-lg">
+                  <button onClick={(e) => { e.stopPropagation(); setAiTab("upload"); }} className={`px-3 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider transition-all ${aiTab === "upload" ? "bg-white/10 text-white" : "text-white/40 hover:text-white/70"}`}>Upload PDF</button>
+                  <button onClick={(e) => { e.stopPropagation(); setAiTab("prompt"); }} className={`px-3 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider transition-all ${aiTab === "prompt" ? "bg-white/10 text-white" : "text-white/40 hover:text-white/70"}`}>Use Prompt</button>
+                </div>
               </div>
               <div>
-                <p className="font-display text-lg font-bold text-foreground">Import with AI</p>
-                <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">Upload your existing CV as a PDF. Our AI extracts and auto-fills every field in seconds.</p>
+                <p className="font-display text-lg font-bold text-foreground">Build with AI</p>
+                <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
+                  {aiTab === "upload" ? "Upload your existing CV as a PDF. Our AI extracts and auto-fills every field in seconds." : "Describe your role and the type of portfolio you want. AI will generate it."}
+                </p>
               </div>
-              <div id="cv-ai-dropzone" onDragOver={e => { e.preventDefault(); setDragover(true); }} onDragLeave={() => setDragover(false)} onDrop={e => { e.preventDefault(); setDragover(false); const f = e.dataTransfer.files[0]; if (f) processFile(f); }} onClick={() => fileRef.current?.click()} className={`mt-auto w-full cursor-pointer rounded-2xl border-2 border-dashed px-4 py-5 text-center transition-all duration-200 ${dragover ? "border-violet-400/70 bg-violet-400/10" : "border-violet-500/30 bg-violet-500/5 hover:border-violet-400/50"}`}>
-                <FileUp size={20} className="mx-auto mb-2 text-violet-400" />
-                <p className="text-xs font-semibold text-violet-300">Drop your CV PDF here</p>
-                <p className="mt-0.5 text-[10px] text-muted-foreground">or click to browse</p>
-              </div>
-              <input ref={fileRef} type="file" accept="application/pdf" className="hidden" onChange={e => { const f = e.target.files?.[0]; if (f) processFile(f); }} />
+              
+              {aiTab === "upload" ? (
+                <div id="cv-ai-dropzone" onDragOver={e => { e.preventDefault(); setDragover(true); }} onDragLeave={() => setDragover(false)} onDrop={e => { e.preventDefault(); setDragover(false); const f = e.dataTransfer.files[0]; if (f) processAI({ file: f }); }} onClick={() => fileRef.current?.click()} className={`mt-auto w-full cursor-pointer rounded-2xl border-2 border-dashed px-4 py-5 text-center transition-all duration-200 ${dragover ? "border-violet-400/70 bg-violet-400/10" : "border-violet-500/30 bg-violet-500/5 hover:border-violet-400/50"}`}>
+                  <FileUp size={20} className="mx-auto mb-2 text-violet-400" />
+                  <p className="text-xs font-semibold text-violet-300">Drop your CV PDF here</p>
+                  <p className="mt-0.5 text-[10px] text-muted-foreground">or click to browse</p>
+                </div>
+              ) : (
+                <div className="mt-auto w-full flex flex-col gap-3" onClick={(e) => e.stopPropagation()}>
+                  <textarea 
+                    value={promptText}
+                    onChange={(e) => setPromptText(e.target.value)}
+                    placeholder="e.g. I'm an embedded systems engineer with 5 years experience at Bosch..."
+                    className="w-full h-24 rounded-xl border border-white/10 bg-white/5 p-3 text-sm text-white placeholder-white/30 focus:border-violet-500/50 focus:outline-none focus:ring-1 focus:ring-violet-500/50 resize-none transition-all"
+                  />
+                  <button 
+                    onClick={() => processAI({ prompt: promptText })}
+                    className="flex w-full items-center justify-center gap-2 rounded-xl bg-violet-600 px-4 py-2.5 text-sm font-semibold text-white transition-all hover:bg-violet-500"
+                  >
+                    <Sparkles size={14} /> Generate Profile
+                  </button>
+                </div>
+              )}
+              <input ref={fileRef} type="file" accept="application/pdf" className="hidden" onChange={e => { const f = e.target.files?.[0]; if (f) processAI({ file: f }); }} />
             </div>
           </motion.div>
         </div>

@@ -43,6 +43,7 @@ export interface PortfolioData {
     year: string;
   }>;
   skills: string[];
+  highlights?: { id: string; date: string; content: string }[];
 }
 
 

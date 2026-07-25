@@ -63,24 +63,16 @@ function SignupPage() {
   if (loading) return null;
 
   return (
-    <main className="relative flex min-h-screen items-center justify-center overflow-hidden">
+    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-slate-950">
       {/* Background orbs */}
       <div className="pointer-events-none absolute inset-0" aria-hidden="true">
         <div
           className="absolute right-[-10%] top-[-10%] h-[500px] w-[500px] rounded-full"
-          style={{
-            background:
-              "radial-gradient(circle, oklch(0.85 0.18 210 / 0.35) 0%, transparent 70%)",
-            filter: "blur(60px)",
-          }}
+          style={{ background: "radial-gradient(circle, rgba(16, 185, 129, 0.15) 0%, transparent 70%)", filter: "blur(60px)" }}
         />
         <div
           className="absolute bottom-[-10%] left-[-10%] h-[400px] w-[400px] rounded-full"
-          style={{
-            background:
-              "radial-gradient(circle, oklch(0.72 0.24 300 / 0.3) 0%, transparent 70%)",
-            filter: "blur(60px)",
-          }}
+          style={{ background: "radial-gradient(circle, rgba(16, 185, 129, 0.1) 0%, transparent 70%)", filter: "blur(60px)" }}
         />
       </div>
 
@@ -95,12 +87,9 @@ function SignupPage() {
           <div className="relative h-10 w-10">
             <div
               className="absolute inset-0 rounded-xl"
-              style={{
-                background:
-                  "conic-gradient(from 0deg, oklch(0.72 0.24 300), oklch(0.85 0.18 210), oklch(0.72 0.24 300))",
-              }}
+              style={{ background: "conic-gradient(from 0deg, #10b981, #059669, #10b981)" }}
             />
-            <div className="absolute inset-[2px] rounded-[10px] bg-background/80 grid place-items-center font-display text-base font-bold text-gradient">
+            <div className="absolute inset-[2px] rounded-[10px] bg-slate-950 grid place-items-center font-display text-base font-bold text-emerald-400">
               N
             </div>
           </div>
@@ -113,7 +102,7 @@ function SignupPage() {
         </div>
 
         {/* Card */}
-        <div className="glass-strong rounded-3xl p-8 shadow-2xl">
+        <div className="bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-3xl p-8 shadow-2xl">
           {/* Confirmation notice */}
           {notice ? (
             <motion.div
@@ -174,7 +163,7 @@ function SignupPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="you@example.com"
-                  className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/50 outline-none transition focus:border-white/25 focus:ring-1 focus:ring-white/15"
+                  className="w-full rounded-xl border border-white/10 bg-slate-950/50 px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/50 outline-none transition focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50"
                 />
               </div>
 
@@ -194,7 +183,7 @@ function SignupPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Min. 8 characters"
-                  className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/50 outline-none transition focus:border-white/25 focus:ring-1 focus:ring-white/15"
+                  className="w-full rounded-xl border border-white/10 bg-slate-950/50 px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/50 outline-none transition focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50"
                 />
               </div>
 
@@ -214,7 +203,7 @@ function SignupPage() {
                   value={confirm}
                   onChange={(e) => setConfirm(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/50 outline-none transition focus:border-white/25 focus:ring-1 focus:ring-white/15"
+                  className="w-full rounded-xl border border-white/10 bg-slate-950/50 px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/50 outline-none transition focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50"
                 />
               </div>
 
@@ -223,12 +212,12 @@ function SignupPage() {
                 id="signup-submit"
                 type="submit"
                 disabled={isSubmitting}
-                className="btn-kinetic glow-pulse relative mt-2 w-full rounded-2xl py-3.5 font-display text-sm font-semibold disabled:opacity-60 disabled:cursor-not-allowed"
+                className="group relative mt-4 flex w-full items-center justify-center overflow-hidden rounded-2xl bg-emerald-500 px-4 py-3.5 text-sm font-semibold text-slate-950 transition-all hover:bg-emerald-400 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <span className="btn-kinetic-sweep" />
-                <span className="relative z-10">
-                  {isSubmitting ? "Creating account…" : "Create account"}
-                </span>
+                <div className="absolute inset-0 flex h-full w-full justify-center [transform:skew(-12deg)_translateX(-100%)] group-hover:duration-1000 group-hover:[transform:skew(-12deg)_translateX(100%)]">
+                  <div className="relative h-full w-8 bg-white/20" />
+                </div>
+                <span className="relative z-10">{isSubmitting ? "Creating account..." : "Create account"}</span>
               </button>
             </form>
           )}

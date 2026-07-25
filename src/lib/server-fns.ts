@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { createClient } from "@supabase/supabase-js";
 import { z } from "zod";
+import Stripe from "stripe";
 
 /* ─── Shared Types ───────────────────────────────────────────────────────── */
 
@@ -25,7 +26,7 @@ export type PortfolioContent = {
 // We call getUser(token) — which validates the JWT against Supabase's auth
 // server — before allowing any downstream API call to proceed.
 //
-async function validateSessionToken(accessToken: string): Promise<void> {
+async function validateSessionToken(accessToken: string) {
   const url = process.env.VITE_SUPABASE_URL;
   const key = process.env.VITE_SUPABASE_ANON_KEY;
 
@@ -45,6 +46,8 @@ async function validateSessionToken(accessToken: string): Promise<void> {
       "Unauthorized: a valid authenticated session is required to use this service."
     );
   }
+  
+  return data.user;
 }
 
 /* ─── Input validation schemas ───────────────────────────────────────────── */
@@ -260,7 +263,8 @@ export const deployPortfolioToVercel = createServerFn({ method: "POST" })
 // Used by the CV Studio's AI Import feature (AIImportModal.tsx).
 
 const ParseResumeInput = z.object({
-  cvText: z.string().min(80).max(12000),
+  cvText: z.string().max(12000).optional(),
+  prompt: z.string().max(2000).optional(),
   accessToken: z.string().min(1, "Access token is required"),
 });
 
@@ -270,10 +274,17 @@ export const parseResumeWithAI = createServerFn({ method: "POST" })
     // ── [SECURITY] Validate caller session before any API call ──────────
     await validateSessionToken(data.accessToken);
 
+    if (!data.cvText && !data.prompt) {
+      throw new Error("Either a CV or a prompt must be provided.");
+    }
+
     const apiKey = process.env.GROQ_API_KEY;
     if (!apiKey) throw new Error("AI service is not configured on the server.");
 
-    const systemPrompt = `You are an expert CV parser and career strategist. Extract the information from the provided CV text and return it as a valid JSON object matching this exact structure:
+    const systemPrompt = `You are an expert career strategist. You will receive EITHER raw CV text OR a short user prompt describing their career. 
+If it's a CV, extract the data. If it's a short prompt, autonomously GENERATE and invent a highly professional, full-length CV profile matching the prompt's intent.
+
+Return the information as a valid JSON object matching this exact structure:
 
 {
   "personalInfo": {
@@ -316,10 +327,10 @@ export const parseResumeWithAI = createServerFn({ method: "POST" })
 
 Rules:
 - Return ONLY the JSON object — no markdown, no commentary, no code fences.
-- You MUST extract the candidate's actual name. Do not invent a name or use a job title in the name field.
-- Include up to 6 experience entries, 6 projects, and all education entries.
+- If processing a CV, extract the candidate's actual name. If generating from a prompt, generate a realistic professional name. Do not use a job title in the name field.
+- Include up to 6 experience entries, 6 projects, and relevant education entries.
 - Skills: flat array of strings, max 15.
-- Never invent information not present in the CV.`;
+- If generating from a prompt, invent plausible and impressive details, metrics, employers, and dates that match the requested profile.`;
 
     const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST",
@@ -334,7 +345,7 @@ Rules:
         max_tokens: 2048,
         messages: [
           { role: "system", content: systemPrompt },
-          { role: "user", content: `Parse this CV:\n\n---\n${data.cvText}\n---` },
+          { role: "user", content: data.prompt ? `Generate a full professional CV based on this prompt:\n\n---\n${data.prompt}\n---` : `Parse this CV:\n\n---\n${data.cvText}\n---` },
         ],
       }),
     });
@@ -406,4 +417,47 @@ export const publishPremiumPortfolio = createServerFn({ method: "POST" })
     const slug = `${baseSlug}-${randomHash}`;
 
     return { url: `/p/${slug}`, slug };
+  });
+
+/* ─── Server Function: createCheckoutSession ─────────────────────────────── */
+
+const CheckoutInput = z.object({
+  accessToken: z.string().min(1),
+  returnUrl: z.string().url(),
+});
+
+export const createCheckoutSession = createServerFn({ method: "POST" })
+  .validator((data: unknown) => CheckoutInput.parse(data))
+  .handler(async ({ data }) => {
+    const user = await validateSessionToken(data.accessToken);
+
+    const stripeKey = process.env.STRIPE_SECRET_KEY;
+    if (!stripeKey) {
+      throw new Error("Stripe is not configured on the server.");
+    }
+
+    const stripe = new Stripe(stripeKey, { apiVersion: "2024-06-20" as any });
+
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      line_items: [
+        {
+          price_data: {
+            currency: "usd",
+            product_data: {
+              name: "CareerOS Pro",
+              description: "AI Mixo Portfolio Generation, 3D Templates, and Custom Domains.",
+            },
+            unit_amount: 1200, // $12.00
+          },
+          quantity: 1,
+        },
+      ],
+      mode: "payment",
+      success_url: `${data.returnUrl}?checkout=success`,
+      cancel_url: `${data.returnUrl}?checkout=cancel`,
+      client_reference_id: user.id,
+    });
+
+    return session.url;
   });

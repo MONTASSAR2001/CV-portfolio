@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as PortfolioBuilderRouteImport } from './routes/portfolio-builder'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
@@ -41,6 +42,11 @@ const SignupRoute = SignupRouteImport.update({
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PricingRoute = PricingRouteImport.update({
+  id: '/pricing',
+  path: '/pricing',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PortfolioBuilderRoute = PortfolioBuilderRouteImport.update({
@@ -157,6 +163,7 @@ export interface FileRoutesByFullPath {
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/portfolio-builder': typeof PortfolioBuilderRoute
+  '/pricing': typeof PricingRoute
   '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
   '/p/$slug': typeof PSlugRoute
@@ -182,6 +189,7 @@ export interface FileRoutesByTo {
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/portfolio-builder': typeof PortfolioBuilderRoute
+  '/pricing': typeof PricingRoute
   '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
   '/p/$slug': typeof PSlugRoute
@@ -208,6 +216,7 @@ export interface FileRoutesById {
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/portfolio-builder': typeof PortfolioBuilderRoute
+  '/pricing': typeof PricingRoute
   '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
   '/p/$slug': typeof PSlugRoute
@@ -235,6 +244,7 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/login'
     | '/portfolio-builder'
+    | '/pricing'
     | '/settings'
     | '/signup'
     | '/p/$slug'
@@ -260,6 +270,7 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/login'
     | '/portfolio-builder'
+    | '/pricing'
     | '/settings'
     | '/signup'
     | '/p/$slug'
@@ -285,6 +296,7 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/login'
     | '/portfolio-builder'
+    | '/pricing'
     | '/settings'
     | '/signup'
     | '/p/$slug'
@@ -311,6 +323,7 @@ export interface RootRouteChildren {
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   LoginRoute: typeof LoginRoute
   PortfolioBuilderRoute: typeof PortfolioBuilderRoute
+  PricingRoute: typeof PricingRoute
   SettingsRoute: typeof SettingsRoute
   SignupRoute: typeof SignupRoute
   PSlugRoute: typeof PSlugRoute
@@ -344,6 +357,13 @@ declare module '@tanstack/react-router' {
       path: '/settings'
       fullPath: '/settings'
       preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pricing': {
+      id: '/pricing'
+      path: '/pricing'
+      fullPath: '/pricing'
+      preLoaderRoute: typeof PricingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/portfolio-builder': {
@@ -503,6 +523,7 @@ const rootRouteChildren: RootRouteChildren = {
   ForgotPasswordRoute: ForgotPasswordRoute,
   LoginRoute: LoginRoute,
   PortfolioBuilderRoute: PortfolioBuilderRoute,
+  PricingRoute: PricingRoute,
   SettingsRoute: SettingsRoute,
   SignupRoute: SignupRoute,
   PSlugRoute: PSlugRoute,

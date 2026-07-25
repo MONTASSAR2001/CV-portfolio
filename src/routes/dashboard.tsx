@@ -6,7 +6,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/lib/supabase";
 import {
   FileText, Briefcase, Globe, ArrowRight, Loader2,
-  ExternalLink, Plus, Clock, History, Rocket,
+  ExternalLink, Plus, Clock, History, Rocket, MessageSquarePlus, X
 } from "lucide-react";
 
 export const Route = createFileRoute("/dashboard")({
@@ -124,9 +124,11 @@ function StatCard({
 function DeploymentHistory({
   deployments,
   loading,
+  onOpenUpdateModal
 }: {
   deployments: DeploymentRow[];
   loading: boolean;
+  onOpenUpdateModal: (id: string) => void;
 }) {
   const TEMPLATE_HUES: Record<string, string> = {
     vogue: "320", architect: "200", biotech: "160", lumina: "35", sterling: "270",
@@ -253,6 +255,14 @@ function DeploymentHistory({
                         {/* Open / Delete buttons */}
                         <td className="px-6 py-4 text-right">
                           <div className="flex items-center justify-end gap-2 opacity-0 transition group-hover:opacity-100">
+                            {d.source === "cvs" && (
+                              <button
+                                onClick={() => onOpenUpdateModal(d.id)}
+                                className="inline-flex h-7 px-2 items-center justify-center rounded-lg border border-white/10 bg-violet-500/10 text-violet-400 text-[10px] hover:bg-violet-500/20"
+                              >
+                                <MessageSquarePlus size={12} className="mr-1" /> Post Update
+                              </button>
+                            )}
                             <button
                               onClick={async () => {
                                 if (!confirm("Are you sure you want to unpublish this portfolio?")) return;
@@ -311,6 +321,40 @@ function DashboardPage() {
   });
   const [statsLoading, setStatsLoading] = useState(true);
   const [deployments, setDeployments] = useState<DeploymentRow[]>([]);
+  
+  const [updateModalOpen, setUpdateModalOpen] = useState<string | null>(null);
+  const [updateText, setUpdateText] = useState("");
+  const [postingUpdate, setPostingUpdate] = useState(false);
+
+  const handlePostUpdate = async () => {
+    if (!updateModalOpen || !updateText.trim()) return;
+    setPostingUpdate(true);
+    try {
+      const { data: cv, error } = await supabase.from("cvs").select("cv_data_json").eq("id", updateModalOpen).single();
+      if (error) throw error;
+      
+      const currentData = cv.cv_data_json || {};
+      const newHighlight = {
+        id: crypto.randomUUID(),
+        date: new Date().toISOString(),
+        content: updateText.trim()
+      };
+      
+      const updatedHighlights = [newHighlight, ...(currentData.highlights || [])];
+      const newData = { ...currentData, highlights: updatedHighlights };
+      
+      const { error: updateError } = await supabase.from("cvs").update({ cv_data_json: newData }).eq("id", updateModalOpen);
+      if (updateError) throw updateError;
+      
+      toast.success("Highlight posted successfully! Your portfolio timeline is updated.");
+      setUpdateModalOpen(null);
+      setUpdateText("");
+    } catch (err) {
+      toast.error(`Failed to post update: ${err instanceof Error ? err.message : "Unknown error"}`);
+    } finally {
+      setPostingUpdate(false);
+    }
+  };
 
   // ── Auth guard ──────────────────────────────────────────────────────────
   useEffect(() => {
@@ -642,8 +686,60 @@ function DashboardPage() {
         </motion.div>
 
         {/* ── Deployment History ── */}
-        <DeploymentHistory deployments={deployments} loading={statsLoading} />
+        <DeploymentHistory deployments={deployments} loading={statsLoading} onOpenUpdateModal={setUpdateModalOpen} />
       </section>
+
+      {/* ── Post Update Modal ── */}
+      <AnimatePresence>
+        {updateModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 10 }}
+              className="relative w-full max-w-md overflow-hidden rounded-3xl border border-white/10 bg-[#0a0a12] shadow-2xl"
+            >
+              <div className="flex items-center justify-between border-b border-white/10 px-6 py-4">
+                <h3 className="font-display text-lg font-semibold text-white">Post an Update</h3>
+                <button
+                  onClick={() => setUpdateModalOpen(null)}
+                  className="rounded-lg p-1.5 text-white/50 transition hover:bg-white/10 hover:text-white"
+                >
+                  <X size={16} />
+                </button>
+              </div>
+              <div className="p-6">
+                <p className="mb-4 text-sm text-white/60">
+                  Add a quick milestone or highlight to your live portfolio's timeline.
+                </p>
+                <textarea
+                  value={updateText}
+                  onChange={(e) => setUpdateText(e.target.value)}
+                  placeholder="e.g., Just shipped a new feature using React & Supabase!"
+                  className="w-full resize-none rounded-xl border border-white/10 bg-white/5 p-4 text-sm text-white placeholder-white/30 focus:border-violet-500/50 focus:outline-none focus:ring-1 focus:ring-violet-500/50"
+                  rows={4}
+                />
+                <div className="mt-6 flex justify-end gap-3">
+                  <button
+                    onClick={() => setUpdateModalOpen(null)}
+                    className="rounded-xl px-4 py-2.5 text-sm font-semibold text-white/70 transition hover:bg-white/10 hover:text-white"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handlePostUpdate}
+                    disabled={postingUpdate || !updateText.trim()}
+                    className="flex items-center gap-2 rounded-xl bg-violet-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-violet-500 disabled:opacity-50"
+                  >
+                    {postingUpdate ? <Loader2 size={16} className="animate-spin" /> : <Rocket size={16} />}
+                    {postingUpdate ? "Posting..." : "Post Now"}
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </main>
   );
 }

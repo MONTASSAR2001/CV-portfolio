@@ -55,7 +55,7 @@ const PRINT_STYLES = `
 ══════════════════════════════════════════════════════════ */
 export const MinimalistTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
   ({ data }, ref) => {
-    const { personalInfo: p, experience, education, skills } = data;
+    const { personalInfo: p, experience, education, skills, highlights } = data;
     return (
       <div
         ref={ref}
@@ -103,6 +103,30 @@ export const MinimalistTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
               <p className="text-[11px] leading-relaxed text-slate-600 max-w-2xl">
                 {p.summary}
               </p>
+            </div>
+          )}
+
+          {/* Highlights Timeline */}
+          {highlights && highlights.length > 0 && (
+            <div className="mb-8">
+              <h2 className="text-[9px] font-bold tracking-[0.3em] uppercase text-slate-400 mb-5">
+                Recent Milestones
+              </h2>
+              <div className="space-y-4 relative border-l border-slate-200 ml-[52px]">
+                {highlights.map((h) => (
+                  <div key={h.id} className="flex relative">
+                    <div className="absolute -left-[3px] top-1.5 h-1.5 w-1.5 rounded-full bg-slate-400" />
+                    <div className="w-24 shrink-0 text-[9px] text-slate-400 text-right pr-6 -ml-[52px] pt-0.5">
+                      {new Date(h.date).toLocaleDateString("en-GB", { month: "short", year: "numeric", day: "numeric" })}
+                    </div>
+                    <div className="flex-1 pl-6">
+                      <p className="text-[11px] text-slate-700 leading-relaxed">
+                        {h.content}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
 
@@ -189,7 +213,7 @@ MinimalistTemplate.displayName = "MinimalistTemplate";
 ══════════════════════════════════════════════════════════ */
 export const CorporateTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
   ({ data }, ref) => {
-    const { personalInfo: p, experience, education, skills } = data;
+    const { personalInfo: p, experience, education, skills, highlights } = data;
     const NAVY = "#0f2d5a";
     const NAVY_LIGHT = "#e8eef6";
     return (
@@ -246,6 +270,25 @@ export const CorporateTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
                 <p className="text-[11px] leading-relaxed text-slate-600 mt-3">
                   {p.summary}
                 </p>
+              </div>
+            )}
+
+            {highlights && highlights.length > 0 && (
+              <div>
+                <SectionHeader label="Recent Milestones" color={NAVY} />
+                <div className="mt-3 space-y-4 border-l-2 ml-1" style={{ borderColor: `${NAVY}33` }}>
+                  {highlights.map((h) => (
+                    <div key={h.id} className="relative pl-4">
+                      <div className="absolute -left-[5px] top-1.5 h-2 w-2 rounded-full" style={{ backgroundColor: NAVY }} />
+                      <p className="text-[10px] font-bold" style={{ color: NAVY }}>
+                        {new Date(h.date).toLocaleDateString("en-GB", { month: "short", year: "numeric", day: "numeric" })}
+                      </p>
+                      <p className="text-[11px] leading-relaxed text-slate-600 mt-0.5">
+                        {h.content}
+                      </p>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
 
