@@ -2,9 +2,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Sparkles, Loader2, AlertCircle, CheckCircle2, Cpu } from "lucide-react";
 
 export function StepGenerate({
-  hasFile, loading, stage, error, done, onGenerate, onNext,
+  hasData, loading, stage, error, done, onGenerate, onNext,
 }: {
-  hasFile: boolean; loading: boolean; stage: string; error: string | null;
+  hasData: boolean; loading: boolean; stage: string; error: string | null;
   done: boolean; onGenerate: () => void; onNext: () => void;
 }) {
   return (
@@ -69,8 +69,8 @@ export function StepGenerate({
 
           <div className="flex w-full flex-col gap-3">
             {!done ? (
-              <motion.button id="generate-btn" whileHover={!loading && hasFile ? { scale: 1.03 } : {}} whileTap={!loading && hasFile ? { scale: 0.97 } : {}}
-                onClick={onGenerate} disabled={loading || !hasFile}
+              <motion.button id="generate-btn" whileHover={!loading && hasData ? { scale: 1.03 } : {}} whileTap={!loading && hasData ? { scale: 0.97 } : {}}
+                onClick={onGenerate} disabled={loading || !hasData}
                 className="flex w-full items-center justify-center gap-3 rounded-2xl py-4 font-display text-base font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50"
                 style={{ background: "linear-gradient(135deg, oklch(0.72 0.24 300), oklch(0.85 0.18 210))", boxShadow: loading ? "0 0 60px oklch(0.72 0.24 300 / 0.55)" : "0 0 40px oklch(0.72 0.24 300 / 0.35)" }}>
                 {loading ? <><Loader2 size={16} className="animate-spin" />Generating…</> : <><Sparkles size={16} />{error ? "Retry" : "Generate portfolio"}</>}

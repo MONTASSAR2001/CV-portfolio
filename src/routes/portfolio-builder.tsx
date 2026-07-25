@@ -261,7 +261,7 @@ function PortfolioBuilderPage() {
                 onNext={() => { complete(2); setStep(3); }} />
             )}
             {step === 3 && (
-              <StepGenerate key="step3" hasFile={!!file} loading={generating} stage={generationStage}
+              <StepGenerate key="step3" hasData={!!file || !!prompt} loading={generating} stage={generationStage}
                 error={generationError} done={!!generatedContent}
                 onGenerate={handleGenerate} onNext={() => { complete(3); setStep(4); }} />
             )}
