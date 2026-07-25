@@ -259,6 +259,11 @@ export const CorporateTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
               <Linkedin size={10} style={{ color: NAVY }} /> {p.linkedin}
             </span>
           )}
+          {p.github && (
+            <span className="flex items-center gap-2 text-[10px] text-slate-600">
+              <Github size={10} style={{ color: NAVY }} /> {p.github}
+            </span>
+          )}
         </div>
 
         <div className="px-10 py-7 flex gap-8 flex-1">
@@ -343,6 +348,15 @@ export const CorporateTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
                 </div>
               </div>
             )}
+
+            {data.additionalInfo && (
+              <div>
+                <SectionHeader label="Additional Information" color={NAVY} />
+                <div className="mt-3 text-[11px] leading-relaxed text-slate-600 whitespace-pre-wrap">
+                  {data.additionalInfo}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Side Column */}
@@ -413,6 +427,7 @@ export const TechTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
             {p.phone && <ContactRow icon={<Phone size={10} />} text={p.phone} />}
             {p.location && <ContactRow icon={<MapPin size={10} />} text={p.location} />}
             {p.linkedin && <ContactRow icon={<Linkedin size={10} />} text={p.linkedin} />}
+            {p.github && <ContactRow icon={<Github size={10} />} text={p.github} />}
           </div>
 
           {/* Skills */}
@@ -508,6 +523,15 @@ export const TechTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
                       <code className="text-[9px] text-slate-400 font-mono shrink-0">{edu.year}</code>
                     </div>
                   ))}
+                </div>
+              </div>
+            )}
+
+            {data.additionalInfo && (
+              <div>
+                <TechSectionTitle label="Additional Info" accent={ACCENT} />
+                <div className="mt-3 text-[11px] leading-relaxed text-slate-600 whitespace-pre-wrap">
+                  {data.additionalInfo}
                 </div>
               </div>
             )}
@@ -1513,6 +1537,12 @@ export const ATSClassicTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
                     <Linkedin className="w-3.5 h-3.5"/>
                     <span className="sr-only">LinkedIn</span>
                   </a>
+                ),
+                p.github && (
+                  <a key="gh" href={p.github.startsWith('http') ? p.github : `https://${p.github}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors">
+                    <Github className="w-3.5 h-3.5"/>
+                    <span className="sr-only">GitHub</span>
+                  </a>
                 )
               ].filter(Boolean).map((el, i, arr) => (
                 <span key={i} className="flex items-center gap-2">
@@ -1576,11 +1606,21 @@ export const ATSClassicTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
 
           {/* ── Skills ── */}
           {skills.length > 0 && (
-            <div>
+            <div className="mb-4">
               <ATSSectionRule label="Technical Skills" />
               <p className="mt-2 text-[11px] text-slate-700 leading-relaxed">
                 {skills.join(" · ")}
               </p>
+            </div>
+          )}
+
+          {/* ── Additional Info ── */}
+          {data.additionalInfo && (
+            <div>
+              <ATSSectionRule label="Additional Information" />
+              <div className="mt-2 text-[11px] leading-relaxed text-slate-700 whitespace-pre-wrap">
+                {data.additionalInfo}
+              </div>
             </div>
           )}
         </div>
@@ -1624,6 +1664,12 @@ export const ATSModernTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
                 <a href={p.linkedin.startsWith('http') ? p.linkedin : `https://${p.linkedin}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors">
                   <Linkedin className="w-3.5 h-3.5"/>
                   <span className="sr-only">LinkedIn</span>
+                </a>
+              )}
+              {p.github && (
+                <a href={p.github.startsWith('http') ? p.github : `https://${p.github}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors">
+                  <Github className="w-3.5 h-3.5"/>
+                  <span className="sr-only">GitHub</span>
                 </a>
               )}
             </div>
@@ -1684,12 +1730,22 @@ export const ATSModernTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
 
           {/* ── Skills ── */}
           {skills.length > 0 && (
-            <div>
+            <div className="mb-5">
               <ATSModernSectionTitle label="Skills" accent={ACCENT} />
               <div className="mt-3 flex flex-wrap gap-x-3 gap-y-1">
                 {skills.map((s) => (
                   <span key={s} className="text-[11px] text-slate-700 font-medium before:content-['·'] before:mr-1.5 before:text-slate-400">{s}</span>
                 ))}
+              </div>
+            </div>
+          )}
+
+          {/* ── Additional Info ── */}
+          {data.additionalInfo && (
+            <div>
+              <ATSModernSectionTitle label="Additional Information" accent={ACCENT} />
+              <div className="mt-3 text-[11px] leading-relaxed text-slate-600 whitespace-pre-wrap">
+                {data.additionalInfo}
               </div>
             </div>
           )}
@@ -1906,6 +1962,12 @@ export const ATSExecutiveTemplate = forwardRef<HTMLDivElement, { data: CvState }
                     <Linkedin className="w-3.5 h-3.5"/>
                     <span className="sr-only">LinkedIn</span>
                   </a>
+                ),
+                p.github && (
+                  <a key="gh" href={p.github.startsWith('http') ? p.github : `https://${p.github}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors">
+                    <Github className="w-3.5 h-3.5"/>
+                    <span className="sr-only">GitHub</span>
+                  </a>
                 )
               ].filter(Boolean).map((el, i, arr) => (
                 <span key={i} className="flex items-center gap-2">
@@ -1987,13 +2049,23 @@ export const ATSExecutiveTemplate = forwardRef<HTMLDivElement, { data: CvState }
           {skills.length > 0 && (
             <>
               <ATSExecSection label="Core Competencies" />
-              <ul className="grid grid-cols-2 gap-x-8 gap-y-0.5 pl-5">
+              <ul className="grid grid-cols-2 gap-x-8 gap-y-0.5 pl-5 mb-4">
                 {skills.map((s) => (
                   <li key={s} className="text-[11px] leading-relaxed list-disc">
                     {s}
                   </li>
                 ))}
               </ul>
+            </>
+          )}
+
+          {/* ── ADDITIONAL INFO ── */}
+          {data.additionalInfo && (
+            <>
+              <ATSExecSection label="Additional Information" />
+              <div className="text-[11px] leading-relaxed text-black whitespace-pre-wrap">
+                {data.additionalInfo}
+              </div>
             </>
           )}
 
