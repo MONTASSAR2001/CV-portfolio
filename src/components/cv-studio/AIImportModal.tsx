@@ -69,6 +69,7 @@ export function AIImportModal({ onStart, accessToken, onDismiss }: AIImportModal
           phone: "",
           location: "",
           linkedin: parsed.personalInfo?.socials?.linkedin || "",
+          github:   parsed.personalInfo?.socials?.github || "",
           summary:  parsed.personalInfo?.bio   || "",
           name:    parsed.personalInfo?.name,
           role:    parsed.personalInfo?.role,

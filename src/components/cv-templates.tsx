@@ -1,5 +1,5 @@
 import { forwardRef } from "react";
-import { Mail, Phone, MapPin, Linkedin, Globe } from "lucide-react";
+import { Mail, Phone, MapPin, Linkedin, Globe, Github } from "lucide-react";
 
 /* ─── Shared Types ───────────────────────────────────────── */
 export type PersonalInfo = {
@@ -1737,6 +1737,12 @@ export const HarvardStandardTemplate = forwardRef<HTMLDivElement, { data: CvStat
                     <Linkedin className="w-3.5 h-3.5"/>
                     <span className="sr-only">LinkedIn</span>
                   </a>
+                ),
+                p.github && (
+                  <a key="gh" href={p.github.startsWith('http') ? p.github : `https://${p.github}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center text-gray-800 hover:text-black transition-colors ml-3">
+                    <Github className="w-3.5 h-3.5 mr-1"/>
+                    <span className="sr-only">GitHub</span>
+                  </a>
                 )
               ].filter(Boolean).map((el, i, arr) => (
                 <span key={i} className="flex items-center gap-2">
@@ -1800,9 +1806,18 @@ export const HarvardStandardTemplate = forwardRef<HTMLDivElement, { data: CvStat
 
           {/* ── Skills ── */}
           {skills.length > 0 && (
-            <div>
+            <div className="mb-4">
               <HarvardSectionTitle label="Skills" />
               <p className="mt-2 text-[11px] leading-relaxed text-slate-700">{skills.join(", ")}</p>
+            </div>
+          )}
+          
+          {data.additionalInfo && (
+            <div className="mb-4">
+              <h2 className="text-[10px] md:text-xs font-bold tracking-[0.15em] uppercase border-b border-black pb-1 mb-2">Additional Information</h2>
+              <div className="text-[10px] md:text-[11px] leading-relaxed text-gray-800 whitespace-pre-wrap">
+                {data.additionalInfo}
+              </div>
             </div>
           )}
         </div>

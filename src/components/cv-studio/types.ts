@@ -10,6 +10,7 @@ export type PersonalInfo = {
   phone: string;
   location: string;
   linkedin: string;
+  github?: string;
   summary: string;
   
   // PortfolioData mappings
@@ -62,6 +63,7 @@ export type CvState = {
     highlight?: string;
   }[];
   highlights?: { id: string; date: string; content: string }[];
+  additionalInfo?: string;
 };
 
 export const EMPTY_CV_STATE: CvState = {
@@ -72,8 +74,10 @@ export const EMPTY_CV_STATE: CvState = {
     phone: "",
     location: "",
     linkedin: "",
+    github: "",
     summary: "",
   },
+  additionalInfo: "",
   experience: [],
   education: [],
   skills: [],

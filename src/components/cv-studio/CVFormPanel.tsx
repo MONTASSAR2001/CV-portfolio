@@ -125,6 +125,7 @@ export function CVFormPanel({ cvData, setCvData }: CVFormPanelProps) {
                 <Field label="Phone" value={info.phone} onChange={v => setInfo("phone", v)} placeholder="+1 234 567 890" type="tel" />
                 <Field label="Location" value={info.location} onChange={v => setInfo("location", v)} placeholder="City, Country" />
                 <Field label="LinkedIn" value={info.linkedin} onChange={v => setInfo("linkedin", v)} placeholder="linkedin.com/in/jane" />
+                <Field label="GitHub URL" value={info.github || ""} onChange={v => setInfo("github", v)} placeholder="github.com/jane" />
               </div>
               <TextArea label="Professional Summary" value={info.summary} onChange={v => setInfo("summary", v)} rows={4} placeholder="Brief professional bio…" />
               <button onClick={() => setActiveTab(1)} className="w-full flex items-center justify-center gap-2 rounded-xl bg-violet-600/80 py-2.5 text-sm font-semibold text-white backdrop-blur transition hover:bg-violet-500 active:scale-[0.98]">
@@ -200,6 +201,10 @@ export function CVFormPanel({ cvData, setCvData }: CVFormPanelProps) {
                     <button onClick={() => delSkill(s)} className="ml-0.5 text-violet-400/60 hover:text-violet-200 transition"><X size={11} /></button>
                   </motion.span>
                 ))}
+              </div>
+              
+              <div className="pt-4 border-t border-white/5">
+                <TextArea label="Additional Information (Languages, Certifications, etc.)" value={cvData.additionalInfo || ""} onChange={v => setCvData(p => ({ ...p, additionalInfo: v }))} rows={4} placeholder="Fluent in English and Spanish. AWS Certified Solutions Architect..." />
               </div>
             </motion.div>
           )}
