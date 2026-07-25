@@ -25,6 +25,7 @@ import {
   ExecutiveTemplate, StartupTemplate, AcademicTemplate, EditorialTemplate,
   DarkBoldTemplate, VisualTemplate,
   ATSClassicTemplate, ATSModernTemplate, HarvardStandardTemplate,
+  ATSExecutiveTemplate,
 } from "@/components/cv-templates";
 
 /* ═══════════════════════════════════════════════════════════════
@@ -59,6 +60,7 @@ function renderTemplate(id: TemplateId, data: CvState, ref: React.Ref<HTMLDivEle
     case "atsclassic":      return <ATSClassicTemplate      {...p} />;
     case "atsmodern":       return <ATSModernTemplate       {...p} />;
     case "harvardstandard": return <HarvardStandardTemplate {...p} />;
+    case "atsexecutive":    return <ATSExecutiveTemplate    {...p} />;
   }
 }
 

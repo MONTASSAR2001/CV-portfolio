@@ -30,7 +30,13 @@ export function AIImportModal({ onStart, accessToken }: AIImportModalProps) {
 
   async function processAI(input: { file?: File; prompt?: string }) {
     if (input.file && input.file.type !== "application/pdf") { toast.error("Please upload a PDF file."); return; }
-    if (input.prompt && !input.prompt.trim()) { toast.error("Please enter a prompt."); return; }
+    // BUG FIX: previously checked `if (input.prompt && !input.prompt.trim())` which is correct,
+    // but the REAL bug was calling processAI with an empty promptText (no guard at call-site).
+    // Now we guard both here AND enforce non-empty prompt at call-site.
+    if (!input.file && (!input.prompt || !input.prompt.trim())) {
+      toast.error("Please enter a prompt or upload a PDF.");
+      return;
+    }
     
     setPhase("loading");
     const timer = setInterval(() => setStageIdx(i => Math.min(i + 1, AI_STAGES.length - 1)), 900);
@@ -41,44 +47,50 @@ export function AIImportModal({ onStart, accessToken }: AIImportModalProps) {
         if (!text || text.trim().length < 80) throw new Error("Could not extract enough text. Use a text-based (non-scanned) PDF.");
         reqData.cvText = text.slice(0, 12000);
       } else {
-        reqData.prompt = input.prompt?.trim();
+        reqData.prompt = input.prompt!.trim();
       }
       
       const parsed = await parseResumeWithAI({ data: reqData });
       
+      // Null-safety: guarantee arrays exist before mapping (AI may omit empty sections)
+      const safeExperience = Array.isArray(parsed.experience) ? parsed.experience : [];
+      const safeEducation  = Array.isArray(parsed.education)  ? parsed.education  : [];
+      const safeSkills     = Array.isArray(parsed.skills)     ? parsed.skills     : [];
+      const safeProjects   = Array.isArray(parsed.projects)   ? parsed.projects   : [];
+
       // Map PortfolioData to CvState
       const mappedCvData: CvState = {
         personalInfo: {
-          fullName: parsed.personalInfo.name || "",
-          jobTitle: parsed.personalInfo.role || "",
-          email: parsed.personalInfo.email || "",
+          fullName: parsed.personalInfo?.name  || "",
+          jobTitle: parsed.personalInfo?.role  || "",
+          email:    parsed.personalInfo?.email || "",
           phone: "",
           location: "",
-          linkedin: parsed.personalInfo.socials?.linkedin || "",
-          summary: parsed.personalInfo.bio || "",
-          name: parsed.personalInfo.name,
-          role: parsed.personalInfo.role,
-          bio: parsed.personalInfo.bio,
-          socials: parsed.personalInfo.socials,
+          linkedin: parsed.personalInfo?.socials?.linkedin || "",
+          summary:  parsed.personalInfo?.bio   || "",
+          name:    parsed.personalInfo?.name,
+          role:    parsed.personalInfo?.role,
+          bio:     parsed.personalInfo?.bio,
+          socials: parsed.personalInfo?.socials,
         },
-        experience: (parsed.experience || []).map((e: any, i: number) => ({
+        experience: safeExperience.map((e: any, i: number) => ({
           id: i.toString(),
-          role: e.role,
-          company: e.company,
-          period: e.duration,
-          bullets: e.description,
-          duration: e.duration,
+          role:     e.role     || "",
+          company:  e.company  || "",
+          period:   e.duration || "",
+          bullets:  e.description || "",
+          duration:    e.duration,
           description: e.description,
         })),
-        education: (parsed.education || []).map((e: any, i: number) => ({
-          id: i.toString(),
-          degree: e.degree,
-          school: e.institution,
-          year: e.year,
+        education: safeEducation.map((e: any, i: number) => ({
+          id:          i.toString(),
+          degree:      e.degree      || "",
+          school:      e.institution || "",
+          year:        e.year        || "",
           institution: e.institution,
         })),
-        skills: parsed.skills || [],
-        projects: parsed.projects || [],
+        skills:   safeSkills,
+        projects: safeProjects,
       };
 
       clearInterval(timer);

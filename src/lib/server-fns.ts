@@ -323,16 +323,17 @@ export const parseResumeWithAI = createServerFn({ method: "POST" })
     const apiKey = process.env.GROQ_API_KEY;
     if (!apiKey) throw new Error("AI service is not configured on the server.");
 
-    const systemPrompt = `You are an expert career strategist. You will receive EITHER raw CV text OR a short user prompt describing their career. 
-If it's a CV, extract the data. If it's a short prompt, autonomously GENERATE and invent a highly professional, full-length CV profile matching the prompt's intent.
+    const systemPrompt = `You are an expert career strategist and professional copywriter. You will receive EITHER raw CV text OR a short user prompt describing their career.
+If given CV text, extract and structure the data faithfully.
+If given a short prompt, autonomously GENERATE and invent a highly professional, full-length CV profile that matches the prompt's intent.
 
-Return the information as a valid JSON object matching this exact structure:
+Return ONLY a valid JSON object matching this EXACT structure (no markdown, no code fences, no extra keys):
 
 {
   "personalInfo": {
-    "name": "Candidate's real full name (First Last). CRITICAL: Do not use job title here.",
-    "role": "Current or most recent job title",
-    "bio": "Professional summary or objective (2-3 sentences max)",
+    "name": "Candidate's full name (First Last). NEVER use a job title here. If generating, invent a realistic professional name.",
+    "role": "Current or most recent job title (e.g. Senior Software Engineer)",
+    "bio": "Professional summary in first person — 2 to 3 compelling sentences.",
     "email": "Email address or empty string",
     "socials": {
       "linkedin": "LinkedIn URL or empty string",
@@ -345,16 +346,16 @@ Return the information as a valid JSON object matching this exact structure:
     {
       "role": "Job title",
       "company": "Company name",
-      "duration": "Start – End (e.g. 2022 – Present)",
-      "description": "Short paragraph summarizing achievements and responsibilities"
+      "duration": "Start – End (e.g. Jan 2022 – Present)",
+      "description": "2-3 sentences summarizing achievements and key responsibilities"
     }
   ],
   "projects": [
     {
       "title": "Project name",
-      "description": "Short summary of the project and impact",
-      "techStack": ["Tech1", "Tech2"],
-      "highlight": "One standout metric or feature (optional)"
+      "description": "2 sentences describing the project, its purpose and impact",
+      "techStack": ["Tech1", "Tech2", "Tech3"],
+      "highlight": "One standout achievement, metric, or outcome"
     }
   ],
   "education": [
@@ -367,12 +368,16 @@ Return the information as a valid JSON object matching this exact structure:
   "skills": ["Skill1", "Skill2", "Skill3"]
 }
 
-Rules:
-- Return ONLY the JSON object — no markdown, no commentary, no code fences.
-- If processing a CV, extract the candidate's actual name. If generating from a prompt, generate a realistic professional name. Do not use a job title in the name field.
-- Include up to 6 experience entries, 6 projects, and relevant education entries.
-- Skills: flat array of strings, max 15.
-- If generating from a prompt, invent plausible and impressive details, metrics, employers, and dates that match the requested profile.`;
+STRICT MINIMUM REQUIREMENTS — failure to meet these means your output is invalid:
+- "experience": MINIMUM 2 entries. If generating from a prompt, invent plausible past roles.
+- "projects": MINIMUM 2 entries. If generating from a prompt, invent relevant impressive projects.
+- "education": MINIMUM 1 entry.
+- "skills": MINIMUM 6 items.
+- Each experience entry MUST have non-empty "role", "company", "duration", and "description".
+- Each project MUST have non-empty "title", "description", at least 2 items in "techStack", and a non-empty "highlight".
+- If generating from a prompt: invent realistic employers, plausible dates, and specific metrics.
+- If processing a CV: only use data present in the CV; do not invent employers or dates.
+- Return ONLY the raw JSON — no markdown, no explanation, no commentary.`;
 
     const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST",
@@ -418,6 +423,14 @@ Rules:
     if (!parsed.personalInfo || !Array.isArray(parsed.experience) || !Array.isArray(parsed.skills)) {
       throw new Error("Unexpected AI response format. Please try again.");
     }
+
+    // Enforce minimum content volumes — pad gracefully rather than crash the UI
+    if (!Array.isArray(parsed.skills) || parsed.skills.length < 3) {
+      parsed.skills = [...(parsed.skills || []), "Communication", "Problem Solving", "Collaboration", "Time Management"].slice(0, Math.max(6, (parsed.skills || []).length));
+    }
+    if (!Array.isArray(parsed.experience)) parsed.experience = [];
+    if (!Array.isArray(parsed.education))  parsed.education  = [];
+    if (!Array.isArray(parsed.projects))   parsed.projects   = [];
 
     return parsed as any; // Type matches PortfolioData in client
   });

@@ -1801,3 +1801,141 @@ function HarvardSectionTitle({ label }: { label: string }) {
     </div>
   );
 }
+
+/* ══════════════════════════════════════════════════════════
+   TEMPLATE 14 — ATS EXECUTIVE (Harvard-style)
+   Traditional single-column, centered header, bold uppercase
+   section titles with solid rules, dates right-aligned.
+   100% ATS-optimised — zero colors, zero fancy fonts.
+══════════════════════════════════════════════════════════ */
+
+function ATSExecSection({ label }: { label: string }) {
+  return (
+    <div className="mt-5 mb-2">
+      <p className="text-[12.5px] font-bold uppercase tracking-wider text-black">{label}</p>
+      <div className="h-[1px] bg-black mt-0.5" />
+    </div>
+  );
+}
+
+export const ATSExecutiveTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
+  ({ data }, ref) => {
+    const { personalInfo: p, experience = [], education = [], skills = [] } = data;
+
+    // Build single-line contact string
+    const contactParts = [p.phone, p.email, p.linkedin, p.location].filter(Boolean);
+
+    return (
+      <div
+        ref={ref}
+        className="cv-root w-full h-full bg-white text-black overflow-hidden"
+        style={{ fontFamily: "'Arial', 'Helvetica Neue', Helvetica, sans-serif" }}
+      >
+        <style>{PRINT_STYLES}</style>
+        <div className="px-14 pt-10 pb-12">
+
+          {/* ── HEADER (centered) ── */}
+          <div className="text-center mb-1">
+            <h1 className="text-[28px] font-bold uppercase tracking-widest leading-tight">
+              {p.fullName || "YOUR NAME"}
+            </h1>
+            {p.jobTitle && (
+              <p className="text-[13px] font-bold uppercase tracking-wider mt-0.5">
+                {p.jobTitle}
+              </p>
+            )}
+            {contactParts.length > 0 && (
+              <p className="text-[10.5px] mt-2 text-black/80">
+                {contactParts.join("  |  ")}
+              </p>
+            )}
+          </div>
+
+          {/* ── PROFESSIONAL SUMMARY ── */}
+          {p.summary && (
+            <>
+              <ATSExecSection label="Professional Summary" />
+              <p className="text-[11px] leading-relaxed text-black">
+                {p.summary}
+              </p>
+            </>
+          )}
+
+          {/* ── EXPERIENCE ── */}
+          {experience.length > 0 && (
+            <>
+              <ATSExecSection label="Professional Experience" />
+              <div className="space-y-4">
+                {experience.map((exp) => (
+                  <div key={exp.id}>
+                    <div className="flex justify-between items-baseline">
+                      <div>
+                        <span className="text-[12px] font-bold uppercase">{exp.role}</span>
+                        {exp.company && (
+                          <span className="text-[12px] font-bold"> — {exp.company}</span>
+                        )}
+                      </div>
+                      {exp.period && (
+                        <span className="text-[11px] shrink-0 ml-4">{exp.period}</span>
+                      )}
+                    </div>
+                    {exp.bullets && (
+                      <ul className="mt-1.5 space-y-1 pl-5">
+                        {exp.bullets.split("\n").map((b, i) =>
+                          b.trim() ? (
+                            <li key={i} className="text-[11px] leading-relaxed list-disc">
+                              {b.trim()}
+                            </li>
+                          ) : null
+                        )}
+                      </ul>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+
+          {/* ── EDUCATION ── */}
+          {education.length > 0 && (
+            <>
+              <ATSExecSection label="Education" />
+              <div className="space-y-3">
+                {education.map((edu) => (
+                  <div key={edu.id} className="flex justify-between items-baseline">
+                    <div>
+                      <span className="text-[12px] font-bold uppercase">{edu.degree}</span>
+                      {edu.school && (
+                        <span className="text-[11px]"> — {edu.school}</span>
+                      )}
+                    </div>
+                    {edu.year && (
+                      <span className="text-[11px] shrink-0 ml-4">{edu.year}</span>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+
+          {/* ── SKILLS ── */}
+          {skills.length > 0 && (
+            <>
+              <ATSExecSection label="Core Competencies" />
+              <ul className="grid grid-cols-2 gap-x-8 gap-y-0.5 pl-5">
+                {skills.map((s) => (
+                  <li key={s} className="text-[11px] leading-relaxed list-disc">
+                    {s}
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
+
+        </div>
+      </div>
+    );
+  }
+);
+ATSExecutiveTemplate.displayName = "ATSExecutiveTemplate";
+
