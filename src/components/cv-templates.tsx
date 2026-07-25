@@ -1747,21 +1747,11 @@ export const HarvardStandardTemplate = forwardRef<HTMLDivElement, { data: CvStat
             </div>
           </div>
 
-          {/* ── Education (Harvard puts edu first) ── */}
-          {education.length > 0 && (
+          {/* ── Summary / Profile ── */}
+          {p.summary && (
             <div className="mb-4">
-              <HarvardSectionTitle label="Education" />
-              <div className="mt-2 space-y-3">
-                {education.map((edu) => (
-                  <div key={edu.id} className="flex justify-between items-baseline">
-                    <div>
-                      <p className="text-[12px] font-bold text-slate-900">{edu.school}</p>
-                      <p className="text-[11px] italic text-slate-700">{edu.degree}</p>
-                    </div>
-                    <span className="text-[10px] text-slate-600 shrink-0">{edu.year}</span>
-                  </div>
-                ))}
-              </div>
+              <HarvardSectionTitle label="Profile" />
+              <p className="mt-2 text-[11px] leading-relaxed text-slate-700">{p.summary}</p>
             </div>
           )}
 
@@ -1790,11 +1780,21 @@ export const HarvardStandardTemplate = forwardRef<HTMLDivElement, { data: CvStat
             </div>
           )}
 
-          {/* ── Summary / Profile ── */}
-          {p.summary && (
+          {/* ── Education ── */}
+          {education.length > 0 && (
             <div className="mb-4">
-              <HarvardSectionTitle label="Profile" />
-              <p className="mt-2 text-[11px] leading-relaxed text-slate-700">{p.summary}</p>
+              <HarvardSectionTitle label="Education" />
+              <div className="mt-2 space-y-3">
+                {education.map((edu) => (
+                  <div key={edu.id} className="flex justify-between items-baseline">
+                    <div>
+                      <p className="text-[12px] font-bold text-slate-900">{edu.school}</p>
+                      <p className="text-[11px] italic text-slate-700">{edu.degree}</p>
+                    </div>
+                    <span className="text-[10px] text-slate-600 shrink-0">{edu.year}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
 
