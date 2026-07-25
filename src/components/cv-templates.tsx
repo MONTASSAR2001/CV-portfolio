@@ -1503,9 +1503,24 @@ export const ATSClassicTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
             {p.jobTitle && (
               <p className="text-[11px] text-slate-600 mt-0.5 font-medium">{p.jobTitle}</p>
             )}
-            <p className="mt-2 text-[10px] text-slate-600 leading-relaxed">
-              {[p.email, p.phone, p.location, p.linkedin].filter(Boolean).join("  |  ")}
-            </p>
+            <div className="mt-2 flex flex-wrap justify-center items-center gap-2 text-[10px] text-slate-600 leading-relaxed">
+              {[
+                p.email && <span key="email">{p.email}</span>,
+                p.phone && <span key="phone">{p.phone}</span>,
+                p.location && <span key="loc">{p.location}</span>,
+                p.linkedin && (
+                  <a key="ln" href={p.linkedin.startsWith('http') ? p.linkedin : `https://${p.linkedin}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors">
+                    <Linkedin className="w-3.5 h-3.5"/>
+                    <span className="sr-only">LinkedIn</span>
+                  </a>
+                )
+              ].filter(Boolean).map((el, i, arr) => (
+                <span key={i} className="flex items-center gap-2">
+                  {el}
+                  {i < arr.length - 1 && <span>|</span>}
+                </span>
+              ))}
+            </div>
           </div>
 
           {/* ── Summary ── */}
@@ -1601,11 +1616,16 @@ export const ATSModernTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
             {p.jobTitle && (
               <p className="text-[12px] font-semibold mt-0.5" style={{ color: ACCENT }}>{p.jobTitle}</p>
             )}
-            <div className="mt-2 flex flex-wrap gap-x-5 gap-y-0.5">
+            <div className="mt-2 flex flex-wrap items-center gap-x-5 gap-y-0.5">
               {p.email    && <span className="text-[10px] text-slate-500">{p.email}</span>}
               {p.phone    && <span className="text-[10px] text-slate-500">{p.phone}</span>}
               {p.location && <span className="text-[10px] text-slate-500">{p.location}</span>}
-              {p.linkedin && <span className="text-[10px] text-slate-500">{p.linkedin}</span>}
+              {p.linkedin && (
+                <a href={p.linkedin.startsWith('http') ? p.linkedin : `https://${p.linkedin}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors">
+                  <Linkedin className="w-3.5 h-3.5"/>
+                  <span className="sr-only">LinkedIn</span>
+                </a>
+              )}
             </div>
           </div>
 
@@ -1707,9 +1727,24 @@ export const HarvardStandardTemplate = forwardRef<HTMLDivElement, { data: CvStat
                 {p.jobTitle}
               </p>
             )}
-            <p className="mt-1 text-[10px] text-slate-600">
-              {[p.location, p.phone, p.email, p.linkedin].filter(Boolean).join("  ·  ")}
-            </p>
+            <div className="mt-1 flex flex-wrap justify-center items-center gap-2 text-[10px] text-slate-600">
+              {[
+                p.location && <span key="loc">{p.location}</span>,
+                p.phone && <span key="phone">{p.phone}</span>,
+                p.email && <span key="email">{p.email}</span>,
+                p.linkedin && (
+                  <a key="ln" href={p.linkedin.startsWith('http') ? p.linkedin : `https://${p.linkedin}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors">
+                    <Linkedin className="w-3.5 h-3.5"/>
+                    <span className="sr-only">LinkedIn</span>
+                  </a>
+                )
+              ].filter(Boolean).map((el, i, arr) => (
+                <span key={i} className="flex items-center gap-2">
+                  {el}
+                  {i < arr.length - 1 && <span>·</span>}
+                </span>
+              ))}
+            </div>
           </div>
 
           {/* ── Education (Harvard puts edu first) ── */}
@@ -1827,9 +1862,6 @@ export const ATSExecutiveTemplate = forwardRef<HTMLDivElement, { data: CvState }
   ({ data }, ref) => {
     const { personalInfo: p, experience = [], education = [], skills = [] } = data;
 
-    // Build single-line contact string
-    const contactParts = [p.phone, p.email, p.linkedin, p.location].filter(Boolean);
-
     return (
       <div
         ref={ref}
@@ -1849,11 +1881,24 @@ export const ATSExecutiveTemplate = forwardRef<HTMLDivElement, { data: CvState }
                 {p.jobTitle}
               </p>
             )}
-            {contactParts.length > 0 && (
-              <p className="text-[10.5px] mt-2 text-black/80">
-                {contactParts.join("  |  ")}
-              </p>
-            )}
+            <div className="mt-2 flex flex-wrap justify-center items-center gap-2 text-[10.5px] text-black/80">
+              {[
+                p.phone && <span key="phone">{p.phone}</span>,
+                p.email && <span key="email">{p.email}</span>,
+                p.location && <span key="loc">{p.location}</span>,
+                p.linkedin && (
+                  <a key="ln" href={p.linkedin.startsWith('http') ? p.linkedin : `https://${p.linkedin}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors">
+                    <Linkedin className="w-3.5 h-3.5"/>
+                    <span className="sr-only">LinkedIn</span>
+                  </a>
+                )
+              ].filter(Boolean).map((el, i, arr) => (
+                <span key={i} className="flex items-center gap-2">
+                  {el}
+                  {i < arr.length - 1 && <span>|</span>}
+                </span>
+              ))}
+            </div>
           </div>
 
           {/* ── PROFESSIONAL SUMMARY ── */}
