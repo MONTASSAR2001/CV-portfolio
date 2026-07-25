@@ -390,20 +390,24 @@ function DashboardPage() {
 
         // Parse legacy portfolios
         if (allPortfoliosRes.data) {
-          rows.push(...allPortfoliosRes.data.map(p => ({
-            id: p.id,
-            deployed_url: p.deployed_url.startsWith("http") ? p.deployed_url : window.location.origin + p.deployed_url,
-            template_id: p.template_id,
-            created_at: p.created_at,
-            source: "portfolios" as const,
-          })));
+          allPortfoliosRes.data.forEach(p => {
+            if (p.deployed_url && typeof p.deployed_url === "string") {
+              rows.push({
+                id: p.id,
+                deployed_url: p.deployed_url.startsWith("http") ? p.deployed_url : window.location.origin + p.deployed_url,
+                template_id: p.template_id,
+                created_at: p.created_at,
+                source: "portfolios" as const,
+              });
+            }
+          });
         }
 
         // Parse modern CVs
         if (cvsRes.data) {
           cvsRes.data.forEach(c => {
             const pm = c.cv_data_json?.publishMeta;
-            if (pm && pm.url) {
+            if (pm && pm.url && typeof pm.url === "string") {
               rows.push({
                 id: c.id,
                 deployed_url: pm.url.startsWith("http") ? pm.url : window.location.origin + pm.url,
