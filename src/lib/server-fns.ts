@@ -53,7 +53,8 @@ async function validateSessionToken(accessToken: string) {
 /* ─── Input validation schemas ───────────────────────────────────────────── */
 
 const GenerateInput = z.object({
-  cvText: z.string().min(80).max(14000),
+  cvText: z.string().max(14000).optional(),
+  prompt: z.string().max(2000).optional(),
   templateTone: z.string().max(400),
   // Access token forwarded from the client session — validated server-side
   accessToken: z.string().min(1, "Access token is required"),
@@ -153,12 +154,16 @@ export const generatePortfolioContent = createServerFn({ method: "POST" })
     // ── [SECURITY] Validate caller session BEFORE touching any API key ──────
     await validateSessionToken(data.accessToken);
 
+    if (!data.cvText && !data.prompt) {
+      throw new Error("Either a CV or a prompt must be provided.");
+    }
+
     const apiKey = process.env.GROQ_API_KEY;
     if (!apiKey) {
       throw new Error("AI service is not configured on the server. Contact support.");
     }
 
-    const systemPrompt = `You are an expert web copywriter and career branding strategist. Transform raw CV text into structured portfolio website content.
+    const systemPrompt = `You are an expert web copywriter and career branding strategist. ${data.prompt ? "Autonomously GENERATE and invent a highly professional portfolio website content matching the user's prompt." : "Transform raw CV text into structured portfolio website content."}
 
 Tone & Style: ${data.templateTone}
 
@@ -179,10 +184,10 @@ Return ONLY a valid JSON object with this exact structure:
 }
 
 Rules:
-- You MUST extract the candidate's actual name. Do not invent a name.
+- ${data.prompt ? "Invent a realistic professional name, realistic projects, metrics, and skills." : "You MUST extract the candidate's actual name. Do not invent a name."}
 - Extract up to 6 projects. Include fewer if fewer are present.
 - Skills: flat array of strings, max 12.
-- Never invent employers, dates, or metrics not in the CV.
+- ${data.prompt ? "Make the content extremely impressive and plausible." : "Never invent employers, dates, or metrics not in the CV."}
 - Output ONLY the JSON — no markdown, no commentary.`;
 
     const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
@@ -200,7 +205,9 @@ Rules:
           { role: "system", content: systemPrompt },
           {
             role: "user",
-            content: `Transform this CV into portfolio content:\n\n---\n${data.cvText}\n---`,
+            content: data.prompt 
+              ? `Generate a full professional portfolio based on this prompt:\n\n---\n${data.prompt}\n---`
+              : `Transform this CV into portfolio content:\n\n---\n${data.cvText}\n---`,
           },
         ],
       }),
@@ -218,8 +225,22 @@ Rules:
     const json = (await response.json()) as {
       choices: { message: { content: string } }[];
     };
-    const raw = json.choices?.[0]?.message?.content ?? "";
-    const parsed = JSON.parse(raw) as PortfolioContent;
+    let raw = json.choices?.[0]?.message?.content ?? "";
+    
+    // Sanitize in case LLM returns markdown blocks
+    if (raw.startsWith("```json")) {
+      raw = raw.replace(/^```json\n?/, "").replace(/\n?```$/, "");
+    } else if (raw.startsWith("```")) {
+      raw = raw.replace(/^```\n?/, "").replace(/\n?```$/, "");
+    }
+    raw = raw.trim();
+
+    let parsed;
+    try {
+      parsed = JSON.parse(raw) as PortfolioContent;
+    } catch (e) {
+      throw new Error("AI returned malformed JSON. Please try again.");
+    }
 
     if (!parsed.bio || !Array.isArray(parsed.projects) || !Array.isArray(parsed.skills)) {
       throw new Error("Unexpected AI response format. Please try again.");

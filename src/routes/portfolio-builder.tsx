@@ -82,6 +82,7 @@ function PortfolioBuilderPage() {
 
   // ── Form state ────────────────────────────────────────────────────────────
   const [file, setFile] = useState<File | null>(null);
+  const [prompt, setPrompt] = useState<string>("");
   const [selectedTemplate, setSelectedTemplate] = useState("architect");
 
   // ── Generation state ──────────────────────────────────────────────────────
@@ -104,8 +105,8 @@ function PortfolioBuilderPage() {
 
   // ── Generate handler ──────────────────────────────────────────────────────
   const handleGenerate = async () => {
-    if (!file || file.type !== "application/pdf") {
-      setGenerationError("Please upload a PDF file in Step 1.");
+    if (!file && !prompt) {
+      setGenerationError("Please upload a PDF file or enter a prompt in Step 1.");
       return;
     }
     setGenerating(true);
@@ -113,10 +114,15 @@ function PortfolioBuilderPage() {
     setGeneratedContent(null);
 
     try {
-      setGenerationStage(STAGES[0]);
-      const { extractTextFromPDF } = await import("@/lib/pdf-extractor");
-      const cvText = await extractTextFromPDF(file);
-      if (cvText.trim().length < 80) throw new Error("Extracted text too short — ensure PDF has selectable text.");
+      let cvText = "";
+      if (file) {
+        setGenerationStage(STAGES[0]);
+        const { extractTextFromPDF } = await import("@/lib/pdf-extractor");
+        cvText = await extractTextFromPDF(file);
+        if (cvText.trim().length < 80) throw new Error("Extracted text too short — ensure PDF has selectable text.");
+      } else {
+        setGenerationStage("Analyzing your prompt...");
+      }
 
       setGenerationStage(STAGES[1]);
       const tone = TEMPLATE_TONES[selectedTemplate] ?? "Professional and polished.";
@@ -124,7 +130,8 @@ function PortfolioBuilderPage() {
       setGenerationStage(STAGES[2]);
       const parsed = await generatePortfolioContent({
         data: {
-          cvText: cvText.slice(0, 14000),
+          cvText: file ? cvText.slice(0, 14000) : undefined,
+          prompt: prompt || undefined,
           templateTone: tone,
           accessToken: session?.access_token ?? "",
         },
@@ -245,7 +252,8 @@ function PortfolioBuilderPage() {
         <div className="w-full max-w-3xl">
           <AnimatePresence mode="wait">
             {step === 1 && (
-              <StepUpload key="step1" file={file} onFile={(f) => { setFile(f); complete(1); }}
+              <StepUpload key="step1" file={file} onFile={(f) => { setFile(f); setPrompt(""); complete(1); }}
+                prompt={prompt} onPrompt={(p) => { setPrompt(p); setFile(null); complete(1); }}
                 onNext={() => { complete(1); setStep(2); }} />
             )}
             {step === 2 && (
