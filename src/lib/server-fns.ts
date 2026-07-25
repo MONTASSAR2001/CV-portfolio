@@ -13,6 +13,7 @@ export type PortfolioProject = {
 };
 
 export type PortfolioContent = {
+  name?: string;       // Candidate's full name — may be absent for prompt-only generations
   bio: string;
   headline: string;
   projects: PortfolioProject[];
@@ -62,6 +63,7 @@ const GenerateInput = z.object({
 
 const DeployInput = z.object({
   content: z.object({
+    name: z.string().optional(),
     bio: z.string(),
     headline: z.string(),
     projects: z.array(
@@ -94,34 +96,40 @@ const esc = (s: string) =>
 
 function buildHtml(c: PortfolioContent, templateId: string): string {
   const t = THEMES[templateId] ?? THEMES.architect;
+  const displayName = c.name ? esc(c.name) : "";
 
-  const projects = c.projects
+  const safeProjects = Array.isArray(c.projects) ? c.projects : [];
+  const safeSkills = Array.isArray(c.skills) ? c.skills : [];
+
+  const projects = safeProjects
     .map(
       (p) => `
     <article class="card">
-      <h3>${esc(p.title)}</h3>
-      <p>${esc(p.description)}</p>
+      <h3>${esc(p.title ?? "Untitled Project")}</h3>
+      <p>${esc(p.description ?? "")}</p>
       ${p.highlight ? `<p class="highlight">⭐ ${esc(p.highlight)}</p>` : ""}
-      <div class="tags">${p.tech.map((x) => `<span>${esc(x)}</span>`).join("")}</div>
+      <div class="tags">${(p.tech ?? []).map((x) => `<span>${esc(x)}</span>`).join("")}</div>
     </article>`
     )
     .join("");
 
-  const skills = c.skills.map((s) => `<span class="skill">${esc(s)}</span>`).join("");
+  const skills = safeSkills.map((s) => `<span class="skill">${esc(s ?? "")}</span>`).join("");
 
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>${esc(c.headline)}</title>
+<title>${displayName ? `${displayName} — ` : ""}${esc(c.headline)}</title>
+<meta name="description" content="${esc(c.bio.slice(0, 155))}">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:${t.bg};color:${t.text};font-family:${t.font};line-height:1.6}
 .container{max-width:860px;margin:0 auto;padding:3rem 1.5rem}
+.name{font-size:.9rem;letter-spacing:.18em;text-transform:uppercase;opacity:.5;margin-bottom:.5rem}
 h1{font-size:clamp(2rem,5vw,3.5rem);color:${t.accent};margin-bottom:1rem}
 .bio{font-size:1.1rem;max-width:640px;margin-bottom:3rem;opacity:.85}
 h2{font-size:1.25rem;letter-spacing:.08em;text-transform:uppercase;color:${t.accent};
-   border-bottom:2px solid ${t.accent};padding-bottom:.4rem;margin-bottom:1.5rem}
+   border-bottom:2px solid ${t.accent};padding-bottom:.4rem;margin-bottom:1.5rem;margin-top:2.5rem}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.2rem;margin-bottom:3rem}
 .card{border:1px solid ${t.accent}22;padding:1.25rem;border-radius:6px;background:${t.accent}08}
 .card h3{font-size:1rem;color:${t.accent};margin-bottom:.5rem}
@@ -131,15 +139,16 @@ h2{font-size:1.25rem;letter-spacing:.08em;text-transform:uppercase;color:${t.acc
 .tags span{font-size:.7rem;padding:.25rem .6rem;border-radius:4px;background:${t.accent}18;color:${t.accent}}
 .skills{display:flex;flex-wrap:wrap;gap:.6rem;margin-bottom:3rem}
 .skill{padding:.35rem .9rem;border:1px solid ${t.accent}55;border-radius:20px;font-size:.85rem}
-footer{font-size:.75rem;opacity:.4;text-align:center;padding-top:2rem;border-top:1px solid ${t.accent}22}
+footer{font-size:.75rem;opacity:.4;text-align:center;padding-top:2rem;border-top:1px solid ${t.accent}22;margin-top:3rem}
 </style>
 </head>
 <body>
 <div class="container">
+  ${displayName ? `<p class="name">${displayName}</p>` : ""}
   <h1>${esc(c.headline)}</h1>
   <p class="bio">${esc(c.bio)}</p>
-  ${c.projects.length ? `<h2>Projects</h2><div class="grid">${projects}</div>` : ""}
-  ${c.skills.length ? `<h2>Skills</h2><div class="skills">${skills}</div>` : ""}
+  ${safeProjects.length ? `<h2>Projects</h2><div class="grid">${projects}</div>` : ""}
+  ${safeSkills.length ? `<h2>Skills &amp; Expertise</h2><div class="skills">${skills}</div>` : ""}
   <footer>Built with CareerOS Portfolio Builder</footer>
 </div>
 </body>
@@ -167,28 +176,31 @@ export const generatePortfolioContent = createServerFn({ method: "POST" })
 
 Tone & Style: ${data.templateTone}
 
-Return ONLY a valid JSON object with this exact structure:
+Return ONLY a valid JSON object with this EXACT structure (no extra keys, no markdown wrapping):
 {
-  "name": "Candidate's real full name (First Last). CRITICAL: Do not use job title here.",
-  "bio": "2–3 sentence professional bio in first person, tailored to the tone.",
+  "name": "Candidate's full name (First Last). NEVER use a job title here.",
+  "bio": "2–3 sentence professional bio in first person, compelling and tailored to the tone.",
   "headline": "Short punchy hero headline, max 8 words.",
   "projects": [
     {
       "title": "Project name",
-      "description": "1–2 sentences on impact and purpose, written for the web.",
-      "tech": ["Tech1", "Tech2"],
-      "highlight": "One standout achievement or metric (optional)"
+      "description": "1–2 sentences describing the impact and purpose, written for a web audience.",
+      "tech": ["Tech1", "Tech2", "Tech3"],
+      "highlight": "One standout achievement, metric, or outcome"
     }
   ],
-  "skills": ["Skill1", "Skill2"]
+  "skills": ["Skill1", "Skill2", "Skill3"]
 }
 
-Rules:
-- ${data.prompt ? "Invent a realistic professional name, realistic projects, metrics, and skills." : "You MUST extract the candidate's actual name. Do not invent a name."}
-- Extract up to 6 projects. Include fewer if fewer are present.
-- Skills: flat array of strings, max 12.
-- ${data.prompt ? "Make the content extremely impressive and plausible." : "Never invent employers, dates, or metrics not in the CV."}
-- Output ONLY the JSON — no markdown, no commentary.`;
+STRICT MINIMUM REQUIREMENTS — you MUST meet all of these or the output will be rejected:
+- "projects": MINIMUM 3 items. If the user's CV or prompt has fewer, intelligently invent plausible additional projects consistent with their field.
+- "skills": MINIMUM 6 items. Never return fewer than 6 skills.
+- Each project MUST have a non-empty "title", "description", at least 2 "tech" tags, and a non-empty "highlight".
+- "bio" must be at least 2 full sentences.
+- "headline" must be punchy and non-generic (NOT just the job title).
+- ${data.prompt ? "Invent a realistic, memorable full name. Invent realistic projects with real-sounding metrics and outcomes." : "Extract the candidate's actual full name from the CV. NEVER invent a name."}
+- ${data.prompt ? "Make every project impressive, specific, and plausible given the domain described in the prompt." : "Never invent employers, dates, or metrics not present in the CV text."}
+- Output ONLY the raw JSON — absolutely no markdown fences, no commentary, no explanation.`;
 
     const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST",
@@ -244,6 +256,15 @@ Rules:
 
     if (!parsed.bio || !Array.isArray(parsed.projects) || !Array.isArray(parsed.skills)) {
       throw new Error("Unexpected AI response format. Please try again.");
+    }
+
+    // Enforce minimum content volumes — pad rather than fail
+    if (parsed.skills.length < 3) {
+      parsed.skills = [...parsed.skills, "Communication", "Problem Solving", "Collaboration"].slice(0, Math.max(3, parsed.skills.length + 3));
+    }
+    if (parsed.projects.length < 2) {
+      // Not enough projects is a generation failure — surface it clearly
+      throw new Error("AI generated insufficient content. Please retry or provide more detail in your prompt.");
     }
 
     return parsed;
