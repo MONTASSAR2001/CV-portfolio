@@ -1702,6 +1702,11 @@ export const HarvardStandardTemplate = forwardRef<HTMLDivElement, { data: CvStat
             <h1 className="text-[22px] font-bold tracking-widest text-slate-900 uppercase">
               {p.fullName || "Your Name"}
             </h1>
+            {p.jobTitle && (
+              <p className="mt-1 text-[11px] font-semibold tracking-widest text-slate-700 uppercase" style={{ fontVariant: "small-caps" }}>
+                {p.jobTitle}
+              </p>
+            )}
             <p className="mt-1 text-[10px] text-slate-600">
               {[p.location, p.phone, p.email, p.linkedin].filter(Boolean).join("  ·  ")}
             </p>

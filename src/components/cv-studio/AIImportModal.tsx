@@ -10,6 +10,8 @@ import { EMPTY_CV_STATE } from "./types";
 interface AIImportModalProps {
   onStart: (data: CvState) => void;
   accessToken: string;
+  /** Optional: if provided, a close button is shown to dismiss the modal without changing state */
+  onDismiss?: () => void;
 }
 
 const AI_STAGES = [
@@ -20,7 +22,7 @@ const AI_STAGES = [
   "Generating your CV draft…",
 ];
 
-export function AIImportModal({ onStart, accessToken }: AIImportModalProps) {
+export function AIImportModal({ onStart, accessToken, onDismiss }: AIImportModalProps) {
   const [phase, setPhase] = useState<"select" | "loading" | "done">("select");
   const [aiTab, setAiTab] = useState<"upload" | "prompt">("upload");
   const [promptText, setPromptText] = useState("");
@@ -141,6 +143,16 @@ export function AIImportModal({ onStart, accessToken }: AIImportModalProps) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-2xl">
+      {/* Dismiss button — only shown when modal is re-opened from editor */}
+      {onDismiss && (
+        <button
+          onClick={onDismiss}
+          aria-label="Close AI modal"
+          className="absolute right-5 top-5 z-10 flex h-9 w-9 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-slate-400 transition hover:border-white/20 hover:bg-white/10 hover:text-white"
+        >
+          ✕
+        </button>
+      )}
       <div className="pointer-events-none absolute inset-0" aria-hidden="true">
         <div className="absolute left-[-10%] top-[-15%] h-[600px] w-[600px] rounded-full" style={{ background: "radial-gradient(circle, oklch(0.72 0.24 300 / 0.2) 0%, transparent 70%)", filter: "blur(80px)" }} />
         <div className="absolute bottom-[-10%] right-[-10%] h-[500px] w-[500px] rounded-full" style={{ background: "radial-gradient(circle, oklch(0.85 0.18 210 / 0.2) 0%, transparent 70%)", filter: "blur(80px)" }} />

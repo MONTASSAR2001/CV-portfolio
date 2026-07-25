@@ -152,6 +152,7 @@ function CvStudioPage() {
   const [publishStatus, setPublishStatus] = useState<"idle" | "published" | "error">("idle");
   const [publishedUrl, setPublishedUrl] = useState<string | null>(null);
   const [subscriptionTier, setSubscriptionTier] = useState<string>("free");
+  const [aiModalOpen, setAiModalOpen] = useState(false);
 
   const printRef = useRef<HTMLDivElement>(null);
 
@@ -265,6 +266,7 @@ function CvStudioPage() {
   /* ── Handler called by AIImportModal once user picks a start method ── */
   const handleStart = (data: CvState) => {
     setCvData(data);
+    setAiModalOpen(false);
     setPhase("editor");
   };
 
@@ -289,11 +291,12 @@ function CvStudioPage() {
         />
       </div>
 
-      {/* ── AI Import modal (phase === "import") ── */}
+      {/* ── AI Import modal (initial phase OR re-opened via button) ── */}
       <AnimatePresence>
-        {phase === "import" && (
+        {(phase === "import" || aiModalOpen) && (
           <AIImportModal
             onStart={handleStart}
+            onDismiss={phase === "editor" ? () => setAiModalOpen(false) : undefined}
             accessToken={user?.id ?? ""}
           />
         )}
@@ -361,6 +364,18 @@ function CvStudioPage() {
 
               {/* Right — action buttons */}
               <div className="flex items-center gap-2">
+                {/* AI Generate button — always visible, re-opens the import modal */}
+                <button
+                  id="cv-ai-generate-btn"
+                  onClick={() => setAiModalOpen(true)}
+                  className="flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-semibold text-white transition-all hover:scale-105 active:scale-[0.97]"
+                  style={{
+                    background: "linear-gradient(135deg, oklch(0.72 0.24 160), oklch(0.65 0.22 140))",
+                    boxShadow: "0 0 16px oklch(0.72 0.24 160 / 0.35)",
+                  }}
+                >
+                  ✨ AI Generate
+                </button>
                 <button
                   id="cv-save-cloud-btn"
                   onClick={handleSaveCloud}

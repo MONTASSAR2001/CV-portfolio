@@ -55,7 +55,7 @@ async function validateSessionToken(accessToken: string) {
 
 const GenerateInput = z.object({
   cvText: z.string().max(14000).optional(),
-  prompt: z.string().max(2000).optional(),
+  prompt: z.string().max(5000, "Prompt must be less than 5000 characters").optional(),
   templateTone: z.string().max(400),
   // Access token forwarded from the client session — validated server-side
   accessToken: z.string().min(1, "Access token is required"),
@@ -306,7 +306,7 @@ export const deployPortfolioToVercel = createServerFn({ method: "POST" })
 
 const ParseResumeInput = z.object({
   cvText: z.string().max(12000).optional(),
-  prompt: z.string().max(2000).optional(),
+  prompt: z.string().max(5000, "Prompt must be less than 5000 characters").optional(),
   accessToken: z.string().min(1, "Access token is required"),
 });
 
