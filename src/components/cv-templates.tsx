@@ -9,6 +9,8 @@ export type PersonalInfo = {
   phone: string;
   location: string;
   linkedin: string;
+  github?: string;
+  portfolioUrl?: string;
   summary: string;
 };
 
@@ -1543,6 +1545,12 @@ export const ATSClassicTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
                     <Github className="w-3.5 h-3.5"/>
                     <span className="sr-only">GitHub</span>
                   </a>
+                ),
+                p.portfolioUrl && (
+                  <a key="portfolio" href={p.portfolioUrl.startsWith('http') ? p.portfolioUrl : `https://${p.portfolioUrl}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors">
+                    <Globe className="w-3.5 h-3.5"/>
+                    <span className="sr-only">Portfolio</span>
+                  </a>
                 )
               ].filter(Boolean).map((el, i, arr) => (
                 <span key={i} className="flex items-center gap-2">
@@ -1672,6 +1680,12 @@ export const ATSModernTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
                   <span className="sr-only">GitHub</span>
                 </a>
               )}
+              {p.portfolioUrl && (
+                <a href={p.portfolioUrl.startsWith('http') ? p.portfolioUrl : `https://${p.portfolioUrl}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors">
+                  <Globe className="w-3.5 h-3.5"/>
+                  <span className="sr-only">Portfolio</span>
+                </a>
+              )}
             </div>
           </div>
 
@@ -1798,6 +1812,12 @@ export const HarvardStandardTemplate = forwardRef<HTMLDivElement, { data: CvStat
                   <a key="gh" href={p.github.startsWith('http') ? p.github : `https://${p.github}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center text-gray-800 hover:text-black transition-colors ml-3">
                     <Github className="w-3.5 h-3.5 mr-1"/>
                     <span className="sr-only">GitHub</span>
+                  </a>
+                ),
+                p.portfolioUrl && (
+                  <a key="portfolio" href={p.portfolioUrl.startsWith('http') ? p.portfolioUrl : `https://${p.portfolioUrl}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center text-gray-800 hover:text-black transition-colors ml-3">
+                    <Globe className="w-3.5 h-3.5 mr-1"/>
+                    <span className="sr-only">Portfolio</span>
                   </a>
                 )
               ].filter(Boolean).map((el, i, arr) => (
@@ -1967,6 +1987,12 @@ export const ATSExecutiveTemplate = forwardRef<HTMLDivElement, { data: CvState }
                   <a key="gh" href={p.github.startsWith('http') ? p.github : `https://${p.github}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors">
                     <Github className="w-3.5 h-3.5"/>
                     <span className="sr-only">GitHub</span>
+                  </a>
+                ),
+                p.portfolioUrl && (
+                  <a key="portfolio" href={p.portfolioUrl.startsWith('http') ? p.portfolioUrl : `https://${p.portfolioUrl}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors">
+                    <Globe className="w-3.5 h-3.5"/>
+                    <span className="sr-only">Portfolio</span>
                   </a>
                 )
               ].filter(Boolean).map((el, i, arr) => (

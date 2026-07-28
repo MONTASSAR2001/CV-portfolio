@@ -1,0 +1,330 @@
+================================================================================
+  CAREEROS — PROJECT ARCHITECTURE REPORT
+  Generated: 2026-07-28  |  Analyst: Lead Software Architect (AI)
+  Mode: STRICTLY READ-ONLY — No files were modified.
+================================================================================
+
+
+────────────────────────────────────────────────────────────────────────────────
+1. PROJECT OVERVIEW
+────────────────────────────────────────────────────────────────────────────────
+
+Application Name : CareerOS
+Tagline          : "Your Career, Engineered by AI"
+Product Type     : AI-powered SaaS career platform
+
+PURPOSE
+CareerOS is a full-stack SaaS application that enables job seekers to:
+  (A) Build ATS-compliant CVs using an AI-assisted visual studio with 14
+      selectable resume templates and a PDF export pipeline.
+  (B) Generate and "deploy" professional portfolio websites from a CV upload
+      or freeform prompt, using a 4-step guided wizard backed by an LLM.
+
+TECH STACK
+  - Framework      : TanStack Start (React, SSR-capable, file-based routing)
+  - Language       : TypeScript 5.8 (strict)
+  - UI Library     : React 19
+  - Styling        : TailwindCSS v4 + custom CSS (glassmorphism design system)
+  - Animation      : Framer Motion 12
+  - 3D             : Three.js + @react-three/fiber + @react-three/drei
+  - Routing        : TanStack Router (file-based, type-safe, SSR-aware)
+  - Data Fetching  : TanStack Query (React Query v5)
+  - Backend/DB     : Supabase (Auth, PostgreSQL, Edge Functions, Storage)
+  - AI / LLM       : Groq API — llama-3.3-70b-versatile
+  - Payments       : Stripe (Checkout Sessions, one-time $12 Pro purchase)
+  - PDF Parsing    : pdfjs-dist (client-side, lazy-loaded)
+  - PDF Export     : react-to-print
+  - Forms          : react-hook-form + zod validation
+  - Build Tool     : Vite 8 (via @lovable.dev/vite-tanstack-config)
+  - Package Mgr    : Bun (bun.lock present) / npm (package-lock.json present)
+  - Deployment     : Lovable platform (Cloudflare/Nitro target via vite config)
+
+
+────────────────────────────────────────────────────────────────────────────────
+2. ARCHITECTURE & FOLDER STRUCTURE
+────────────────────────────────────────────────────────────────────────────────
+
+PROJECT ROOT
+├── src/                        → All application source code
+│   ├── routes/                 → File-based pages (TanStack Router)
+│   ├── components/             → Reusable React components
+│   ├── hooks/                  → Custom React hooks
+│   ├── lib/                    → Utilities, server functions, API clients
+│   ├── assets/                 → Static assets
+│   ├── styles.css              → Global design system / CSS tokens
+│   ├── router.tsx              → Router bootstrap
+│   ├── server.ts               → SSR server entry with error wrapper
+│   └── start.ts                → App entry point
+├── supabase/
+│   └── functions/
+│       ├── delete-user/        → Edge function: admin user deletion
+│       └── list-users/         → Edge function: admin user listing
+├── public/                     → Static public files (favicon, etc.)
+├── vite.config.ts              → Vite + TanStack Start build configuration
+├── package.json                → Dependencies and scripts
+├── tsconfig.json               → TypeScript configuration
+├── components.json             → shadcn/ui component registry config
+├── supabase-god-mode-setup.sql → DB schema: RLS, tables, policies
+├── supabase-phase26-patch.sql  → Incremental DB migration (phase 26)
+├── supabase-phase28-patch.sql  → Incremental DB migration (phase 28)
+└── vercel.json                 → Vercel rewrite rules (legacy config)
+
+
+SRC/ROUTES — PAGE DEFINITIONS
+├── __root.tsx          → Root layout: QueryClientProvider, AuthProvider, Toaster
+├── index.tsx           → Public landing page (46 KB — largest route file)
+├── login.tsx           → Email/password sign-in form
+├── signup.tsx          → Registration form
+├── forgot-password.tsx → Password reset flow
+├── dashboard.tsx       → Authenticated user dashboard (stats, deployments)
+├── cv-studio.tsx       → AI CV Studio (two-phase: import modal → editor)
+├── portfolio-builder.tsx → 4-step AI portfolio wizard
+├── pricing.tsx         → Pricing page (Free vs Pro, Stripe checkout)
+├── settings.tsx        → Account settings (email, password, delete)
+├── p.$slug.tsx         → Public portfolio viewer (dynamic slug route)
+└── api/
+│   └── webhook.ts      → Stripe webhook handler (API route)
+└── templates/          → 14 standalone portfolio template routes
+    ├── architect.tsx
+    ├── biotech.tsx
+    ├── blueprint-sphere-main.tsx   (31 KB — largest template)
+    ├── data-scientist.tsx
+    ├── future-forward.tsx
+    ├── golden-legacy.tsx
+    ├── kinetic-ink-main.tsx
+    ├── liquid-lens.tsx
+    ├── lumina.tsx
+    ├── lumina-med.tsx
+    ├── neon-canvas.tsx
+    ├── sterling.tsx
+    ├── vibrant-glass.tsx
+    └── vogue.tsx
+
+
+SRC/COMPONENTS — COMPONENT LIBRARY
+├── cv-templates.tsx            → Monolithic file (91 KB) exporting all 14
+│                                 ATS CV template components used in cv-studio
+├── cv-studio/                  → Modular CV Studio sub-components
+│   ├── AIImportModal.tsx       → Step 1: AI import / PDF upload modal (15 KB)
+│   ├── CVFormPanel.tsx         → Step 2: Structured form editor panel (15 KB)
+│   └── types.ts                → Shared CvState type, TEMPLATE_LIST, demo data
+├── portfolio-builder/          → Modular Portfolio Builder wizard steps
+│   ├── StepUpload.tsx          → Step 1: CV PDF upload or freeform prompt
+│   ├── StepTemplate.tsx        → Step 2: Visual template selector
+│   ├── StepGenerate.tsx        → Step 3: AI generation trigger + status display
+│   ├── StepDeploy.tsx          → Step 4: Deploy button + live URL display
+│   └── types.ts                → PortfolioContent type, TEMPLATE_TONES, STAGES
+└── templates/                  → Portfolio template section-level components
+    ├── blueprint-sphere/       → (no files — logic in routes/templates/)
+    ├── data-scientist/         → contact, hero, projects, skills, stats sections
+    ├── future-forward/         → (no files — logic in routes/templates/)
+    ├── golden-legacy/          → (no files — logic in routes/templates/)
+    ├── kinetic-ink/
+    │   ├── portfolio/          → KineticHero, WorkSection, ProgressShape, etc.
+    │   └── ui/
+    ├── liquid-lens/            → (no files — logic in routes/templates/)
+    ├── lumina-med/             → About, Contact, DnaScene, Expertise, Hero, Nav
+    ├── neon-canvas/            → (no files — logic in routes/templates/)
+    └── vibrant-glass/          → (no files — logic in routes/templates/)
+└── ui/                         → 46 shadcn/ui primitive components
+    (accordion, alert-dialog, button, card, dialog, form, select, sheet,
+     sidebar, tabs, tooltip, etc.)
+
+
+SRC/HOOKS
+├── use-auth.tsx        → Global auth context (session, user, signIn, signOut)
+├── use-mobile.tsx      → Responsive breakpoint detection hook
+└── use-count-up.ts     → Animated number counter utility hook
+
+
+SRC/LIB — UTILITIES & SERVER FUNCTIONS
+├── supabase.ts         → Singleton Supabase browser client (anon key, auth)
+├── server-fns.ts       → All TanStack Start server functions (21 KB):
+│   ├── generatePortfolioContent  → Calls Groq to produce portfolio JSON
+│   ├── deployPortfolioToVercel   → Generates slug + mocked deployment URL
+│   ├── parseResumeWithAI         → Calls Groq to parse CV PDF text → CvState
+│   ├── publishPremiumPortfolio   → Generates slug for CV Studio publish
+│   └── createCheckoutSession     → Creates Stripe Checkout Session
+├── pdf-extractor.ts    → Client-side PDF text extraction via pdfjs-dist
+├── vercel-deploy.ts    → (Stub) Vercel deployment utility
+├── utils.ts            → cn() className utility
+├── error-capture.ts    → Error capture utility
+├── error-page.ts       → Error page helper
+└── lovable-error-reporting.ts → Reports errors to Lovable platform
+
+
+────────────────────────────────────────────────────────────────────────────────
+3. COMPONENT HIERARCHY & ROUTING MAP
+────────────────────────────────────────────────────────────────────────────────
+
+ROOT LAYOUT (__root.tsx)
+└── RootShell (HTML shell: head, body, Scripts)
+    └── RootComponent
+        ├── QueryClientProvider       ← TanStack Query context
+        └── AuthProvider              ← Global auth context (use-auth.tsx)
+            ├── <Outlet />            ← Child routes render here
+            └── <Toaster />           ← Sonner toast notifications
+
+PUBLIC ROUTES (no auth required)
+  /           → Landing page (Hero, SplitPath, HowItWorks, TemplateShowcase,
+                Dashboard preview, Pricing preview, Footer)
+  /login      → Sign-in form → redirects to /dashboard on success
+  /signup     → Registration form → redirects to /dashboard
+  /forgot-password → Password reset form
+  /pricing    → Free/Pro pricing comparison + Stripe upgrade button
+  /p/$slug    → Public portfolio viewer — resolves slug against DB, renders
+                the matching portfolio template component
+
+AUTHENTICATED ROUTES (guarded by beforeLoad + useEffect redirect)
+  /dashboard        → Stats (CV count, portfolio count, last deploy),
+                       Quick actions, Deployment history table with
+                       unpublish/post-update actions
+  /cv-studio        → Phase "import": AIImportModal (PDF upload or AI prompt)
+                       Phase "editor": CVFormPanel (left) + live CV preview (right)
+                         └── Template switcher (14 templates, Pro lock on 7)
+                         └── Actions: AI Generate, Save to Cloud, Export PDF, Publish
+  /portfolio-builder → 4-step wizard:
+                         Step 1 (StepUpload)   → PDF file OR freeform prompt
+                         Step 2 (StepTemplate) → Choose one of 5 portfolio themes
+                         Step 3 (StepGenerate) → Trigger AI + show status
+                         Step 4 (StepDeploy)   → Deploy + save to DB, show URL
+  /settings         → Account info, email update, password change, danger zone
+
+PORTFOLIO TEMPLATE ROUTES (rendered by /p/$slug → PublishedPortfolio)
+  blueprint-sphere-main  → Three.js 3D interactive globe
+  kinetic-ink-main       → Framer Motion kinetic typography
+  vibrant-glass          → Glassmorphism layered panels
+  golden-legacy          → Elegant serif / editorial layout
+  data-scientist         → Monospace grid, chart aesthetic
+  liquid-lens            → Refraction / blur lens effects
+  neon-canvas            → High-contrast neon dark theme
+  future-forward         → Holographic / aurora UI
+  lumina-med             → Medical professional layout w/ Three.js DNA scene
+
+CV STUDIO TEMPLATE REGISTRY (cv-templates.tsx + types.ts: TEMPLATE_LIST)
+  Free (4):    Minimalist, Corporate, Tech, ATS Classic, ATS Modern,
+               Harvard Standard, Executive ATS
+  Premium (7): Creative, Executive, Startup, Academic, Editorial,
+               Dark Bold, Visual
+
+AI DATA FLOW (CV Studio path)
+  User uploads PDF / enters prompt
+    → AIImportModal (client) → pdfjs-dist extracts text
+    → parseResumeWithAI (server fn) → Groq API (llama-3.3-70b) → CvState JSON
+    → CVFormPanel pre-populated with structured data
+    → User edits → live template preview re-renders
+    → "Save" → supabase.from("cvs").upsert(cv_data_json)
+    → "Publish" → publishPremiumPortfolio (server fn) → slug generated
+               → supabase.from("cvs").upsert with publishMeta
+               → Public URL: /p/{name-hash}
+
+AI DATA FLOW (Portfolio Builder path)
+  User uploads PDF OR enters prompt
+    → pdfjs-dist (lazy import) extracts text on client
+    → generatePortfolioContent (server fn) → Groq API → PortfolioContent JSON
+    → StepDeploy shows preview + Deploy button
+    → deployPortfolioToVercel (server fn) → slug returned
+    → supabase.from("portfolios").insert(content_json, deployed_url)
+    → Public URL: /p/{name-hash}
+
+DATABASE TABLES (inferred from code)
+  profiles       → user_id, subscription_tier, etc.
+  cvs            → id, user_id, cv_data_json (JSONB), updated_at
+                    (cv_data_json contains optional publishMeta: {slug, url, templateId})
+  portfolios     → id, user_id, template_id, content_json, deployed_url, created_at
+  site_settings  → key/value config fetched on landing page
+  dynamic_templates → template metadata for landing page showcase
+
+SECURITY MODEL
+  - All server functions validate the caller's Supabase JWT (accessToken)
+    by calling supabase.auth.getUser(token) before any API or DB operation.
+  - Input is validated via Zod schemas before handler execution.
+  - Routes use beforeLoad guards + redundant useEffect redirects.
+  - RLS policies are defined in the SQL patch files for table-level security.
+
+
+────────────────────────────────────────────────────────────────────────────────
+4. ARCHITECTURAL OBSERVATIONS (Read-Only)
+────────────────────────────────────────────────────────────────────────────────
+
+[OBS-01] DUAL DATA SOURCE FOR DEPLOYMENTS
+  The dashboard and /p/$slug route must query both the "cvs" table (new path,
+  via publishMeta JSONB field) and the "portfolios" table (legacy path from
+  Portfolio Builder). This dual-source pattern adds query complexity and the
+  slug lookup in the cvs table uses a JSONB deep-path filter
+  (cv_data_json->publishMeta->>slug) which may not be indexed.
+
+[OBS-02] DEPLOYMENT IS SIMULATED (NOT REAL VERCEL)
+  The deployPortfolioToVercel and publishPremiumPortfolio server functions do
+  NOT call any external deployment API. They generate a slug and return a
+  relative /p/{slug} URL pointing back to the app's own route. The portfolio
+  is served by the app itself via the /p/$slug TanStack route, not an
+  independent Vercel deployment. The vercel-deploy.ts lib file is a stub.
+
+[OBS-03] MONOLITHIC cv-templates.tsx (91 KB)
+  All 14 CV template components are co-located in a single 91 KB file. This
+  file is imported directly into cv-studio.tsx, meaning the full template
+  bundle is included in the CV Studio chunk with no lazy-loading. As the
+  number of templates grows, this will increasingly impact initial load time.
+
+[OBS-04] STRIPE INTEGRATION IS ONE-TIME PAYMENT, NOT SUBSCRIPTION
+  The createCheckoutSession server function creates a Stripe Checkout in
+  "payment" (one-time) mode at $12.00, but the UI labels it "$12 / month".
+  The subscription tier stored in profiles is not automatically updated by
+  the webhook; the webhook route (api/webhook.ts) exists but its DB-write
+  logic needs verification.
+
+[OBS-05] VITE CODE-SPLITTING IS CONFIGURED
+  The vite.config.ts implements manualChunks to split framer-motion, recharts,
+  lucide-react, supabase, react-query, and router into separate vendor chunks.
+  However, the cv-templates.tsx monolith and the large route files (index.tsx
+  at 46 KB, dashboard.tsx at 31 KB) are not yet dynamically imported.
+
+[OBS-06] SUPABASE EDGE FUNCTIONS (ADMIN ONLY)
+  Only two Edge Functions exist: delete-user and list-users. These are
+  admin-only utilities. The AI generation pipeline runs entirely through
+  TanStack Start server functions, keeping Groq API keys server-side and
+  never exposed to the browser.
+
+[OBS-07] PORTFOLIO TEMPLATE STRUCTURE INCONSISTENCY
+  Some portfolio templates (blueprint-sphere, neon-canvas, golden-legacy,
+  future-forward, liquid-lens) have all their component logic inside the
+  single route file under src/routes/templates/. Others (data-scientist,
+  lumina-med, kinetic-ink) are properly decomposed into section-level
+  components under src/components/templates/. This is an inconsistency in
+  the modularization strategy.
+
+[OBS-08] MISSING TYPE SAFETY ON publishPremiumPortfolio INPUT
+  The accessToken passed to publishPremiumPortfolio from cv-studio.tsx is
+  user.id (the Supabase user UUID), not session.access_token (the JWT). The
+  server-side validator calls supabase.auth.getUser(accessToken) which expects
+  a JWT. If user.id is passed instead, validation will silently fail or throw.
+
+[OBS-09] AUTH GUARD IS DOUBLED (beforeLoad + useEffect)
+  Protected routes implement auth guards both in beforeLoad (server/client
+  SSR boundary) and in a useEffect hook. This is intentional for the
+  Lovable/SSR environment (SSR skips localStorage) but results in duplicated
+  guard logic that could drift out of sync.
+
+[OBS-10] DESIGN SYSTEM IS FULLY CUSTOM
+  The application uses a sophisticated oklch() color system with glassmorphism
+  utilities (glass, glass-strong, btn-kinetic, text-gradient) defined in
+  styles.css. All templates and pages use consistent hue-based theming with
+  CSS custom properties, making the visual language coherent across all routes.
+
+[OBS-11] PORTFOLIO BUILDER TEMPLATE TONES ARE MISMATCHED
+  The TEMPLATE_TONES map in portfolio-builder/types.ts contains only 5 keys
+  (vogue, architect, biotech, lumina, sterling) but the Portfolio Builder
+  StepTemplate UI may expose additional options. Any unmatched key falls back
+  to "Professional and polished." in the server function.
+
+[OBS-12] INCREMENTAL SQL MIGRATIONS (NO MIGRATION TOOL)
+  Database schema changes are tracked as manually numbered SQL patch files
+  (supabase-phase26-patch.sql, supabase-phase28-patch.sql) applied manually.
+  There is no Supabase CLI migration tracking or automated migration runner,
+  which risks schema drift between environments.
+
+
+────────────────────────────────────────────────────────────────────────────────
+END OF REPORT
+================================================================================

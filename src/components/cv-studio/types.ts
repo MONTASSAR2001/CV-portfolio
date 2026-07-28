@@ -11,6 +11,7 @@ export type PersonalInfo = {
   location: string;
   linkedin: string;
   github?: string;
+  portfolioUrl?: string;
   summary: string;
   
   // PortfolioData mappings
@@ -75,6 +76,7 @@ export const EMPTY_CV_STATE: CvState = {
     location: "",
     linkedin: "",
     github: "",
+    portfolioUrl: "",
     summary: "",
   },
   additionalInfo: "",
