@@ -478,18 +478,7 @@ function DashboardPage() {
       <header className="relative z-10 border-b border-white/5">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
           <Link to="/" className="flex items-center gap-2.5">
-            <div className="relative h-7 w-7">
-              <div
-                className="absolute inset-0 rounded-lg"
-                style={{
-                  background:
-                    "conic-gradient(from 0deg, oklch(0.72 0.24 300), oklch(0.85 0.18 210), oklch(0.72 0.24 300))",
-                }}
-              />
-              <div className="absolute inset-[2px] rounded-md bg-background/80 grid place-items-center font-display text-sm font-bold text-gradient">
-                N
-              </div>
-            </div>
+            <img src="/logo.png" alt="CareerOS Logo" className="h-7 w-auto object-contain" />
             <span className="font-display text-lg font-semibold tracking-tight">CareerOS</span>
           </Link>
 

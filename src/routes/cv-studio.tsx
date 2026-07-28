@@ -7,7 +7,7 @@ import { supabase } from "@/lib/supabase";
 import { useReactToPrint } from "react-to-print";
 import {
   ArrowLeft, Monitor, Smartphone, Download, Cloud,
-  CheckCircle2, Loader2, ChevronLeft, ChevronRight, Sparkles,
+  CheckCircle2, Loader2, ChevronLeft, ChevronRight,
   Rocket, Copy, ExternalLink,
 } from "lucide-react";
 
@@ -328,12 +328,7 @@ function CvStudioPage() {
                 </Link>
                 <div className="h-4 w-px bg-white/10" />
                 <div className="flex items-center gap-2">
-                  <div
-                    className="flex h-7 w-7 items-center justify-center rounded-lg"
-                    style={{ background: "linear-gradient(135deg, oklch(0.72 0.24 300), oklch(0.85 0.18 210))", boxShadow: "0 0 16px oklch(0.72 0.24 300 / 0.4)" }}
-                  >
-                    <Sparkles size={13} className="text-white" />
-                  </div>
+                  <img src="/logo.png" alt="CareerOS Logo" className="h-7 w-auto object-contain" />
                   <span className="text-sm font-semibold text-foreground">CareerOS CV Studio</span>
                   <span
                     className="rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider"

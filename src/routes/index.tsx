@@ -234,11 +234,7 @@ const Nav = memo(function Nav() {
     >
       <div className="glass flex w-full items-center justify-between rounded-2xl px-4 py-3 sm:px-6">
         <div className="flex items-center gap-2.5">
-          <div className="relative h-7 w-7">
-            <div className="absolute inset-0 rounded-lg" style={{ background: "var(--gradient-kinetic)" }} />
-            <div className="absolute inset-[3px] rounded-md bg-background/70 backdrop-blur" />
-            <div className="absolute inset-0 grid place-items-center font-display text-sm font-bold text-gradient">N</div>
-          </div>
+          <img src="/logo.png" alt="CareerOS Logo" className="h-7 w-auto object-contain" />
           <span className="font-display text-lg font-semibold tracking-tight">CareerOS</span>
         </div>
         <div className="hidden items-center gap-7 text-sm text-muted-foreground md:flex">

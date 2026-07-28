@@ -208,10 +208,7 @@ function PortfolioBuilderPage() {
             <ArrowLeft size={14} /> Dashboard
           </Link>
           <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2">
-            <div className="relative h-6 w-6">
-              <div className="absolute inset-0 rounded-md" style={{ background: "conic-gradient(from 0deg, oklch(0.72 0.24 300), oklch(0.85 0.18 210), oklch(0.72 0.24 300))" }} />
-              <div className="absolute inset-[2px] rounded grid place-items-center font-display text-[10px] font-bold text-white/90 bg-black/70">N</div>
-            </div>
+            <img src="/logo.png" alt="CareerOS Logo" className="h-6 w-auto object-contain" />
             <span className="font-display text-sm font-semibold text-white">CareerOS <span className="text-white/30">/ Portfolio Builder</span></span>
           </div>
           <div className="flex h-7 w-7 items-center justify-center rounded-full text-[11px] font-bold text-white"
