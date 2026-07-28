@@ -1549,7 +1549,7 @@ export const ATSClassicTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
                 p.portfolioUrl && (
                   <a key="portfolio" href={p.portfolioUrl.startsWith('http') ? p.portfolioUrl : `https://${p.portfolioUrl}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors">
                     <Globe className="w-3.5 h-3.5"/>
-                    <span className="sr-only">Portfolio</span>
+                    <span>Portfolio</span>
                   </a>
                 )
               ].filter(Boolean).map((el, i, arr) => (
@@ -1683,7 +1683,7 @@ export const ATSModernTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
               {p.portfolioUrl && (
                 <a href={p.portfolioUrl.startsWith('http') ? p.portfolioUrl : `https://${p.portfolioUrl}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors">
                   <Globe className="w-3.5 h-3.5"/>
-                  <span className="sr-only">Portfolio</span>
+                  <span>Portfolio</span>
                 </a>
               )}
             </div>
@@ -1817,7 +1817,7 @@ export const HarvardStandardTemplate = forwardRef<HTMLDivElement, { data: CvStat
                 p.portfolioUrl && (
                   <a key="portfolio" href={p.portfolioUrl.startsWith('http') ? p.portfolioUrl : `https://${p.portfolioUrl}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center text-gray-800 hover:text-black transition-colors ml-3">
                     <Globe className="w-3.5 h-3.5 mr-1"/>
-                    <span className="sr-only">Portfolio</span>
+                    <span>Portfolio</span>
                   </a>
                 )
               ].filter(Boolean).map((el, i, arr) => (
@@ -1992,7 +1992,7 @@ export const ATSExecutiveTemplate = forwardRef<HTMLDivElement, { data: CvState }
                 p.portfolioUrl && (
                   <a key="portfolio" href={p.portfolioUrl.startsWith('http') ? p.portfolioUrl : `https://${p.portfolioUrl}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors">
                     <Globe className="w-3.5 h-3.5"/>
-                    <span className="sr-only">Portfolio</span>
+                    <span>Portfolio</span>
                   </a>
                 )
               ].filter(Boolean).map((el, i, arr) => (
