@@ -1,0 +1,65 @@
+# Comprehensive Project Report: CareerOS
+
+## 1. Project Overview
+**CareerOS** is an autonomous AI-powered platform designed to craft perfect CVs and instantly deploy dynamic web portfolios to the cloud. The main purpose of the application is to act as a "career operating system," providing users with an intuitive studio where they can upload their resumes (or use prompts) and let AI agents autonomously parse, rewrite, and structure the data. The platform then generates a live, 3D-interactive, or styled web portfolio that is instantly deployed to a custom URL, alongside a professional PDF resume export.
+
+## 2. Complete Tech Stack
+Based on `package.json`, `bunfig.toml`, and `vite.config.ts`, the project is built with a modern React and TypeScript ecosystem:
+
+**Frontend Framework & UI:**
+- **React 19** (`react`, `react-dom`)
+- **TanStack Start & Router** (`@tanstack/react-start`, `@tanstack/react-router`) for full-stack framework capabilities and routing.
+- **Styling:** Tailwind CSS v4 (`tailwindcss`, `@tailwindcss/vite`) combined with Radix UI primitives for accessible, unstyled components.
+- **Animations:** Framer Motion (`framer-motion`) and CSS-based kinetic animations.
+- **3D Graphics:** Three.js, React Three Fiber (`@react-three/fiber`), and Drei (`@react-three/drei`) for 3D template visualizations.
+- **Data Visualization & Icons:** Recharts (`recharts`) and Lucide React (`lucide-react`).
+
+**State Management & Data Fetching:**
+- **TanStack Query** (`@tanstack/react-query`) for client-side data fetching and caching.
+- React Context for Authentication (`AuthProvider`).
+
+**Backend, Auth & Database:**
+- **Supabase** (`@supabase/supabase-js`) for user authentication, session management, and database operations.
+- **Server Functions:** TanStack Start server functions to securely handle API calls (e.g., AI integration, Stripe checkout).
+- **AI Integration:** Groq API using LLaMA 3.3 (`llama-3.3-70b-versatile`) for CV parsing and autonomous portfolio generation.
+- **Payments:** Stripe (`stripe`) for the "CareerOS Pro" subscription checkout.
+
+**Build & Tooling:**
+- **Vite** with specialized plugins (`@lovable.dev/vite-tanstack-config`).
+- **Bun** as the package manager and runner.
+- **TypeScript**, ESLint, and Prettier for code quality.
+
+## 3. Architecture & Structure
+The application follows a file-based routing architecture provided by TanStack Router, organized logically:
+
+- `src/routes/`: Contains all route definitions.
+  - `__root.tsx`: The root layout containing global providers (`QueryClientProvider`, `AuthProvider`, `Toaster`).
+  - Core pages: `index.tsx` (Landing), `cv-studio.tsx` (CV editing), `portfolio-builder.tsx` (Portfolio setup), `dashboard.tsx` (User hub), `login.tsx`/`signup.tsx` (Auth).
+  - Dynamic routes: `p.$slug.tsx` for viewing live portfolios, and `templates/` for individual portfolio designs.
+- `src/components/`: Houses UI components. 
+  - Subdirectories for `cv-studio`, `portfolio-builder`, `templates`, and `ui` (likely Radix/Tailwind components).
+  - `cv-templates.tsx`: A large file handling the logic and rendering of different CV/Portfolio templates.
+- `src/lib/`: Core utilities and integrations.
+  - `server-fns.ts`: Contains secure server-side logic executed via TanStack Start, including `generatePortfolioContent`, `deployPortfolioToVercel`, `parseResumeWithAI`, and `createCheckoutSession`.
+  - `supabase.ts`: Supabase client initialization.
+  - Utilities for PDF extraction (`pdf-extractor.ts`) and error reporting (`lovable-error-reporting.ts`).
+
+## 4. Features Implemented
+The platform has a rich set of features built into it:
+- **Landing Page:** A highly polished, kinetic landing page featuring GPU-accelerated CSS animations, Framer Motion transitions, and showcasing the platform's value proposition ("Split-path architecture: Smart CV Studio & Agentic Portfolio Builder").
+- **Authentication System:** Secure sign-up/login flows with Supabase, including session persistence.
+- **AI CV Parsing & Generation:** Users can drop a document or provide a prompt. The backend uses Groq LLaMA 3.3 to autonomously extract data into a strictly typed JSON structure (Experience, Projects, Skills, Education) and rewrite achievements using "impact voice".
+- **Dynamic Portfolio Builder:** 
+  - Access to 9 premium templates (e.g., *Blueprint Sphere* (3D), *Vibrant Glass*, *Neon Canvas*).
+  - Generates HTML/CSS strings or React components dynamically based on the AI-parsed JSON data.
+  - Simulated edge deployment that assigns a unique URL slug (e.g., `ari-kim-4f9a`) for instant sharing.
+- **Monetization:** Stripe checkout integration to unlock "CareerOS Pro" features like high-res PDF exports, 3D templates, and custom domains.
+- **PDF Export:** Support for extracting text from PDFs and likely rendering CVs back to PDF formats (`pdf-extractor.ts`, `react-to-print`).
+
+## 5. Recent Work
+Based on the latest Git commits and the project directory state:
+- **Active UI/Layout Tweaks:** Recent commits (e.g., `dg`, `cb`) show layout simplifications and route modifications in `cv-studio.tsx`, `dashboard.tsx`, `index.tsx`, and `portfolio-builder.tsx`, reducing visual clutter.
+- **Architecture & Template Work:** Significant updates were made to `src/components/cv-templates.tsx`, suggesting active development on new resume/portfolio templates. 
+- **Documentation:** A massive `project_architecture_report.txt` (330 lines) was recently committed, alongside other diagnostic files in the root (e.g., `SAAS_ROADMAP_AND_AUDIT.md`, `admin-and-system-audit.txt`), indicating a phase of auditing and architectural planning.
+- **Database Refinements:** Multiple recent Supabase patch SQL scripts (`supabase-phase26-patch.sql`, `supabase-phase28-patch.sql`, `supabase-god-mode-setup.sql`) show ongoing improvements to the database schema, RLS policies, and potentially admin features.
+- **Build Troubleshooting:** The presence of multiple `build_output.txt` and `build_error.txt` files suggests recent efforts to resolve deployment or build-time issues, likely related to the complex Vite/TanStack setup.
