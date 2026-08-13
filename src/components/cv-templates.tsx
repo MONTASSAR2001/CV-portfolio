@@ -1189,8 +1189,8 @@ export const AcademicTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
               {(p.email || p.phone) && (
                 <p>{[p.email, p.phone].filter(Boolean).join("  |  ")}</p>
               )}
-              {(p.location || p.linkedin) && (
-                <p>{[p.location, p.linkedin].filter(Boolean).join("  |  ")}</p>
+              {(p.location || p.linkedin || p.github || p.portfolioUrl) && (
+                <p>{[p.location].filter(Boolean).join("")}{p.linkedin && <a href={p.linkedin.startsWith("http") ? p.linkedin : `https://${p.linkedin}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 ml-2 hover:opacity-70 transition-opacity"><Linkedin size={10} /></a>}{p.github && <a href={p.github.startsWith("http") ? p.github : `https://${p.github}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 ml-2 hover:opacity-70 transition-opacity"><Github size={10} /></a>}{p.portfolioUrl && <a href={p.portfolioUrl.startsWith("http") ? p.portfolioUrl : `https://${p.portfolioUrl}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 ml-2 hover:opacity-70 transition-opacity"><Globe size={10} /></a>}</p>
               )}
             </div>
           </div>
@@ -1909,17 +1909,14 @@ export const ATSClassicTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
                 p.location && <span key="loc">{p.location}</span>,
                 p.linkedin && (
                   <a key="ln" href={p.linkedin.startsWith('http') ? p.linkedin : `https://${p.linkedin}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-zinc-900 hover:opacity-70 transition-opacity"><Linkedin size={12} />
-                    <span className="ml-1 text-[10px]">{p.linkedin.replace(/^https?:\/\/(www\.)?/, "")}</span>
                   </a>
                 ),
                 p.github && (
                   <a key="gh" href={p.github.startsWith('http') ? p.github : `https://${p.github}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-zinc-900 hover:opacity-70 transition-opacity"><Github size={12} />
-                    <span className="ml-1 text-[10px]">{p.github?.replace(/^https?:\/\/(www\.)?/, "")}</span>
                   </a>
                 ),
                 p.portfolioUrl && (
                   <a key="portfolio" href={p.portfolioUrl.startsWith('http') ? p.portfolioUrl : `https://${p.portfolioUrl}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-zinc-900 hover:opacity-70 transition-opacity"><Globe size={12} />
-                    <span>Portfolio</span>
                   </a>
                 )
               ].filter(Boolean).map((el, i, arr) => (
@@ -2091,17 +2088,14 @@ export const ATSModernTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
               {p.location && <span className="text-[10px] text-zinc-800">{p.location}</span>}
               {p.linkedin && (
                 <a href={p.linkedin.startsWith('http') ? p.linkedin : `https://${p.linkedin}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-zinc-900 hover:opacity-70 transition-opacity"><Linkedin size={12} />
-                  <span className="ml-1 text-[10px]">{p.linkedin.replace(/^https?:\/\/(www\.)?/, "")}</span>
                 </a>
               )}
               {p.github && (
                 <a href={p.github.startsWith('http') ? p.github : `https://${p.github}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-zinc-900 hover:opacity-70 transition-opacity"><Github size={12} />
-                  <span className="ml-1 text-[10px]">{p.github?.replace(/^https?:\/\/(www\.)?/, "")}</span>
                 </a>
               )}
               {p.portfolioUrl && (
                 <a href={p.portfolioUrl.startsWith('http') ? p.portfolioUrl : `https://${p.portfolioUrl}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-zinc-900 hover:opacity-70 transition-opacity"><Globe size={12} />
-                  <span>Portfolio</span>
                 </a>
               )}
             </div>
@@ -2273,17 +2267,14 @@ export const HarvardStandardTemplate = forwardRef<HTMLDivElement, { data: CvStat
                 p.email && <span key="email">{p.email}</span>,
                 p.linkedin && (
                   <a key="ln" href={p.linkedin.startsWith('http') ? p.linkedin : `https://${p.linkedin}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-zinc-900 hover:opacity-70 transition-opacity"><Linkedin size={12} />
-                    <span className="ml-1 text-[10px]">{p.linkedin.replace(/^https?:\/\/(www\.)?/, "")}</span>
                   </a>
                 ),
                 p.github && (
                   <a key="gh" href={p.github.startsWith('http') ? p.github : `https://${p.github}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-zinc-900 hover:opacity-70 transition-opacity"><Github className="w-3.5 h-3.5 mr-1"/>
-                    <span className="ml-1 text-[10px]">{p.github?.replace(/^https?:\/\/(www\.)?/, "")}</span>
                   </a>
                 ),
                 p.portfolioUrl && (
                   <a key="portfolio" href={p.portfolioUrl.startsWith('http') ? p.portfolioUrl : `https://${p.portfolioUrl}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-zinc-900 hover:opacity-70 transition-opacity"><Globe className="w-3.5 h-3.5 mr-1"/>
-                    <span>Portfolio</span>
                   </a>
                 )
               ].filter(Boolean).map((el, i, arr) => (
@@ -2496,17 +2487,14 @@ export const ATSExecutiveTemplate = forwardRef<HTMLDivElement, { data: CvState }
                 p.location && <span key="loc">{p.location}</span>,
                 p.linkedin && (
                   <a key="ln" href={p.linkedin.startsWith('http') ? p.linkedin : `https://${p.linkedin}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-zinc-900 hover:opacity-70 transition-opacity"><Linkedin size={12} />
-                    <span className="ml-1 text-[10px]">{p.linkedin.replace(/^https?:\/\/(www\.)?/, "")}</span>
                   </a>
                 ),
                 p.github && (
                   <a key="gh" href={p.github.startsWith('http') ? p.github : `https://${p.github}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-zinc-900 hover:opacity-70 transition-opacity"><Github size={12} />
-                    <span className="ml-1 text-[10px]">{p.github?.replace(/^https?:\/\/(www\.)?/, "")}</span>
                   </a>
                 ),
                 p.portfolioUrl && (
                   <a key="portfolio" href={p.portfolioUrl.startsWith('http') ? p.portfolioUrl : `https://${p.portfolioUrl}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-zinc-900 hover:opacity-70 transition-opacity"><Globe size={12} />
-                    <span>Portfolio</span>
                   </a>
                 )
               ].filter(Boolean).map((el, i, arr) => (
