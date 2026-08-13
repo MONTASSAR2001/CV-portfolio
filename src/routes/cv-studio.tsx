@@ -145,13 +145,27 @@ function CvStudioPage() {
 
   const printRef = useRef<HTMLDivElement>(null);
 
-  /* ── Auth guard ── */
+  /* ── Auth guard & Data Fetch ── */
   useEffect(() => {
     if (!loading && !user) navigate({ to: "/login" });
     if (user) {
+      // Fetch subscription tier
       supabase.from("profiles").select("subscription_tier").eq("id", user.id).single().then(({ data }) => {
         if (data) setSubscriptionTier(data.subscription_tier || "free");
       });
+
+      // Fetch saved CV
+      supabase
+        .from("cvs")
+        .select("cv_data_json")
+        .eq("user_id", user.id)
+        .maybeSingle()
+        .then(({ data }) => {
+          if (data && data.cv_data_json) {
+            setCvData(data.cv_data_json as unknown as CvState);
+            setPhase("editor"); // Skip import modal if CV exists
+          }
+        });
     }
   }, [user, loading, navigate]);
 
