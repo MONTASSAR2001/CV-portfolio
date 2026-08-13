@@ -105,190 +105,7 @@ function StatCard({
           </p>
         )}
 
-        {sub && !loading && (
-          <p className="mt-1.5 text-xs text-muted-foreground">{sub}</p>
-        )}
-
-        <div
-          className="mt-5 flex items-center gap-1 text-xs font-semibold transition-all group-hover:gap-2"
-          style={{ color: `oklch(0.85 0.18 ${hue})` }}
-        >
-          {cta} <ArrowRight size={13} />
-        </div>
-      </motion.div>
-    </Link>
-  );
-}
-
-/* ─── Deployment History Table ───────────────────────────────────────────── */
-function DeploymentHistory({
-  deployments,
-  loading,
-  onOpenUpdateModal
-}: {
-  deployments: DeploymentRow[];
-  loading: boolean;
-  onOpenUpdateModal: (id: string) => void;
-}) {
-  const TEMPLATE_HUES: Record<string, string> = {
-    vogue: "320", architect: "200", biotech: "160", lumina: "35", sterling: "270",
-  };
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.65, duration: 0.6 }}
-      className="mt-14"
-    >
-      {/* Section header */}
-      <div className="mb-5 flex items-center gap-3">
-        <div
-          className="flex h-8 w-8 items-center justify-center rounded-xl"
-          style={{ background: "oklch(0.75 0.22 210 / 0.15)", border: "1px solid oklch(0.75 0.22 210 / 0.3)" }}
-        >
-          <History size={15} style={{ color: "oklch(0.85 0.2 210)" }} />
-        </div>
-        <p className="text-xs uppercase tracking-[0.25em] text-muted-foreground">
-          Deployment history
-        </p>
-      </div>
-
-      <div className="glass-strong overflow-hidden rounded-3xl">
-        {loading ? (
-          <div className="flex items-center justify-center gap-2 py-12 text-sm text-muted-foreground">
-            <Loader2 size={16} className="animate-spin" />
-            Loading history…
-          </div>
-        ) : deployments.length === 0 ? (
-          <div className="flex flex-col items-center gap-3 py-14 text-center">
-            <div
-              className="flex h-12 w-12 items-center justify-center rounded-2xl"
-              style={{ background: "oklch(0.75 0.22 210 / 0.1)", border: "1px solid oklch(0.75 0.22 210 / 0.2)" }}
-            >
-              <Rocket size={20} style={{ color: "oklch(0.85 0.2 210)" }} />
-            </div>
-            <p className="text-sm font-medium text-foreground/70">No deployments yet</p>
-            <p className="text-xs text-muted-foreground">
-              Build and deploy your first portfolio to see it here.
-            </p>
-            <Link
-              to="/cv-studio"
-              className="mt-1 inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-xs font-semibold text-foreground/70 transition hover:bg-white/10 hover:text-foreground"
-            >
-              <Rocket size={12} /> Create New Portfolio
-            </Link>
-          </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-white/5">
-                  <th className="px-6 py-4 text-left text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-                    #
-                  </th>
-                  <th className="px-6 py-4 text-left text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-                    Template
-                  </th>
-                  <th className="px-6 py-4 text-left text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-                    Live URL
-                  </th>
-                  <th className="px-6 py-4 text-left text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-                    Deployed
-                  </th>
-                  <th className="px-6 py-4 text-right text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-                    Open
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <AnimatePresence>
-                  {deployments.map((d, i) => {
-                    const hue = TEMPLATE_HUES[d.template_id] ?? "210";
-                    return (
-                      <motion.tr
-                        key={d.id}
-                        initial={{ opacity: 0, x: -10 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: i * 0.05, duration: 0.35 }}
-                        className="group border-b border-white/[0.04] transition-colors hover:bg-white/[0.03]"
-                      >
-                        {/* Index */}
-                        <td className="px-6 py-4 text-xs text-muted-foreground/50 font-mono">
-                          {String(deployments.length - i).padStart(2, "0")}
-                        </td>
-
-                        {/* Template badge */}
-                        <td className="px-6 py-4">
-                          <span
-                            className="inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-semibold capitalize"
-                            style={{
-                              background: `oklch(0.75 0.22 ${hue} / 0.12)`,
-                              border: `1px solid oklch(0.75 0.22 ${hue} / 0.3)`,
-                              color: `oklch(0.85 0.2 ${hue})`,
-                            }}
-                          >
-                            {d.template_id}
-                          </span>
-                        </td>
-
-                        {/* URL */}
-                        <td className="max-w-[280px] px-6 py-4">
-                          <a
-                            href={d.deployed_url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="block truncate font-mono text-xs text-foreground/60 transition hover:text-foreground"
-                          >
-                            {d.deployed_url}
-                          </a>
-                        </td>
-
-                        {/* Date + time ago */}
-                        <td className="px-6 py-4 text-xs text-muted-foreground whitespace-nowrap">
-                          <span>{formatDate(d.created_at)}</span>
-                          <span className="ml-1.5 text-muted-foreground/40">
-                            · {timeAgo(d.created_at)}
-                          </span>
-                        </td>
-
-                        {/* Open / Delete buttons */}
-                        <td className="px-6 py-4 text-right">
-                          <div className="flex items-center justify-end gap-2 opacity-0 transition group-hover:opacity-100">
-                            {d.source === "cvs" && (
-                              <button
-                                onClick={() => onOpenUpdateModal(d.id)}
-                                className="inline-flex h-7 px-2 items-center justify-center rounded-lg border border-white/10 bg-violet-500/10 text-violet-400 text-[10px] hover:bg-violet-500/20"
-                              >
-                                <MessageSquarePlus size={12} className="mr-1" /> Post Update
-                              </button>
-                            )}
-                            <button
-                              onClick={async () => {
-                                if (!confirm("Are you sure you want to unpublish this portfolio?")) return;
-                                if (d.source === "portfolios") {
-                                  await supabase.from("portfolios").delete().eq("id", d.id);
-                                } else if (d.source === "cvs") {
-                                  // For CVS, we just remove the publishMeta
-                                  const { data: cv } = await supabase.from("cvs").select("cv_data_json").eq("id", d.id).single();
-                                  if (cv && cv.cv_data_json) {
-                                    const newData = { ...cv.cv_data_json };
-                                    delete newData.publishMeta;
-                                    await supabase.from("cvs").update({ cv_data_json: newData }).eq("id", d.id);
-                                  }
-                                }
-                                toast.success("Portfolio unpublished");
-                                window.location.reload();
-                              }}
-                              className="inline-flex h-7 px-2 items-center justify-center rounded-lg border border-white/10 bg-rose-500/10 text-rose-400 text-[10px] hover:bg-rose-500/20"
-                            >
-                              Delete
-                            </button>
-                            <a
-                              href={d.deployed_url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="inline-flex h-7 px-2 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-muted-foreground/80 hover:bg-white/10 hover:text-foreground text-[10px]"
+        er:bg-white/10 hover:text-foreground text-[10px]"
                             >
                               <ExternalLink size={12} className="mr-1" /> View Live
                             </a>
@@ -361,82 +178,30 @@ function DashboardPage() {
     if (!loading && !user) navigate({ to: "/login" });
   }, [user, loading, navigate]);
 
-  // ── Fetch user stats + full deployment history from Supabase ────────────
+  // ── Fetch user stats from Supabase ────────────
   useEffect(() => {
     if (!user) return;
 
     async function fetchStats() {
       setStatsLoading(true);
       try {
-        const [cvsRes, allPortfoliosRes] = await Promise.all([
-          // Get saved CVs
-          supabase
+        const { data: cvsRes, error } = await supabase
             .from("cvs")
-            .select("id, cv_data_json, updated_at")
-            .eq("user_id", user!.id),
+            .select("id")
+            .eq("user_id", user!.id);
 
-          // Get legacy portfolios
-          supabase
-            .from("portfolios")
-            .select("id, deployed_url, template_id, created_at")
-            .eq("user_id", user!.id)
-            .order("created_at", { ascending: false }),
-        ]);
+        if (error) throw error;
 
-        if (cvsRes.error) throw cvsRes.error;
-        if (allPortfoliosRes.error) throw allPortfoliosRes.error;
-
-        const rows: DeploymentRow[] = [];
-
-        // Parse legacy portfolios
-        if (allPortfoliosRes.data) {
-          allPortfoliosRes.data.forEach(p => {
-            if (p.deployed_url && typeof p.deployed_url === "string") {
-              rows.push({
-                id: p.id,
-                deployed_url: p.deployed_url.startsWith("http") ? p.deployed_url : window.location.origin + p.deployed_url,
-                template_id: p.template_id,
-                created_at: p.created_at,
-                source: "portfolios" as const,
-              });
-            }
-          });
-        }
-
-        // Parse modern CVs
-        if (cvsRes.data) {
-          cvsRes.data.forEach(c => {
-            const pm = c.cv_data_json?.publishMeta;
-            if (pm && pm.url && typeof pm.url === "string") {
-              rows.push({
-                id: c.id,
-                deployed_url: pm.url.startsWith("http") ? pm.url : window.location.origin + pm.url,
-                template_id: pm.templateId || "modern",
-                created_at: pm.publishedAt || c.updated_at,
-                source: "cvs" as const,
-              });
-            }
-          });
-        }
-
-        // Sort combined array
-        rows.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
-        
-        const latest = rows[0] ?? null;
-
-        setDeployments(rows);
         setStats({
-          cvCount: cvsRes.data?.length ?? 0,
-          portfolioCount: rows.length,
-          latestPortfolioUrl: latest?.deployed_url ?? null,
-          latestPortfolioTemplate: latest?.template_id ?? null,
-          lastActivityAt: latest?.created_at ?? null,
+          cvCount: cvsRes?.length ?? 0,
+          portfolioCount: 0,
+          latestPortfolioUrl: null,
+          latestPortfolioTemplate: null,
+          lastActivityAt: null,
         });
       } catch (err) {
         const msg = err instanceof Error ? err.message : "Unknown error";
-        toast.error(`Could not load dashboard data: ${msg}`, {
-          description: "Check your connection or Supabase configuration.",
-        });
+        toast.error(`Could not load dashboard data: ${msg}`);
       } finally {
         setStatsLoading(false);
       }
@@ -512,87 +277,20 @@ function DashboardPage() {
         </motion.div>
 
         {/* ── Stats row ── */}
-        <div className="mt-14 grid gap-5 sm:grid-cols-3">
+        <div className="mt-14 grid gap-5 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
           <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15, duration: 0.6 }}>
             <StatCard
               icon={FileText}
               label="Saved CVs"
               value={stats.cvCount}
               sub={stats.cvCount === 0 ? "Build your first CV →" : stats.cvCount === 1 ? "1 CV on file" : `${stats.cvCount} CVs on file`}
-              hue="300"
+              hue="0"
               loading={statsLoading}
               href="/cv-studio"
               cta="Open CV Studio"
             />
           </motion.div>
-
-          <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25, duration: 0.6 }}>
-            <StatCard
-              icon={Briefcase}
-              label="Live Portfolios"
-              value={stats.portfolioCount}
-              sub={stats.portfolioCount === 0 ? "Deploy your first portfolio →" : `${stats.portfolioCount} deployed`}
-              hue="210"
-              loading={statsLoading}
-              href="/portfolio-builder"
-              cta="Portfolio Builder"
-            />
-          </motion.div>
-
-          <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35, duration: 0.6 }}>
-            <StatCard
-              icon={Globe}
-              label="Latest Deploy"
-              value={stats.portfolioCount > 0 ? "Live" : "—"}
-              sub={stats.lastActivityAt ? `Last: ${timeAgo(stats.lastActivityAt)}` : "No deployments yet"}
-              hue="275"
-              loading={statsLoading}
-              href="/portfolio-builder"
-              cta="New deployment"
-            />
-          </motion.div>
         </div>
-
-        {/* ── Latest portfolio URL banner ── */}
-        {stats.latestPortfolioUrl && !statsLoading && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5, duration: 0.6 }}
-            className="mt-8 flex items-center gap-4 rounded-2xl border border-emerald-500/25 bg-emerald-500/8 px-6 py-4"
-          >
-            <div
-              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl"
-              style={{ background: "oklch(0.75 0.2 150 / 0.15)", border: "1px solid oklch(0.75 0.2 150 / 0.3)" }}
-            >
-              <Globe size={16} style={{ color: "oklch(0.8 0.2 150)" }} />
-            </div>
-            <div className="min-w-0 flex-1">
-              <p className="text-xs font-semibold uppercase tracking-widest text-emerald-400">
-                Latest live portfolio
-                {stats.latestPortfolioTemplate && (
-                  <span className="ml-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 text-[10px] capitalize">
-                    {stats.latestPortfolioTemplate}
-                  </span>
-                )}
-              </p>
-              <a
-                href={stats.latestPortfolioUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-0.5 flex items-center gap-1 truncate text-sm text-emerald-300 transition hover:text-white"
-              >
-                {stats.latestPortfolioUrl} <ExternalLink size={12} />
-              </a>
-            </div>
-            {stats.lastActivityAt && (
-              <div className="flex shrink-0 items-center gap-1.5 text-xs text-muted-foreground">
-                <Clock size={12} />
-                {timeAgo(stats.lastActivityAt)}
-              </div>
-            )}
-          </motion.div>
-        )}
 
         {/* ── Quick action cards ── */}
         <motion.div
@@ -612,15 +310,7 @@ function DashboardPage() {
                 label: stats.cvCount === 0 ? "Create your first CV" : "Edit your CV",
                 desc: "AI-powered, ATS-optimised, print-ready PDF.",
                 href: "/cv-studio" as const,
-                hue: "300",
-              },
-              {
-                id: "action-portfolio",
-                icon: Briefcase,
-                label: "Build a portfolio",
-                desc: "Upload CV → AI generates copy → deploy to Vercel.",
-                href: "/portfolio-builder" as const,
-                hue: "210",
+                hue: "0",
               },
               {
                 id: "action-settings",
@@ -628,7 +318,7 @@ function DashboardPage() {
                 label: "Account settings",
                 desc: "Manage your email, password, and preferences.",
                 href: "/settings" as const,
-                hue: "275",
+                hue: "0",
               },
             ].map((item) => {
               const Icon = item.icon;
@@ -663,61 +353,7 @@ function DashboardPage() {
           </div>
         </motion.div>
 
-        {/* ── Deployment History ── */}
-        <DeploymentHistory deployments={deployments} loading={statsLoading} onOpenUpdateModal={setUpdateModalOpen} />
       </section>
-
-      {/* ── Post Update Modal ── */}
-      <AnimatePresence>
-        {updateModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 10 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 10 }}
-              className="relative w-full max-w-md overflow-hidden rounded-3xl border border-white/10 bg-[#0a0a12] shadow-2xl"
-            >
-              <div className="flex items-center justify-between border-b border-white/10 px-6 py-4">
-                <h3 className="font-display text-lg font-semibold text-white">Post an Update</h3>
-                <button
-                  onClick={() => setUpdateModalOpen(null)}
-                  className="rounded-lg p-1.5 text-white/50 transition hover:bg-white/10 hover:text-white"
-                >
-                  <X size={16} />
-                </button>
-              </div>
-              <div className="p-6">
-                <p className="mb-4 text-sm text-white/60">
-                  Add a quick milestone or highlight to your live portfolio's timeline.
-                </p>
-                <textarea
-                  value={updateText}
-                  onChange={(e) => setUpdateText(e.target.value)}
-                  placeholder="e.g., Just shipped a new feature using React & Supabase!"
-                  className="w-full resize-none rounded-xl border border-white/10 bg-white/5 p-4 text-sm text-white placeholder-white/30 focus:border-violet-500/50 focus:outline-none focus:ring-1 focus:ring-violet-500/50"
-                  rows={4}
-                />
-                <div className="mt-6 flex justify-end gap-3">
-                  <button
-                    onClick={() => setUpdateModalOpen(null)}
-                    className="rounded-xl px-4 py-2.5 text-sm font-semibold text-white/70 transition hover:bg-white/10 hover:text-white"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    onClick={handlePostUpdate}
-                    disabled={postingUpdate || !updateText.trim()}
-                    className="flex items-center gap-2 rounded-xl bg-violet-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-violet-500 disabled:opacity-50"
-                  >
-                    {postingUpdate ? <Loader2 size={16} className="animate-spin" /> : <Rocket size={16} />}
-                    {postingUpdate ? "Posting..." : "Post Now"}
-                  </button>
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
     </main>
   );
 }

@@ -46,7 +46,7 @@
   --card-foreground: #111111;
   --popover: #ffffff;
   --popover-foreground: #111111;
-  --primary: #D4AF37;
+  --primary: #111111;
   --primary-foreground: #ffffff;
   --secondary: #f0f0f0;
   --secondary-foreground: #111111;
@@ -57,19 +57,17 @@
   --destructive: #ff4d4f;
   --border: #0000001a;
   --input: #0000001f;
-  --ring: #D4AF37;
+  --ring: #111111;
 
-  --neon-violet: #D4AF37;
-  --neon-indigo: #C5A059;
-  --neon-cyan: #E6C265;
-  --neon-magenta: #B38F29;
+  --neon-violet: #111111;
+  --neon-indigo: #333333;
+  --neon-cyan: #555555;
+  --neon-magenta: #111111;
 
-  --gradient-kinetic: linear-gradient(120deg, #D4AF37, #C5A059 40%, #E6C265);
-  --gradient-aurora: radial-gradient(ellipse at 20% 10%, #D4AF371a, transparent 60%),
-                     radial-gradient(ellipse at 80% 30%, #C5A05914, transparent 60%),
-                     radial-gradient(ellipse at 60% 90%, #E6C2650d, transparent 60%);
-  --shadow-glow: 0 0 60px -10px #D4AF3740;
-  --shadow-glow-lg: 0 20px 80px -20px #C5A05933, 0 0 40px #D4AF3726;
+  --gradient-kinetic: linear-gradient(120deg, #111111, #333333 40%, #111111);
+  --gradient-aurora: none;
+  --shadow-glow: 0 0 40px -10px rgba(0,0,0,0.15);
+  --shadow-glow-lg: 0 20px 60px -20px rgba(0,0,0,0.2), 0 0 30px rgba(0,0,0,0.1);
 }
 
 @layer base {

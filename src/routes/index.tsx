@@ -198,8 +198,7 @@ const Nav = memo(function Nav() {
           <span className="font-display text-lg font-semibold tracking-tight">CareerOS</span>
         </div>
         <div className="hidden items-center gap-7 text-sm text-muted-foreground md:flex">
-          <a href="#features" className="hover:text-foreground transition">Architecture</a>
-          <a href="#dashboard" className="hover:text-foreground transition">Studio</a>
+          <a href="#how-it-works" className="hover:text-foreground transition">How it works</a>
           <a href="#pricing" className="hover:text-foreground transition">Pricing</a>
         </div>
         <div className="flex items-center gap-2">
@@ -267,9 +266,9 @@ function Hero() {
           className="mt-6 font-display text-[11vw] leading-[0.95] font-bold tracking-tight sm:text-7xl lg:text-8xl"
           style={{ willChange: "opacity, transform" }}
         >
-          Turn your CV into a
+          Build a Professional
           <br />
-          <span className="text-gradient">3D Portfolio</span>
+          <span className="text-gradient">CV</span>
           {" "}in seconds.
         </motion.h1>
 
@@ -279,7 +278,7 @@ function Hero() {
           transition={{ delay: 0.3, duration: 0.7 }}
           className="mx-auto mt-6 max-w-2xl text-base text-muted-foreground sm:text-lg"
         >
-          Powered by AI. No coding required. Stand out to recruiters instantly with a live, edge-deployed portfolio site that renders your premium 3D template in milliseconds.
+          Powered by AI. No coding required. Stand out to recruiters instantly with a print-ready, ATS-optimized CV that renders perfectly in milliseconds.
         </motion.p>
 
         <motion.div
@@ -345,90 +344,7 @@ function Hero() {
   );
 }
 
-function SplitPath() {
-  return (
-    <section id="features" className="relative py-28 sm:py-36">
-      <div className="mx-auto max-w-6xl px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }} transition={{ duration: 0.7 }}
-          className="mx-auto max-w-2xl text-center"
-        >
-          <div className="text-xs uppercase tracking-[0.3em] text-muted-foreground">The split-path architecture</div>
-          <h2 className="mt-4 font-display text-4xl font-bold tracking-tight sm:text-6xl">
-            Two agents. <span className="text-gradient">One career OS.</span>
-          </h2>
-        </motion.div>
-
-        <div className="mt-16 grid gap-6 lg:grid-cols-2">
-          {/* Path A */}
-          <motion.div
-            initial={{ opacity: 0, x: -40 }} whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }} transition={{ duration: 0.7 }}
-          >
-            <KineticBorder className="h-full rounded-3xl">
-              <div className="glass-strong h-full rounded-3xl p-8 sm:p-10">
-                <div className="flex items-center gap-3">
-                  <span className="rounded-full border border-white/10 px-3 py-1 text-xs uppercase tracking-widest text-muted-foreground">Path A</span>
-                  <span className="text-xs text-muted-foreground">Smart CV Studio</span>
-                </div>
-                <h3 className="mt-6 font-display text-3xl font-semibold tracking-tight sm:text-4xl">
-                  A resume that <span className="text-gradient">rewrites itself.</span>
-                </h3>
-                <p className="mt-4 max-w-md text-sm text-muted-foreground">
-                  Drop any doc, LinkedIn URL, or voice note. Our parsing agent extracts, ranks, and rewrites every bullet into recruiter-tuned impact language, then renders it as a print-perfect PDF.
-                </p>
-                <div className="mt-8">
-                  <DataExtractionGlyph />
-                </div>
-                <ul className="mt-8 space-y-2 text-sm">
-                  {["Multimodal parsing (PDF, DOCX, audio)", "ATS-optimised, tuned to any job description", "Vector-crisp PDF export"].map((f) => (
-                    <li key={f} className="flex items-center gap-3 text-foreground/85">
-                      <span className="h-1.5 w-1.5 rounded-full" style={{ background: "oklch(0.72 0.24 300)", boxShadow: "0 0 10px oklch(0.72 0.24 300)" }} />
-                      {f}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </KineticBorder>
-          </motion.div>
-
-          {/* Path B */}
-          <motion.div
-            initial={{ opacity: 0, x: 40 }} whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }} transition={{ duration: 0.7, delay: 0.1 }}
-          >
-            <KineticBorder className="h-full rounded-3xl">
-              <div className="glass-strong h-full rounded-3xl p-8 sm:p-10">
-                <div className="flex items-center gap-3">
-                  <span className="rounded-full border border-white/10 px-3 py-1 text-xs uppercase tracking-widest text-muted-foreground">Path B</span>
-                  <span className="text-xs text-muted-foreground">Agentic Portfolio Builder</span>
-                </div>
-                <h3 className="mt-6 font-display text-3xl font-semibold tracking-tight sm:text-4xl">
-                  A live site, <span className="text-gradient">deployed in seconds.</span>
-                </h3>
-                <p className="mt-4 max-w-md text-sm text-muted-foreground">
-                  An orchestrator spins up copy, design tokens, and layout — then autonomously deploys your portfolio to the edge with a live custom link. No hosting to configure.
-                </p>
-                <div className="mt-8">
-                  <WebMeshGlyph />
-                </div>
-                <ul className="mt-8 space-y-2 text-sm">
-                  {["Autonomous copywriting + design system", "One-click custom domain", "Instant global edge deployment"].map((f) => (
-                    <li key={f} className="flex items-center gap-3 text-foreground/85">
-                      <span className="h-1.5 w-1.5 rounded-full" style={{ background: "oklch(0.85 0.18 210)", boxShadow: "0 0 10px oklch(0.85 0.18 210)" }} />
-                      {f}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </KineticBorder>
-          </motion.div>
-        </div>
-      </div>
-    </section>
-  );
-}
+function SplitPath() { return null; }
 
 /* ─── How It Works ──────────────────────────────────────────────────────── */
 function HowItWorks() {
@@ -450,8 +366,8 @@ function HowItWorks() {
     {
       icon: Rocket,
       n: "03",
-      title: "Deploy to Global Edge",
-      body: "Pick a premium 3D template — Blueprint Sphere, Vibrant Glass, Neon Canvas, and more. Hit publish and get a permanent shareable URL in under 3 seconds.",
+      title: "Export Print-Ready PDF",
+      body: "Pick a premium, minimalist template. Hit export and get a high-resolution PDF that parses perfectly in any ATS system.",
       hue: "150",
     },
   ];
@@ -469,7 +385,7 @@ function HowItWorks() {
             Three steps to <span className="text-gradient">go live.</span>
           </h2>
           <p className="mt-4 text-sm text-muted-foreground">
-            From raw PDF to published 3D portfolio — no configuration, no hosting decisions, no code.
+            From raw text to a professional CV — no complex configuration or formatting struggles.
           </p>
         </motion.div>
 
@@ -514,254 +430,8 @@ function HowItWorks() {
   );
 }
 
-/* ─── Template Showcase ─────────────────────────────────────────────────── */
-function TemplateShowcase() {
-  const templates = [
-    { id: "blueprint-sphere-main", name: "Blueprint Sphere", tag: "3D Interactive", hue: "270", desc: "Immersive Three.js globe with orbital navigation and particle systems." },
-    { id: "vibrant-glass", name: "Vibrant Glass", tag: "Glassmorphism", hue: "210", desc: "Layered backdrop-blur panels with vibrant gradient light sources." },
-    { id: "neon-canvas", name: "Neon Canvas", tag: "Dark & Bold", hue: "300", desc: "High-contrast neon typography over animated scanline backgrounds." },
-    { id: "golden-legacy", name: "Golden Legacy", tag: "Elegant", hue: "45", desc: "Warm gold serif typography — timeless, editorial, print-ready." },
-    { id: "data-scientist", name: "Data Scientist", tag: "Technical", hue: "180", desc: "Monospace grids, live chart aesthetics, and metric-first hierarchy." },
-    { id: "future-forward", name: "Future Forward", tag: "Futuristic", hue: "230", desc: "Holographic UI elements with depth-of-field blur and aurora glows." },
-  ];
-
-  return (
-    <section id="templates" className="relative py-28 sm:py-36">
-      <div className="mx-auto max-w-6xl px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }} transition={{ duration: 0.7 }}
-          className="mx-auto max-w-2xl text-center"
-        >
-          <div className="text-xs uppercase tracking-[0.3em] text-muted-foreground">Template Gallery</div>
-          <h2 className="mt-4 font-display text-4xl font-bold tracking-tight sm:text-5xl">
-            9 premium templates. <span className="text-gradient">Zero compromises.</span>
-          </h2>
-          <p className="mt-4 text-sm text-muted-foreground">
-            Every template is a fully interactive React application, not a static page. Pick yours in the Studio — you can switch anytime without losing your data.
-          </p>
-        </motion.div>
-
-        <div className="mt-16 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {templates.map((t, i) => (
-            <motion.div
-              key={t.id}
-              initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }} transition={{ delay: i * 0.07, duration: 0.6 }}
-              className="group relative overflow-hidden rounded-3xl border border-white/8 bg-white/[0.03] p-6 transition-all duration-300 hover:-translate-y-2 hover:border-white/20 hover:shadow-[0_0_40px_oklch(0.75_0.22_var(--t-hue)/0.15)]"
-              style={{ "--t-hue": t.hue } as React.CSSProperties}
-            >
-              {/* ambient glow removed */}
-              {/* header */}
-              <div className="flex items-start justify-between">
-                <div
-                  className="flex h-10 w-10 items-center justify-center rounded-xl"
-                  style={{
-                    background: `oklch(0.75 0.22 ${t.hue} / 0.15)`,
-                    border: `1px solid oklch(0.75 0.22 ${t.hue} / 0.3)`,
-                  }}
-                >
-                  <Layers size={18} style={{ color: `oklch(0.85 0.2 ${t.hue})` }} />
-                </div>
-                <span
-                  className="rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-widest"
-                  style={{
-                    background: `oklch(0.75 0.22 ${t.hue} / 0.12)`,
-                    color: `oklch(0.85 0.2 ${t.hue})`,
-                    border: `1px solid oklch(0.75 0.22 ${t.hue} / 0.25)`,
-                  }}
-                >
-                  {t.tag}
-                </span>
-              </div>
-              {/* mock viewport */}
-              <div className="mt-4 h-28 overflow-hidden rounded-xl border border-white/8 bg-white/[0.03]">
-                <div className="flex h-4 items-center gap-1 border-b border-white/5 px-2">
-                  <span className="h-1.5 w-1.5 rounded-full bg-white/15" />
-                  <span className="h-1.5 w-1.5 rounded-full bg-white/15" />
-                  <span className="h-1.5 w-1.5 rounded-full bg-white/15" />
-                  <span className="ml-1 h-1 w-20 rounded bg-white/8" />
-                </div>
-                <div className="grid grid-cols-6 gap-1 p-2">
-                  {Array.from({ length: 12 }).map((_, j) => (
-                    <div
-                      key={j}
-                      className="aspect-square rounded"
-                      style={{
-                        background: j % 4 === 0 ? `oklch(0.75 0.22 ${t.hue} / 0.4)` : "oklch(1 0 0 / 0.05)",
-                        border: "1px solid oklch(1 0 0 / 0.07)",
-                      }}
-                    />
-                  ))}
-                </div>
-                <div className="space-y-1 px-2">
-                  <div className="h-1.5 w-3/4 rounded" style={{ background: `oklch(0.75 0.22 ${t.hue} / 0.3)` }} />
-                  <div className="h-1.5 w-1/2 rounded bg-white/10" />
-                </div>
-              </div>
-              {/* info */}
-              <h3 className="mt-4 font-display text-base font-semibold">{t.name}</h3>
-              <p className="mt-1 text-xs text-muted-foreground leading-relaxed">{t.desc}</p>
-              {/* CTA */}
-              <Link
-                to="/cv-studio"
-                className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 py-2.5 text-xs font-semibold text-foreground/70 opacity-0 transition-all duration-300 group-hover:opacity-100 hover:bg-white/10 hover:text-foreground"
-              >
-                <ExternalLink size={12} /> Use this template
-              </Link>
-            </motion.div>
-          ))}
-        </div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }} transition={{ delay: 0.4, duration: 0.6 }}
-          className="mt-12 text-center"
-        >
-          <Link
-            to="/cv-studio"
-            className="btn-kinetic glow-pulse group relative inline-flex items-center gap-2 rounded-2xl px-8 py-4 font-display text-sm font-semibold"
-          >
-            <span className="btn-kinetic-sweep" />
-            <span className="relative z-10">Browse all templates in the Studio</span>
-            <span className="relative z-10 transition-transform group-hover:translate-x-1">→</span>
-          </Link>
-        </motion.div>
-      </div>
-    </section>
-  );
-}
-
-function Dashboard() {
-  return (
-    <section id="dashboard" className="relative py-28 sm:py-36">
-      <div className="mx-auto max-w-6xl px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }} transition={{ duration: 0.7 }}
-          className="mx-auto max-w-2xl text-center"
-        >
-          <div className="text-xs uppercase tracking-[0.3em] text-muted-foreground">Studio · Preview</div>
-          <h2 className="mt-4 font-display text-4xl font-bold tracking-tight sm:text-6xl">
-            Every asset, <span className="text-gradient">generated live.</span>
-          </h2>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }} transition={{ duration: 0.9 }}
-          className="mt-16"
-        >
-          <KineticBorder className="rounded-3xl">
-            <div className="glass-strong rounded-3xl p-4 sm:p-8">
-              <div className="grid gap-6 lg:grid-cols-[1.1fr_1fr]">
-                {/* CV Preview */}
-                <div className="glass relative overflow-hidden rounded-2xl p-6">
-                  <div className="flex items-center justify-between">
-                    <div className="text-xs uppercase tracking-widest text-muted-foreground">Generated CV · Rev 4</div>
-                    <div className="text-xs text-muted-foreground">A. Kim / Product</div>
-                  </div>
-                  <div className="mt-5 font-display text-3xl font-semibold tracking-tight">Ari Kim</div>
-                  <div className="text-sm text-muted-foreground">Senior Product Designer · Berlin</div>
-                  <div className="mt-6 space-y-3">
-                    {[["Experience", 92], ["Impact voice", 88], ["ATS match", 96]].map(([label, val]) => (
-                      <div key={label as string}>
-                        <div className="flex justify-between text-xs text-muted-foreground">
-                          <span>{label as string}</span><span>{val}%</span>
-                        </div>
-                        <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-white/5">
-                          <motion.div
-                            initial={{ width: 0 }} whileInView={{ width: `${val}%` }}
-                            viewport={{ once: true }} transition={{ duration: 1.2, ease: "easeOut" }}
-                            className="h-full rounded-full"
-                            style={{ background: "var(--gradient-kinetic)" }}
-                          />
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="mt-6 grid grid-cols-3 gap-2">
-                    {["Figma", "Systems", "Research", "AI/ML", "Roadmapping", "Storytelling"].map((t) => (
-                      <div key={t} className="rounded-lg border border-white/10 bg-white/5 px-2 py-1.5 text-center text-xs text-foreground/80">{t}</div>
-                    ))}
-                  </div>
-
-                  {/* Paywall lock */}
-                  <div className="relative mt-6">
-                    <div className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
-                      <div className="text-xs uppercase tracking-widest text-muted-foreground">High-res export</div>
-                      <div className="mt-2 h-14 space-y-2">
-                        <div className="h-2 w-3/4 rounded bg-white/10" />
-                        <div className="h-2 w-1/2 rounded bg-white/10" />
-                        <div className="h-2 w-2/3 rounded bg-white/10" />
-                      </div>
-                    </div>
-                    <div className="absolute inset-0 flex items-center justify-center rounded-xl"
-                      style={{ background: "oklch(0.10 0.03 280 / 0.82)" }}>
-                      <div className="glass flex items-center gap-3 rounded-full px-4 py-2">
-                        <span
-                          className="h-2.5 w-2.5 rounded-full"
-                          style={{ background: "oklch(0.72 0.24 300)", animation: "pulse-dot 2s ease-in-out infinite", color: "oklch(0.72 0.24 300 / 0.5)" }}
-                        />
-                        <span className="text-xs font-semibold tracking-wide">Unlock Pro · High-res PDF</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Portfolio preview */}
-                <div className="glass relative overflow-hidden rounded-2xl p-6">
-                  <div className="flex items-center justify-between">
-                    <div className="text-xs uppercase tracking-widest text-muted-foreground">Portfolio · Live preview</div>
-                    <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                      <span className="h-1.5 w-1.5 rounded-full" style={{ background: "oklch(0.75 0.2 150)", boxShadow: "0 0 8px oklch(0.75 0.2 150)" }} />
-                      deploying
-                    </div>
-                  </div>
-                  <div className="mt-6 grid grid-cols-6 gap-2">
-                    {Array.from({ length: 18 }).map((_, i) => (
-                      <motion.div key={i}
-                        initial={{ opacity: 0, scale: 0.6 }} whileInView={{ opacity: 1, scale: 1 }}
-                        viewport={{ once: true }} transition={{ delay: i * 0.03 }}
-                        className="aspect-square rounded-md"
-                        style={{
-                          background: i % 5 === 0 ? "var(--gradient-kinetic)" : "oklch(1 0 0 / 0.05)",
-                          border: "1px solid oklch(1 0 0 / 0.08)",
-                        }}
-                      />
-                    ))}
-                  </div>
-                  <div className="mt-6 space-y-2">
-                    <div className="h-2 w-2/3 rounded bg-white/10" />
-                    <div className="h-2 w-1/2 rounded bg-white/10" />
-                  </div>
-
-                  {/* live link paywall */}
-                  <div className="relative mt-6">
-                    <div className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
-                      <div className="text-xs uppercase tracking-widest text-muted-foreground">Live cloud link</div>
-                      <div className="mt-2 font-mono text-sm text-foreground/70">ari-kim.nexus.app</div>
-                    </div>
-                    <div className="absolute inset-0 flex items-center justify-center rounded-xl"
-                      style={{ background: "oklch(0.10 0.03 280 / 0.82)" }}>
-                      <div className="glass flex items-center gap-3 rounded-full px-4 py-2">
-                        <span
-                          className="h-2.5 w-2.5 rounded-full"
-                          style={{ background: "oklch(0.85 0.18 210)", animation: "pulse-dot 2s ease-in-out infinite", color: "oklch(0.85 0.18 210 / 0.5)" }}
-                        />
-                        <span className="text-xs font-semibold tracking-wide">Unlock Pro · Live custom link</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </KineticBorder>
-        </motion.div>
-      </div>
-    </section>
-  );
-}
+function TemplateShowcase() { return null; }
+function Dashboard() { return null; }
 
 function Pricing() {
   const tiers = [
@@ -770,7 +440,7 @@ function Pricing() {
       price: "$0",
       cadence: "forever",
       pitch: "Explore the studio, ship watermarked drafts.",
-      features: ["Full AI CV studio", "Watermarked PDF export", "UI preview of your portfolio", "Community templates"],
+      features: ["Full AI CV studio", "Watermarked PDF export", "AI content generation", "Multiple CV templates"],
       cta: "Start free",
       highlight: false,
     },
@@ -778,8 +448,8 @@ function Pricing() {
       name: "Pro Export",
       price: "$15",
       cadence: "one-time",
-      pitch: "Ship high-res assets and a live portfolio the world can visit.",
-      features: ["High-res, watermark-free PDF", "Live cloud portfolio + custom link", "Unlimited regenerations", "Priority agent runtime"],
+      pitch: "Export a high-res, watermark-free PDF.",
+      features: ["High-res, watermark-free PDF", "ATS-optimized layouts", "Unlimited regenerations", "Priority agent runtime"],
       cta: "Unlock Pro",
       highlight: true,
     },
@@ -892,9 +562,6 @@ function Landing() {
       <Nav />
       <Hero />
       <HowItWorks />
-      <SplitPath />
-      <TemplateShowcase />
-      <Dashboard />
       <Pricing />
       <Footer />
     </main>
