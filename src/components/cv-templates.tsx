@@ -61,39 +61,39 @@ export const MinimalistTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
     return (
       <div
         ref={ref}
-        className="cv-root w-full h-full bg-white text-slate-800 overflow-hidden"
+        className="cv-root w-full h-full bg-white text-black overflow-hidden"
         style={{ fontFamily: "'Inter', 'Helvetica Neue', sans-serif" }}
       >
         <style>{PRINT_STYLES}</style>
 
         <div className="flex flex-col h-full px-16 py-14">
           {/* Header */}
-          <div className="border-b border-slate-200 pb-8 mb-8">
-            <h1 className="text-4xl font-extralight tracking-[0.08em] text-slate-900 uppercase">
+          <div className="border-b-2 border-black pb-8 mb-8">
+            <h1 className="text-4xl font-extrabold tracking-tight text-black uppercase">
               {p.fullName || "Your Name"}
             </h1>
-            <p className="mt-2 text-xs font-medium tracking-[0.25em] uppercase text-slate-400">
+            <p className="mt-2 text-xs font-bold tracking-[0.2em] uppercase text-gray-500">
               {p.jobTitle || "Your Title"}
             </p>
-            <div className="mt-4 flex flex-wrap gap-x-6 gap-y-1">
+            <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2">
               {p.email && (
-                <span className="flex items-center gap-1.5 text-[11px] text-slate-500">
-                  <Mail size={10} /> {p.email}
+                <span className="flex items-center gap-1.5 text-[11px] font-medium text-gray-700">
+                  <Mail size={12} className="text-black" /> {p.email}
                 </span>
               )}
               {p.phone && (
-                <span className="flex items-center gap-1.5 text-[11px] text-slate-500">
-                  <Phone size={10} /> {p.phone}
+                <span className="flex items-center gap-1.5 text-[11px] font-medium text-gray-700">
+                  <Phone size={12} className="text-black" /> {p.phone}
                 </span>
               )}
               {p.location && (
-                <span className="flex items-center gap-1.5 text-[11px] text-slate-500">
-                  <MapPin size={10} /> {p.location}
+                <span className="flex items-center gap-1.5 text-[11px] font-medium text-gray-700">
+                  <MapPin size={12} className="text-black" /> {p.location}
                 </span>
               )}
               {p.linkedin && (
-                <span className="flex items-center gap-1.5 text-[11px] text-slate-500">
-                  <Globe size={10} /> {p.linkedin}
+                <span className="flex items-center gap-1.5 text-[11px] font-medium text-gray-700">
+                  <Linkedin size={12} className="text-black" /> {p.linkedin}
                 </span>
               )}
             </div>
@@ -102,59 +102,35 @@ export const MinimalistTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
           {/* Summary */}
           {p.summary && (
             <div className="mb-8">
-              <p className="text-[11px] leading-relaxed text-slate-600 max-w-2xl">
+              <p className="text-[12px] leading-relaxed text-black font-medium max-w-3xl">
                 {p.summary}
               </p>
-            </div>
-          )}
-
-          {/* Highlights Timeline */}
-          {highlights && highlights.length > 0 && (
-            <div className="mb-8">
-              <h2 className="text-[9px] font-bold tracking-[0.3em] uppercase text-slate-400 mb-5">
-                Recent Milestones
-              </h2>
-              <div className="space-y-4 relative border-l border-slate-200 ml-[52px]">
-                {highlights.map((h) => (
-                  <div key={h.id} className="flex relative">
-                    <div className="absolute -left-[3px] top-1.5 h-1.5 w-1.5 rounded-full bg-slate-400" />
-                    <div className="w-24 shrink-0 text-[9px] text-slate-400 text-right pr-6 -ml-[52px] pt-0.5">
-                      {new Date(h.date).toLocaleDateString("en-GB", { month: "short", year: "numeric", day: "numeric" })}
-                    </div>
-                    <div className="flex-1 pl-6">
-                      <p className="text-[11px] text-slate-700 leading-relaxed">
-                        {h.content}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
             </div>
           )}
 
           {/* Experience */}
           {experience.length > 0 && (
             <div className="mb-8">
-              <h2 className="text-[9px] font-bold tracking-[0.3em] uppercase text-slate-400 mb-5">
+              <h2 className="text-[10px] font-bold tracking-[0.2em] uppercase text-black mb-5 border-b border-gray-200 pb-2">
                 Experience
               </h2>
               <div className="space-y-6">
                 {experience.map((exp) => (
                   <div key={exp.id} className="flex gap-8">
-                    <div className="w-28 shrink-0 text-[10px] text-slate-400 pt-0.5">
+                    <div className="w-32 shrink-0 text-[10px] font-bold text-gray-500 pt-0.5 uppercase tracking-wider">
                       {exp.period}
                     </div>
                     <div className="flex-1">
-                      <p className="text-sm font-semibold text-slate-900">{exp.role}</p>
-                      <p className="text-[11px] text-slate-500 mt-0.5">{exp.company}</p>
+                      <p className="text-sm font-bold text-black">{exp.role}</p>
+                      <p className="text-[11px] font-semibold text-gray-600 mt-0.5">{exp.company}</p>
                       {exp.bullets && (
-                        <ul className="mt-2 space-y-1">
+                        <ul className="mt-2.5 space-y-1.5">
                           {exp.bullets.split("\n").map(
                             (b, i) =>
                               b.trim() && (
                                 <li
                                   key={i}
-                                  className="text-[11px] text-slate-600 leading-relaxed pl-3 relative before:content-['–'] before:absolute before:left-0 before:text-slate-400"
+                                  className="text-[11px] text-gray-800 font-medium leading-relaxed pl-4 relative before:content-[''] before:absolute before:left-0 before:top-1.5 before:h-1 before:w-1 before:bg-black before:rounded-full"
                                 >
                                   {b.trim()}
                                 </li>
@@ -172,18 +148,18 @@ export const MinimalistTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
           {/* Education */}
           {education.length > 0 && (
             <div className="mb-8">
-              <h2 className="text-[9px] font-bold tracking-[0.3em] uppercase text-slate-400 mb-5">
+              <h2 className="text-[10px] font-bold tracking-[0.2em] uppercase text-black mb-5 border-b border-gray-200 pb-2">
                 Education
               </h2>
               <div className="space-y-4">
                 {education.map((edu) => (
                   <div key={edu.id} className="flex gap-8">
-                    <div className="w-28 shrink-0 text-[10px] text-slate-400 pt-0.5">
+                    <div className="w-32 shrink-0 text-[10px] font-bold text-gray-500 pt-0.5 uppercase tracking-wider">
                       {edu.year}
                     </div>
                     <div className="flex-1">
-                      <p className="text-sm font-semibold text-slate-900">{edu.degree}</p>
-                      <p className="text-[11px] text-slate-500 mt-0.5">{edu.school}</p>
+                      <p className="text-sm font-bold text-black">{edu.degree}</p>
+                      <p className="text-[11px] font-medium text-gray-600 mt-0.5">{edu.school}</p>
                     </div>
                   </div>
                 ))}
@@ -194,12 +170,16 @@ export const MinimalistTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
           {/* Skills */}
           {skills.length > 0 && (
             <div>
-              <h2 className="text-[9px] font-bold tracking-[0.3em] uppercase text-slate-400 mb-4">
+              <h2 className="text-[10px] font-bold tracking-[0.2em] uppercase text-black mb-4 border-b border-gray-200 pb-2">
                 Skills
               </h2>
-              <p className="text-[11px] text-slate-600 leading-relaxed">
-                {skills.join("  ·  ")}
-              </p>
+              <div className="flex flex-wrap gap-2">
+                {skills.map((s) => (
+                  <span key={s} className="text-[11px] font-bold text-black border border-black px-2.5 py-1 rounded-full">
+                    {s}
+                  </span>
+                ))}
+              </div>
             </div>
           )}
         </div>
@@ -216,112 +196,90 @@ MinimalistTemplate.displayName = "MinimalistTemplate";
 export const CorporateTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
   ({ data }, ref) => {
     const { personalInfo: p, experience, education, skills, highlights } = data;
-    const NAVY = "#0f2d5a";
-    const NAVY_LIGHT = "#e8eef6";
     return (
       <div
         ref={ref}
-        className="cv-root w-full h-full bg-white text-slate-800 overflow-hidden"
+        className="cv-root w-full h-full bg-white text-black overflow-hidden"
         style={{ fontFamily: "'Georgia', 'Times New Roman', serif" }}
       >
         <style>{PRINT_STYLES}</style>
 
         {/* Top bar */}
-        <div style={{ backgroundColor: NAVY }} className="px-10 py-8">
-          <h1 className="text-3xl font-bold tracking-wide text-white">
+        <div className="px-10 py-10 border-b-[6px] border-black text-center">
+          <h1 className="text-4xl font-extrabold tracking-widest text-black uppercase">
             {p.fullName || "Your Name"}
           </h1>
           <p
-            className="mt-1 text-sm font-light tracking-widest uppercase"
-            style={{ color: "#94b8e0" }}
+            className="mt-2 text-xs font-bold tracking-[0.25em] uppercase text-gray-500"
           >
             {p.jobTitle || "Professional Title"}
           </p>
         </div>
 
         {/* Contact strip */}
-        <div style={{ backgroundColor: NAVY_LIGHT }} className="px-10 py-3 flex flex-wrap gap-x-8 gap-y-1">
+        <div className="border-b border-gray-300 px-10 py-3 flex flex-wrap justify-center gap-x-8 gap-y-2">
           {p.email && (
-            <span className="flex items-center gap-2 text-[10px] text-slate-600">
-              <Mail size={10} style={{ color: NAVY }} /> {p.email}
+            <span className="flex items-center gap-2 text-[10px] font-bold text-gray-700 uppercase tracking-widest">
+              <Mail size={12} className="text-black" /> {p.email}
             </span>
           )}
           {p.phone && (
-            <span className="flex items-center gap-2 text-[10px] text-slate-600">
-              <Phone size={10} style={{ color: NAVY }} /> {p.phone}
+            <span className="flex items-center gap-2 text-[10px] font-bold text-gray-700 uppercase tracking-widest">
+              <Phone size={12} className="text-black" /> {p.phone}
             </span>
           )}
           {p.location && (
-            <span className="flex items-center gap-2 text-[10px] text-slate-600">
-              <MapPin size={10} style={{ color: NAVY }} /> {p.location}
+            <span className="flex items-center gap-2 text-[10px] font-bold text-gray-700 uppercase tracking-widest">
+              <MapPin size={12} className="text-black" /> {p.location}
             </span>
           )}
           {p.linkedin && (
-            <span className="flex items-center gap-2 text-[10px] text-slate-600">
-              <Linkedin size={10} style={{ color: NAVY }} /> {p.linkedin}
+            <span className="flex items-center gap-2 text-[10px] font-bold text-gray-700 uppercase tracking-widest">
+              <Linkedin size={12} className="text-black" /> {p.linkedin}
             </span>
           )}
           {p.github && (
-            <span className="flex items-center gap-2 text-[10px] text-slate-600">
-              <Github size={10} style={{ color: NAVY }} /> {p.github}
+            <span className="flex items-center gap-2 text-[10px] font-bold text-gray-700 uppercase tracking-widest">
+              <Github size={12} className="text-black" /> {p.github}
             </span>
           )}
         </div>
 
-        <div className="px-10 py-7 flex gap-8 flex-1">
+        <div className="px-10 py-8 flex gap-10 flex-1">
           {/* Main Column */}
-          <div className="flex-1 space-y-7">
+          <div className="flex-1 space-y-8">
             {p.summary && (
               <div>
-                <SectionHeader label="Professional Summary" color={NAVY} />
-                <p className="text-[11px] leading-relaxed text-slate-600 mt-3">
+                <SectionHeader label="Professional Summary" color="#000000" />
+                <p className="text-[12px] leading-relaxed text-black font-medium mt-3 border-l-2 border-black pl-4 italic">
                   {p.summary}
                 </p>
               </div>
             )}
 
-            {highlights && highlights.length > 0 && (
-              <div>
-                <SectionHeader label="Recent Milestones" color={NAVY} />
-                <div className="mt-3 space-y-4 border-l-2 ml-1" style={{ borderColor: `${NAVY}33` }}>
-                  {highlights.map((h) => (
-                    <div key={h.id} className="relative pl-4">
-                      <div className="absolute -left-[5px] top-1.5 h-2 w-2 rounded-full" style={{ backgroundColor: NAVY }} />
-                      <p className="text-[10px] font-bold" style={{ color: NAVY }}>
-                        {new Date(h.date).toLocaleDateString("en-GB", { month: "short", year: "numeric", day: "numeric" })}
-                      </p>
-                      <p className="text-[11px] leading-relaxed text-slate-600 mt-0.5">
-                        {h.content}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
             {experience.length > 0 && (
               <div>
-                <SectionHeader label="Work Experience" color={NAVY} />
-                <div className="mt-3 space-y-5">
+                <SectionHeader label="Work Experience" color="#000000" />
+                <div className="mt-4 space-y-6">
                   {experience.map((exp) => (
                     <div key={exp.id}>
                       <div className="flex items-start justify-between">
                         <div>
-                          <p className="text-sm font-bold text-slate-900">{exp.role}</p>
-                          <p className="text-[11px] font-semibold mt-0.5" style={{ color: NAVY }}>
+                          <p className="text-sm font-bold text-black uppercase tracking-wider">{exp.role}</p>
+                          <p className="text-[12px] font-bold mt-0.5 text-gray-600">
                             {exp.company}
                           </p>
                         </div>
-                        <span className="text-[10px] text-slate-500 shrink-0 mt-0.5 border border-slate-200 rounded px-2 py-0.5">
+                        <span className="text-[10px] font-bold text-black shrink-0 mt-0.5 uppercase tracking-widest">
                           {exp.period}
                         </span>
                       </div>
                       {exp.bullets && (
-                        <ul className="mt-2 space-y-1 pl-3">
+                        <ul className="mt-3 space-y-1.5 pl-4">
                           {exp.bullets.split("\n").map(
                             (b, i) =>
                               b.trim() && (
-                                <li key={i} className="text-[11px] text-slate-600 list-disc list-inside">
+                                <li key={i} className="text-[11px] font-medium text-gray-800 list-disc list-outside">
                                   {b.trim()}
                                 </li>
                               )
@@ -336,40 +294,31 @@ export const CorporateTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
 
             {education.length > 0 && (
               <div>
-                <SectionHeader label="Education" color={NAVY} />
-                <div className="mt-3 space-y-3">
+                <SectionHeader label="Education" color="#000000" />
+                <div className="mt-4 space-y-4">
                   {education.map((edu) => (
                     <div key={edu.id} className="flex justify-between items-start">
                       <div>
-                        <p className="text-sm font-bold text-slate-900">{edu.degree}</p>
-                        <p className="text-[11px] text-slate-500">{edu.school}</p>
+                        <p className="text-sm font-bold text-black uppercase tracking-wider">{edu.degree}</p>
+                        <p className="text-[12px] font-bold text-gray-600">{edu.school}</p>
                       </div>
-                      <span className="text-[10px] text-slate-500 shrink-0">{edu.year}</span>
+                      <span className="text-[10px] font-bold text-black shrink-0 uppercase tracking-widest">{edu.year}</span>
                     </div>
                   ))}
-                </div>
-              </div>
-            )}
-
-            {data.additionalInfo && (
-              <div>
-                <SectionHeader label="Additional Information" color={NAVY} />
-                <div className="mt-3 text-[11px] leading-relaxed text-slate-600 whitespace-pre-wrap">
-                  {data.additionalInfo}
                 </div>
               </div>
             )}
           </div>
 
           {/* Side Column */}
-          <div className="w-44 shrink-0 space-y-6">
+          <div className="w-52 shrink-0 space-y-8">
             {skills.length > 0 && (
               <div>
-                <SectionHeader label="Core Skills" color={NAVY} />
-                <ul className="mt-3 space-y-1.5">
+                <SectionHeader label="Core Skills" color="#000000" />
+                <ul className="mt-4 space-y-2">
                   {skills.map((s) => (
-                    <li key={s} className="flex items-center gap-2 text-[11px] text-slate-600">
-                      <span className="h-1 w-1 rounded-full shrink-0" style={{ backgroundColor: NAVY }} />
+                    <li key={s} className="flex items-center gap-3 text-[11px] font-bold text-gray-800 uppercase tracking-wider border-b border-gray-200 pb-2">
+                      <span className="h-1.5 w-1.5 rounded-full bg-black shrink-0" />
                       {s}
                     </li>
                   ))}
@@ -557,108 +506,100 @@ TechTemplate.displayName = "TechTemplate";
 export const CreativeTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
   ({ data }, ref) => {
     const { personalInfo: p, experience, education, skills } = data;
-    const ROSE = "#e11d48";
-    const ORANGE = "#f97316";
-
     return (
       <div
         ref={ref}
-        className="cv-root w-full h-full bg-white overflow-hidden"
+        className="cv-root w-full h-full bg-white overflow-hidden flex flex-row"
         style={{ fontFamily: "'Inter', sans-serif" }}
       >
         <style>{PRINT_STYLES}</style>
 
-        {/* Bold asymmetric header */}
-        <div className="relative px-10 pt-10 pb-8 overflow-hidden" style={{ background: `linear-gradient(135deg, ${ROSE} 0%, ${ORANGE} 100%)` }}>
-          {/* Big decorative circle */}
-          <div className="absolute -right-12 -top-12 h-48 w-48 rounded-full bg-white/10" />
-          <div className="absolute right-16 top-8 h-16 w-16 rounded-full bg-white/10" />
-          <div className="relative">
-            <p className="text-[9px] font-bold tracking-[0.4em] uppercase text-white/60 mb-2">
-              — Portfolio
-            </p>
-            <h1 className="text-5xl font-black text-white leading-none tracking-tight">
+        {/* Black Sidebar */}
+        <div className="w-72 bg-black text-white px-10 py-12 flex flex-col justify-between shrink-0 h-full">
+          <div>
+            <h1 className="text-4xl font-black text-white leading-none tracking-tight break-words">
               {p.fullName || "Your Name"}
             </h1>
-            <p className="mt-3 text-sm font-bold uppercase tracking-widest text-white/70">
+            <p className="mt-4 text-xs font-bold uppercase tracking-widest text-gray-400">
               {p.jobTitle || "Creative Professional"}
             </p>
-          </div>
-        </div>
 
-        {/* Contact bar */}
-        <div className="flex flex-wrap gap-x-6 gap-y-1 px-10 py-3 bg-slate-900">
-          {p.email && <span className="flex items-center gap-1.5 text-[10px] text-slate-300"><Mail size={9} color={ROSE} /> {p.email}</span>}
-          {p.phone && <span className="flex items-center gap-1.5 text-[10px] text-slate-300"><Phone size={9} color={ROSE} /> {p.phone}</span>}
-          {p.location && <span className="flex items-center gap-1.5 text-[10px] text-slate-300"><MapPin size={9} color={ROSE} /> {p.location}</span>}
-          {p.linkedin && <span className="flex items-center gap-1.5 text-[10px] text-slate-300"><Globe size={9} color={ROSE} /> {p.linkedin}</span>}
-        </div>
-
-        {/* Body: two columns */}
-        <div className="flex gap-0 flex-1" style={{ minHeight: 0 }}>
-          {/* Main */}
-          <div className="flex-1 px-10 py-7 space-y-6">
-            {p.summary && (
-              <div>
-                <CreativeSectionTitle label="About Me" rose={ROSE} />
-                <p className="text-[11px] leading-relaxed text-slate-600 mt-3">{p.summary}</p>
-              </div>
-            )}
-            {experience.length > 0 && (
-              <div>
-                <CreativeSectionTitle label="Experience" rose={ROSE} />
-                <div className="mt-3 space-y-5">
-                  {experience.map((exp) => (
-                    <div key={exp.id}>
-                      <div className="flex items-start justify-between">
-                        <div>
-                          <p className="text-sm font-extrabold text-slate-900">{exp.role}</p>
-                          <p className="text-[11px] font-bold mt-0.5" style={{ color: ROSE }}>{exp.company}</p>
-                        </div>
-                        <span className="text-[10px] text-slate-400 shrink-0 font-medium mt-0.5 italic">{exp.period}</span>
-                      </div>
-                      {exp.bullets && (
-                        <ul className="mt-2 space-y-1">
-                          {exp.bullets.split("\n").map((b, i) => b.trim() && (
-                            <li key={i} className="flex gap-2 text-[11px] text-slate-600">
-                              <span style={{ color: ORANGE }} className="shrink-0 font-bold">→</span>
-                              {b.trim()}
-                            </li>
-                          ))}
-                        </ul>
-                      )}
+            {/* Contact */}
+            <div className="mt-12 space-y-4">
+              <p className="text-[10px] font-bold tracking-[0.3em] uppercase text-gray-500 mb-6 border-b border-gray-800 pb-2">
+                Contact
+              </p>
+              {p.email && <span className="flex items-center gap-3 text-[11px] font-medium text-white"><Mail size={12} className="text-gray-400" /> {p.email}</span>}
+              {p.phone && <span className="flex items-center gap-3 text-[11px] font-medium text-white"><Phone size={12} className="text-gray-400" /> {p.phone}</span>}
+              {p.location && <span className="flex items-center gap-3 text-[11px] font-medium text-white"><MapPin size={12} className="text-gray-400" /> {p.location}</span>}
+              {p.linkedin && <span className="flex items-center gap-3 text-[11px] font-medium text-white"><Globe size={12} className="text-gray-400" /> {p.linkedin}</span>}
+            </div>
+            
+            {skills.length > 0 && (
+              <div className="mt-12">
+                <p className="text-[10px] font-bold tracking-[0.3em] uppercase text-gray-500 mb-6 border-b border-gray-800 pb-2">
+                  Skills
+                </p>
+                <div className="flex flex-col gap-3">
+                  {skills.map((s) => (
+                    <div key={s} className="flex items-center gap-3">
+                      <span className="h-1.5 w-1.5 rounded-full bg-white shrink-0" />
+                      <span className="text-[11px] font-bold tracking-wide uppercase text-white">{s}</span>
                     </div>
                   ))}
                 </div>
               </div>
             )}
-            {education.length > 0 && (
-              <div>
-                <CreativeSectionTitle label="Education" rose={ROSE} />
-                <div className="mt-3 space-y-3">
-                  {education.map((edu) => (
-                    <div key={edu.id} className="flex justify-between">
+          </div>
+        </div>
+
+        {/* White Main Content */}
+        <div className="flex-1 px-12 py-12 space-y-10 overflow-hidden h-full">
+          {p.summary && (
+            <div>
+              <CreativeSectionTitle label="Profile" rose="#000000" />
+              <p className="text-[12px] font-medium leading-relaxed text-black mt-4">{p.summary}</p>
+            </div>
+          )}
+          {experience.length > 0 && (
+            <div>
+              <CreativeSectionTitle label="Experience" rose="#000000" />
+              <div className="mt-6 space-y-8">
+                {experience.map((exp) => (
+                  <div key={exp.id}>
+                    <div className="flex items-start justify-between">
                       <div>
-                        <p className="text-sm font-bold text-slate-900">{edu.degree}</p>
-                        <p className="text-[11px] text-slate-500">{edu.school}</p>
+                        <p className="text-base font-black uppercase tracking-tight text-black">{exp.role}</p>
+                        <p className="text-[12px] font-bold mt-1 text-gray-500 uppercase tracking-widest">{exp.company}</p>
                       </div>
-                      <span className="text-[10px] text-slate-400 italic shrink-0">{edu.year}</span>
+                      <span className="text-[10px] font-bold text-black border-2 border-black rounded px-2 py-1 uppercase tracking-widest shrink-0">{exp.period}</span>
                     </div>
-                  ))}
-                </div>
+                    {exp.bullets && (
+                      <ul className="mt-4 space-y-2">
+                        {exp.bullets.split("\n").map((b, i) => b.trim() && (
+                          <li key={i} className="flex gap-3 text-[11px] font-medium text-black">
+                            <span className="text-black font-black">→</span>
+                            {b.trim()}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                ))}
               </div>
-            )}
-          </div>
-
-          {/* Side panel */}
-          {skills.length > 0 && (
-            <div className="w-44 shrink-0 px-5 py-7 border-l-4" style={{ borderColor: ROSE + "22", backgroundColor: "#fff8f8" }}>
-              <p className="text-[9px] font-black tracking-[0.3em] uppercase mb-4" style={{ color: ROSE }}>Skills</p>
-              <div className="flex flex-col gap-2">
-                {skills.map((s) => (
-                  <div key={s} className="flex items-center gap-2">
-                    <span className="h-1.5 w-1.5 rounded-full shrink-0" style={{ backgroundColor: ORANGE }} />
-                    <span className="text-[11px] text-slate-700 font-medium">{s}</span>
+            </div>
+          )}
+          {education.length > 0 && (
+            <div>
+              <CreativeSectionTitle label="Education" rose="#000000" />
+              <div className="mt-6 space-y-4">
+                {education.map((edu) => (
+                  <div key={edu.id} className="flex justify-between items-center border-b border-gray-200 pb-4">
+                    <div>
+                      <p className="text-sm font-black text-black uppercase tracking-wider">{edu.degree}</p>
+                      <p className="text-[11px] font-bold text-gray-500 mt-1 uppercase tracking-widest">{edu.school}</p>
+                    </div>
+                    <span className="text-[10px] font-bold text-black border-2 border-black rounded px-2 py-1 uppercase tracking-widest shrink-0">{edu.year}</span>
                   </div>
                 ))}
               </div>

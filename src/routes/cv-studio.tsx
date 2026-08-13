@@ -98,27 +98,19 @@ function TemplateSwitcher({
       >
         {TEMPLATE_LIST.map((t) => {
           const isActive = active === t.id;
-          const isLocked = t.isPremium && tier !== "premium";
           return (
             <button
               key={t.id}
               id={`cv-template-${t.id}`}
-              onClick={() => {
-                if (isLocked) {
-                  onUpgrade();
-                } else {
-                  onChange(t.id as TemplateId);
-                }
-              }}
+              onClick={() => onChange(t.id as TemplateId)}
               className={`relative flex shrink-0 items-center gap-1.5 rounded-xl px-3 py-1.5 text-[11px] font-semibold transition-all duration-200 ${
                 isActive
                   ? "bg-black text-white shadow-md scale-[1.04]"
                   : "bg-gray-100 text-gray-500 hover:bg-gray-200 hover:text-black"
-              } ${isLocked ? "opacity-70" : ""}`}
+              }`}
             >
               <span className="text-[10px] opacity-70">{t.emoji}</span>
               {t.label}
-              {isLocked && <span className="ml-1 rounded bg-emerald-500/20 px-1 py-0.5 text-[8px] uppercase tracking-wider text-emerald-400">Pro</span>}
             </button>
           );
         })}
