@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { CheckCircle2, ChevronRight, Plus, Trash2, X, User, Briefcase, GraduationCap, Zap, Rocket } from "lucide-react";
+import { CheckCircle2, ChevronRight, Plus, Trash2, X, User, Briefcase, GraduationCap, Zap, Rocket, Star } from "lucide-react";
 import type { CvState, PersonalInfo, Experience, Education } from "./types";
 
 interface CVFormPanelProps {
@@ -46,6 +46,7 @@ function TextArea({ label, value, onChange, rows = 3, placeholder }: {
 /* ─── Section tab button ─────────────────────────────────────────────────── */
 const TABS = [
   { id: 0, label: "Personal", icon: User },
+  { id: 5, label: "Highlights", icon: Star },
   { id: 1, label: "Experience", icon: Briefcase },
   { id: 2, label: "Education", icon: GraduationCap },
   { id: 3, label: "Skills", icon: Zap },
@@ -78,15 +79,16 @@ export function CVFormPanel({ cvData, setCvData }: CVFormPanelProps) {
   };
   const delSkill = (s: string) => setCvData(p => ({ ...p, skills: p.skills.filter(x => x !== s) }));
 
-  const completedTabs = [
+    const completedTabs = [
     !!(info.fullName && info.jobTitle),
     cvData.experience.length > 0,
     cvData.education.length > 0,
     cvData.skills.length > 0,
     (cvData.projects || []).length > 0,
+    (cvData.keyHighlights || []).length > 0,
   ];
   const totalDone = completedTabs.filter(Boolean).length;
-  const pct = Math.round((totalDone / 5) * 100);
+  const pct = Math.round((totalDone / 6) * 100);
 
   return (
     <div className="flex h-full flex-col overflow-hidden rounded-3xl border border-gray-200 bg-gray-50 backdrop-blur-xl">
@@ -131,8 +133,8 @@ export function CVFormPanel({ cvData, setCvData }: CVFormPanelProps) {
                 <Field label="Portfolio URL" value={info.portfolioUrl || ""} onChange={v => setInfo("portfolioUrl", v)} placeholder="mysite.com or https://…" />
               </div>
               <TextArea label="Professional Summary" value={info.summary} onChange={v => setInfo("summary", v)} rows={4} placeholder="Brief professional bio…" />
-              <button type="button" onClick={() => setActiveTab(1)} className="w-full flex items-center justify-center gap-2 rounded-xl bg-black py-2.5 text-sm font-bold text-white transition hover:bg-gray-800 active:scale-[0.98]">
-                Next: Experience <ChevronRight size={14} />
+              <button type="button" onClick={() => setActiveTab(5)} className="w-full flex items-center justify-center gap-2 rounded-xl bg-black py-2.5 text-sm font-bold text-white transition hover:bg-gray-800 active:scale-[0.98]">
+                Next: Highlights <ChevronRight size={14} />
               </button>
             </motion.div>
           )}
@@ -206,8 +208,27 @@ export function CVFormPanel({ cvData, setCvData }: CVFormPanelProps) {
                 ))}
               </div>
 
-              <div className="pt-4 border-t border-gray-200">
-                <TextArea label="Additional Information (Languages, Certifications, etc.)" value={cvData.additionalInfo || ""} onChange={v => setCvData(p => ({ ...p, additionalInfo: v }))} rows={4} placeholder="Fluent in English and Spanish. AWS Certified Solutions Architect..." />
+              <div className="pt-4 border-t border-gray-200 space-y-4">
+                <div>
+                  <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-gray-900 mb-2">Certifications</label>
+                  {(cvData.certifications || []).map((c, i) => (
+                    <div key={i} className="flex gap-2 mb-2">
+                      <input type="text" value={c} onChange={e => setCvData(p => ({ ...p, certifications: (p.certifications || []).map((x, idx) => idx === i ? e.target.value : x) }))} className="flex-1 rounded-xl border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-black outline-none transition focus:border-black" placeholder="AWS Certified Solutions Architect" />
+                      <button type="button" onClick={() => setCvData(p => ({ ...p, certifications: (p.certifications || []).filter((_, idx) => idx !== i) }))} className="text-gray-400 hover:text-red-600"><X size={16}/></button>
+                    </div>
+                  ))}
+                  <button type="button" onClick={() => setCvData(p => ({ ...p, certifications: [...(p.certifications || []), ""] }))} className="text-xs font-bold text-gray-500 hover:text-black flex items-center gap-1"><Plus size={12}/> Add Certification</button>
+                </div>
+                <div>
+                  <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-gray-900 mb-2">Languages</label>
+                  {(cvData.languages || []).map((l, i) => (
+                    <div key={i} className="flex gap-2 mb-2">
+                      <input type="text" value={l} onChange={e => setCvData(p => ({ ...p, languages: (p.languages || []).map((x, idx) => idx === i ? e.target.value : x) }))} className="flex-1 rounded-xl border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-black outline-none transition focus:border-black" placeholder="English (Native)" />
+                      <button type="button" onClick={() => setCvData(p => ({ ...p, languages: (p.languages || []).filter((_, idx) => idx !== i) }))} className="text-gray-400 hover:text-red-600"><X size={16}/></button>
+                    </div>
+                  ))}
+                  <button type="button" onClick={() => setCvData(p => ({ ...p, languages: [...(p.languages || []), ""] }))} className="text-xs font-bold text-gray-500 hover:text-black flex items-center gap-1"><Plus size={12}/> Add Language</button>
+                </div>
               </div>
               <button type="button" onClick={() => setActiveTab(4)} className="w-full flex items-center justify-center gap-2 rounded-xl bg-black py-2.5 text-sm font-bold text-white transition hover:bg-gray-800 active:scale-[0.98]">
                 Next: Projects <ChevronRight size={14} />
@@ -239,6 +260,33 @@ export function CVFormPanel({ cvData, setCvData }: CVFormPanelProps) {
 
         </AnimatePresence>
       </div>
+
+      
+          {activeTab === 5 && (
+            <motion.div key="highlights" initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 12 }} transition={{ duration: 0.2 }} className="space-y-4">
+              <div className="space-y-1.5">
+                <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-gray-900">Key Highlights</label>
+                <div className="text-xs text-gray-500 mb-2">Add 3-4 punchy highlights (e.g., "5+ shipped systems", "390+ commits").</div>
+                {(cvData.keyHighlights || []).map((h, i) => (
+                  <div key={i} className="flex gap-2 mb-2">
+                    <input
+                      type="text"
+                      value={h}
+                      onChange={e => setCvData(p => ({ ...p, keyHighlights: (p.keyHighlights || []).map((x, idx) => idx === i ? e.target.value : x) }))}
+                      className="flex-1 rounded-xl border border-gray-300 bg-white px-3.5 py-2.5 text-sm font-medium text-black outline-none transition focus:border-black focus:ring-1 focus:ring-black"
+                    />
+                    <button type="button" onClick={() => setCvData(p => ({ ...p, keyHighlights: (p.keyHighlights || []).filter((_, idx) => idx !== i) }))} className="rounded-xl p-3 border border-gray-300 text-gray-400 transition hover:bg-red-50 hover:text-red-600 hover:border-red-200"><Trash2 size={16} /></button>
+                  </div>
+                ))}
+                <button type="button" onClick={() => setCvData(p => ({ ...p, keyHighlights: [...(p.keyHighlights || []), ""] }))} className="w-full flex items-center justify-center gap-1.5 rounded-xl border border-dashed border-gray-300 py-3 text-xs font-bold text-gray-600 hover:bg-gray-100 hover:text-black transition mt-2">
+                  <Plus size={14} /> Add Highlight
+                </button>
+              </div>
+              <button type="button" onClick={() => setActiveTab(1)} className="w-full flex items-center justify-center gap-2 rounded-xl bg-black py-2.5 text-sm font-bold text-white transition hover:bg-gray-800 active:scale-[0.98]">
+                Next: Experience <ChevronRight size={14} />
+              </button>
+            </motion.div>
+          )}
 
       {/* ── Progress footer ── */}
       <div className="border-t border-gray-200 px-5 py-4 bg-white">

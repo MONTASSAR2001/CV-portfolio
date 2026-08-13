@@ -46,6 +46,9 @@ export type CvState = {
   }[];
   highlights?: { id: string; date: string; content: string }[];
   additionalInfo?: string;
+  keyHighlights?: string[];
+  certifications?: string[];
+  languages?: string[];
 };
 
 /* ─── Shared print styles injected into every template ───── */
@@ -69,7 +72,7 @@ const PRINT_STYLES = `
 ══════════════════════════════════════════════════════════ */
 export const MinimalistTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
   ({ data }, ref) => {
-    const { personalInfo: p, experience, education, skills, highlights, projects = [] } = data;
+    const { personalInfo: p, experience, education, skills, highlights, projects = [], keyHighlights = [], certifications = [], languages = [] } = data;
     return (
       <div
         ref={ref}
@@ -112,7 +115,19 @@ export const MinimalistTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
           </div>
 
           {/* Summary */}
-          {p.summary && (
+          
+          {/* ── KEY HIGHLIGHTS ── */}
+          {keyHighlights.length > 0 && (
+            <div className="mb-4">
+              <h3 className="text-[12px] font-bold uppercase mt-4 mb-2">Key Highlights</h3>
+              <ul className="grid grid-cols-2 gap-x-4 gap-y-1 pl-4 list-disc text-[11px] leading-relaxed text-slate-700">
+                {keyHighlights.map((h, i) => (
+                  <li key={i}>{h}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+{p.summary && (
             <div className="mb-8">
               <p className="text-[11px] leading-relaxed text-slate-600 max-w-2xl">
                 {p.summary}
@@ -182,28 +197,6 @@ export const MinimalistTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
           )}
 
           {/* Education */}
-          {education.length > 0 && (
-            <div className="mb-8">
-              <h2 className="text-[9px] font-bold tracking-[0.3em] uppercase text-slate-400 mb-5">
-                Education
-              </h2>
-              <div className="space-y-4">
-                {education.map((edu) => (
-                  <div key={edu.id} className="flex gap-8">
-                    <div className="w-28 shrink-0 text-[10px] text-slate-400 pt-0.5">
-                      {edu.year}
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-sm font-semibold text-slate-900">{edu.degree}</p>
-                      <p className="text-[11px] text-slate-500 mt-0.5">{edu.school}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* ── PROJECTS ── */}
           {projects.length > 0 && (
             <div className="mb-8">
               <h2 className="text-[9px] font-bold tracking-[0.3em] uppercase text-slate-400 mb-5">
@@ -224,6 +217,28 @@ export const MinimalistTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
 <div className="whitespace-pre-wrap mt-2 text-[11px] leading-relaxed text-slate-700">{proj.description}</div>
 )}
 </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* ── PROJECTS ── */}
+          {education.length > 0 && (
+            <div className="mb-8">
+              <h2 className="text-[9px] font-bold tracking-[0.3em] uppercase text-slate-400 mb-5">
+                Education
+              </h2>
+              <div className="space-y-4">
+                {education.map((edu) => (
+                  <div key={edu.id} className="flex gap-8">
+                    <div className="w-28 shrink-0 text-[10px] text-slate-400 pt-0.5">
+                      {edu.year}
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm font-semibold text-slate-900">{edu.degree}</p>
+                      <p className="text-[11px] text-slate-500 mt-0.5">{edu.school}</p>
+                    </div>
+                  </div>
                 ))}
               </div>
             </div>
@@ -253,7 +268,7 @@ MinimalistTemplate.displayName = "MinimalistTemplate";
 ══════════════════════════════════════════════════════════ */
 export const CorporateTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
   ({ data }, ref) => {
-    const { personalInfo: p, experience, education, skills, highlights, projects = [] } = data;
+    const { personalInfo: p, experience, education, skills, highlights, projects = [], keyHighlights = [], certifications = [], languages = [] } = data;
     const NAVY = "#0f2d5a";
     const NAVY_LIGHT = "#e8eef6";
     return (
@@ -309,7 +324,19 @@ export const CorporateTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
         <div className="px-10 py-7 flex gap-8 flex-1">
           {/* Main Column */}
           <div className="flex-1 space-y-7">
-            {p.summary && (
+            
+          {/* ── KEY HIGHLIGHTS ── */}
+          {keyHighlights.length > 0 && (
+            <div className="mb-4">
+              <h3 className="text-[12px] font-bold uppercase mt-4 mb-2">Key Highlights</h3>
+              <ul className="grid grid-cols-2 gap-x-4 gap-y-1 pl-4 list-disc text-[11px] leading-relaxed text-slate-700">
+                {keyHighlights.map((h, i) => (
+                  <li key={i}>{h}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+{p.summary && (
               <div>
                 <SectionHeader label="Professional Summary" color={NAVY} />
                 <p className="text-[11px] leading-relaxed text-slate-600 mt-3">
@@ -372,25 +399,7 @@ export const CorporateTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
               </div>
             )}
 
-            {education.length > 0 && (
-              <div>
-                <SectionHeader label="Education" color={NAVY} />
-                <div className="mt-3 space-y-3">
-                  {education.map((edu) => (
-                    <div key={edu.id} className="flex justify-between items-start">
-                      <div>
-                        <p className="text-sm font-bold text-slate-900">{edu.degree}</p>
-                        <p className="text-[11px] text-slate-500">{edu.school}</p>
-                      </div>
-                      <span className="text-[10px] text-slate-500 shrink-0">{edu.year}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-          {/* ── PROJECTS ── */}
-          {projects.length > 0 && (
+            {projects.length > 0 && (
               <div>
                 <SectionHeader label="Projects" color={NAVY} />
                 <div className="mt-3 space-y-3">
@@ -411,14 +420,49 @@ export const CorporateTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
               </div>
             )}
 
-            {data.additionalInfo && (
+          {/* ── PROJECTS ── */}
+          {education.length > 0 && (
               <div>
-                <SectionHeader label="Additional Information" color={NAVY} />
-                <div className="mt-3 text-[11px] leading-relaxed text-slate-600 whitespace-pre-wrap">
-                  {data.additionalInfo}
+                <SectionHeader label="Education" color={NAVY} />
+                <div className="mt-3 space-y-3">
+                  {education.map((edu) => (
+                    <div key={edu.id} className="flex justify-between items-start">
+                      <div>
+                        <p className="text-sm font-bold text-slate-900">{edu.degree}</p>
+                        <p className="text-[11px] text-slate-500">{edu.school}</p>
+                      </div>
+                      <span className="text-[10px] text-slate-500 shrink-0">{edu.year}</span>
+                    </div>
+                  ))}
                 </div>
               </div>
             )}
+
+            
+          {/* ── CERTIFICATIONS ── */}
+          {certifications.length > 0 && (
+            <div className="mb-4">
+              <h3 className="text-[12px] font-bold uppercase mt-4 mb-2">Certifications</h3>
+              <ul className="flex flex-wrap gap-2 text-[11px] leading-relaxed text-slate-700">
+                {certifications.map((c, i) => (
+                  <li key={i} className="border border-slate-300 rounded px-2 py-0.5">{c}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {/* ── LANGUAGES ── */}
+          {languages.length > 0 && (
+            <div className="mb-4">
+              <h3 className="text-[12px] font-bold uppercase mt-4 mb-2">Languages</h3>
+              <ul className="flex flex-wrap gap-x-4 gap-y-1 text-[11px] leading-relaxed text-slate-700 list-disc pl-4">
+                {languages.map((l, i) => (
+                  <li key={i}>{l}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+
           </div>
 
           {/* Side Column */}
@@ -450,7 +494,7 @@ CorporateTemplate.displayName = "CorporateTemplate";
 ══════════════════════════════════════════════════════════ */
 export const TechTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
   ({ data }, ref) => {
-    const { personalInfo: p, experience, education, skills, projects = [] } = data;
+    const { personalInfo: p, experience, education, skills, projects = [], keyHighlights = [], certifications = [], languages = [] } = data;
     const ACCENT = "#6d28d9"; // violet
     const DARK = "#0f0f1a";
 
@@ -530,7 +574,19 @@ export const TechTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
           </div>
 
           <div className="px-8 py-6 space-y-6 flex-1 overflow-hidden">
-            {p.summary && (
+            
+          {/* ── KEY HIGHLIGHTS ── */}
+          {keyHighlights.length > 0 && (
+            <div className="mb-4">
+              <h3 className="text-[12px] font-bold uppercase mt-4 mb-2">Key Highlights</h3>
+              <ul className="grid grid-cols-2 gap-x-4 gap-y-1 pl-4 list-disc text-[11px] leading-relaxed text-slate-700">
+                {keyHighlights.map((h, i) => (
+                  <li key={i}>{h}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+{p.summary && (
               <div>
                 <TechSectionTitle label="About" accent={ACCENT} />
                 <p className="mt-2 text-[11px] leading-relaxed text-slate-600">{p.summary}</p>
@@ -572,25 +628,7 @@ export const TechTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
               </div>
             )}
 
-            {education.length > 0 && (
-              <div>
-                <TechSectionTitle label="Education" accent={ACCENT} />
-                <div className="mt-3 space-y-3">
-                  {education.map((edu) => (
-                    <div key={edu.id} className="flex justify-between items-start">
-                      <div>
-                        <p className="text-sm font-bold text-slate-900">{edu.degree}</p>
-                        <p className="text-[11px] text-slate-500">{edu.school}</p>
-                      </div>
-                      <code className="text-[9px] text-slate-400 font-mono shrink-0">{edu.year}</code>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-          {/* ── PROJECTS ── */}
-          {projects.length > 0 && (
+            {projects.length > 0 && (
               <div>
                 <TechSectionTitle label="Projects" accent={ACCENT} />
                 <div className="mt-3 space-y-3">
@@ -611,14 +649,49 @@ export const TechTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
               </div>
             )}
 
-            {data.additionalInfo && (
+          {/* ── PROJECTS ── */}
+          {education.length > 0 && (
               <div>
-                <TechSectionTitle label="Additional Info" accent={ACCENT} />
-                <div className="mt-3 text-[11px] leading-relaxed text-slate-600 whitespace-pre-wrap">
-                  {data.additionalInfo}
+                <TechSectionTitle label="Education" accent={ACCENT} />
+                <div className="mt-3 space-y-3">
+                  {education.map((edu) => (
+                    <div key={edu.id} className="flex justify-between items-start">
+                      <div>
+                        <p className="text-sm font-bold text-slate-900">{edu.degree}</p>
+                        <p className="text-[11px] text-slate-500">{edu.school}</p>
+                      </div>
+                      <code className="text-[9px] text-slate-400 font-mono shrink-0">{edu.year}</code>
+                    </div>
+                  ))}
                 </div>
               </div>
             )}
+
+            
+          {/* ── CERTIFICATIONS ── */}
+          {certifications.length > 0 && (
+            <div className="mb-4">
+              <h3 className="text-[12px] font-bold uppercase mt-4 mb-2">Certifications</h3>
+              <ul className="flex flex-wrap gap-2 text-[11px] leading-relaxed text-slate-700">
+                {certifications.map((c, i) => (
+                  <li key={i} className="border border-slate-300 rounded px-2 py-0.5">{c}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {/* ── LANGUAGES ── */}
+          {languages.length > 0 && (
+            <div className="mb-4">
+              <h3 className="text-[12px] font-bold uppercase mt-4 mb-2">Languages</h3>
+              <ul className="flex flex-wrap gap-x-4 gap-y-1 text-[11px] leading-relaxed text-slate-700 list-disc pl-4">
+                {languages.map((l, i) => (
+                  <li key={i}>{l}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+
           </div>
 
           {/* Footer tag */}
@@ -638,7 +711,7 @@ TechTemplate.displayName = "TechTemplate";
 ══════════════════════════════════════════════════════════ */
 export const CreativeTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
   ({ data }, ref) => {
-    const { personalInfo: p, experience, education, skills, projects = [] } = data;
+    const { personalInfo: p, experience, education, skills, projects = [], keyHighlights = [], certifications = [], languages = [] } = data;
     const ROSE = "#e11d48";
     const ORANGE = "#f97316";
 
@@ -680,7 +753,19 @@ export const CreativeTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
         <div className="flex gap-0 flex-1" style={{ minHeight: 0 }}>
           {/* Main */}
           <div className="flex-1 px-10 py-7 space-y-6">
-            {p.summary && (
+            
+          {/* ── KEY HIGHLIGHTS ── */}
+          {keyHighlights.length > 0 && (
+            <div className="mb-4">
+              <h3 className="text-[12px] font-bold uppercase mt-4 mb-2">Key Highlights</h3>
+              <ul className="grid grid-cols-2 gap-x-4 gap-y-1 pl-4 list-disc text-[11px] leading-relaxed text-slate-700">
+                {keyHighlights.map((h, i) => (
+                  <li key={i}>{h}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+{p.summary && (
               <div>
                 <CreativeSectionTitle label="About Me" rose={ROSE} />
                 <p className="text-[11px] leading-relaxed text-slate-600 mt-3">{p.summary}</p>
@@ -714,25 +799,7 @@ export const CreativeTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
                 </div>
               </div>
             )}
-            {education.length > 0 && (
-              <div>
-                <CreativeSectionTitle label="Education" rose={ROSE} />
-                <div className="mt-3 space-y-3">
-                  {education.map((edu) => (
-                    <div key={edu.id} className="flex justify-between">
-                      <div>
-                        <p className="text-sm font-bold text-slate-900">{edu.degree}</p>
-                        <p className="text-[11px] text-slate-500">{edu.school}</p>
-                      </div>
-                      <span className="text-[10px] text-slate-400 italic shrink-0">{edu.year}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-          {/* ── PROJECTS ── */}
-          {projects.length > 0 && (
+            {projects.length > 0 && (
               <div>
                 <CreativeSectionTitle label="Projects" rose={ROSE} />
                 <div className="mt-3 space-y-3">
@@ -748,6 +815,24 @@ export const CreativeTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
 <div className="whitespace-pre-wrap mt-2 text-[11px] leading-relaxed text-slate-700">{proj.description}</div>
 )}
 </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+          {/* ── PROJECTS ── */}
+          {education.length > 0 && (
+              <div>
+                <CreativeSectionTitle label="Education" rose={ROSE} />
+                <div className="mt-3 space-y-3">
+                  {education.map((edu) => (
+                    <div key={edu.id} className="flex justify-between">
+                      <div>
+                        <p className="text-sm font-bold text-slate-900">{edu.degree}</p>
+                        <p className="text-[11px] text-slate-500">{edu.school}</p>
+                      </div>
+                      <span className="text-[10px] text-slate-400 italic shrink-0">{edu.year}</span>
+                    </div>
                   ))}
                 </div>
               </div>
@@ -781,7 +866,7 @@ CreativeTemplate.displayName = "CreativeTemplate";
 ══════════════════════════════════════════════════════════ */
 export const ExecutiveTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
   ({ data }, ref) => {
-    const { personalInfo: p, experience, education, skills, projects = [] } = data;
+    const { personalInfo: p, experience, education, skills, projects = [], keyHighlights = [], certifications = [], languages = [] } = data;
     const GOLD = "#92702a";
 
     return (
@@ -814,7 +899,19 @@ export const ExecutiveTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
 
         <div className="px-16 py-8 space-y-7">
           {/* Executive summary — featured */}
-          {p.summary && (
+          
+          {/* ── KEY HIGHLIGHTS ── */}
+          {keyHighlights.length > 0 && (
+            <div className="mb-4">
+              <h3 className="text-[12px] font-bold uppercase mt-4 mb-2">Key Highlights</h3>
+              <ul className="grid grid-cols-2 gap-x-4 gap-y-1 pl-4 list-disc text-[11px] leading-relaxed text-slate-700">
+                {keyHighlights.map((h, i) => (
+                  <li key={i}>{h}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+{p.summary && (
             <div className="border-l-2 pl-6" style={{ borderColor: GOLD }}>
               <p className="text-[9px] font-bold uppercase tracking-[0.3em] mb-2" style={{ color: GOLD }}>
                 Executive Summary
@@ -850,22 +947,7 @@ export const ExecutiveTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
           )}
 
           <div className="flex gap-10">
-            {education.length > 0 && (
-              <div className="flex-1">
-                <ExecSectionTitle label="Education" gold={GOLD} />
-                <div className="mt-4 space-y-3">
-                  {education.map((edu) => (
-                    <div key={edu.id}>
-                      <p className="text-sm font-bold text-slate-900">{edu.degree}</p>
-                      <p className="text-[11px] text-slate-500">{edu.school} · {edu.year}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-          {/* ── PROJECTS ── */}
-          {projects.length > 0 && (
+            {projects.length > 0 && (
               <div className="flex-1">
                 <ExecSectionTitle label="Projects" gold={GOLD} />
                 <div className="mt-4 space-y-3">
@@ -878,6 +960,21 @@ export const ExecutiveTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
 <div className="whitespace-pre-wrap mt-2 text-[11px] leading-relaxed text-slate-700">{proj.description}</div>
 )}
 </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+          {/* ── PROJECTS ── */}
+          {education.length > 0 && (
+              <div className="flex-1">
+                <ExecSectionTitle label="Education" gold={GOLD} />
+                <div className="mt-4 space-y-3">
+                  {education.map((edu) => (
+                    <div key={edu.id}>
+                      <p className="text-sm font-bold text-slate-900">{edu.degree}</p>
+                      <p className="text-[11px] text-slate-500">{edu.school} · {edu.year}</p>
+                    </div>
                   ))}
                 </div>
               </div>
@@ -908,7 +1005,7 @@ ExecutiveTemplate.displayName = "ExecutiveTemplate";
 ══════════════════════════════════════════════════════════ */
 export const StartupTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
   ({ data }, ref) => {
-    const { personalInfo: p, experience, education, skills, projects = [] } = data;
+    const { personalInfo: p, experience, education, skills, projects = [], keyHighlights = [], certifications = [], languages = [] } = data;
 
     return (
       <div
@@ -968,7 +1065,19 @@ export const StartupTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
         <div className="flex gap-6 px-8 py-6">
           {/* Main */}
           <div className="flex-1 space-y-6">
-            {p.summary && (
+            
+          {/* ── KEY HIGHLIGHTS ── */}
+          {keyHighlights.length > 0 && (
+            <div className="mb-4">
+              <h3 className="text-[12px] font-bold uppercase mt-4 mb-2">Key Highlights</h3>
+              <ul className="grid grid-cols-2 gap-x-4 gap-y-1 pl-4 list-disc text-[11px] leading-relaxed text-slate-700">
+                {keyHighlights.map((h, i) => (
+                  <li key={i}>{h}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+{p.summary && (
               <div className="rounded-2xl bg-white p-5 shadow-sm border border-indigo-50">
                 <p className="text-[9px] font-bold tracking-[0.25em] uppercase text-indigo-400 mb-2">About</p>
                 <p className="text-[11px] leading-relaxed text-slate-600">{p.summary}</p>
@@ -1003,25 +1112,7 @@ export const StartupTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
               </div>
             )}
 
-            {education.length > 0 && (
-              <div>
-                <p className="text-[9px] font-bold tracking-[0.25em] uppercase text-indigo-400 mb-3">Education</p>
-                <div className="space-y-3">
-                  {education.map((edu) => (
-                    <div key={edu.id} className="rounded-2xl bg-white p-4 shadow-sm border border-indigo-50 flex justify-between items-start">
-                      <div>
-                        <p className="text-sm font-bold text-slate-900">{edu.degree}</p>
-                        <p className="text-[11px] text-slate-500">{edu.school}</p>
-                      </div>
-                      <span className="text-[9px] rounded-full bg-purple-50 text-purple-400 px-2 py-0.5 font-medium shrink-0">{edu.year}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-          {/* ── PROJECTS ── */}
-          {projects.length > 0 && (
+            {projects.length > 0 && (
               <div>
                 <p className="text-[9px] font-bold tracking-[0.25em] uppercase text-indigo-400 mb-3">Projects</p>
                 <div className="space-y-3">
@@ -1037,6 +1128,24 @@ export const StartupTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
 <div className="whitespace-pre-wrap mt-2 text-[11px] leading-relaxed text-slate-700">{proj.description}</div>
 )}
 </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+          {/* ── PROJECTS ── */}
+          {education.length > 0 && (
+              <div>
+                <p className="text-[9px] font-bold tracking-[0.25em] uppercase text-indigo-400 mb-3">Education</p>
+                <div className="space-y-3">
+                  {education.map((edu) => (
+                    <div key={edu.id} className="rounded-2xl bg-white p-4 shadow-sm border border-indigo-50 flex justify-between items-start">
+                      <div>
+                        <p className="text-sm font-bold text-slate-900">{edu.degree}</p>
+                        <p className="text-[11px] text-slate-500">{edu.school}</p>
+                      </div>
+                      <span className="text-[9px] rounded-full bg-purple-50 text-purple-400 px-2 py-0.5 font-medium shrink-0">{edu.year}</span>
+                    </div>
                   ))}
                 </div>
               </div>
@@ -1073,7 +1182,7 @@ StartupTemplate.displayName = "StartupTemplate";
 ══════════════════════════════════════════════════════════ */
 export const AcademicTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
   ({ data }, ref) => {
-    const { personalInfo: p, experience, education, skills, projects = [] } = data;
+    const { personalInfo: p, experience, education, skills, projects = [], keyHighlights = [], certifications = [], languages = [] } = data;
     return (
       <div
         ref={ref}
@@ -1100,7 +1209,19 @@ export const AcademicTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
 
           {/* Dense single-column body */}
           <div className="space-y-5 flex-1">
-            {p.summary && (
+            
+          {/* ── KEY HIGHLIGHTS ── */}
+          {keyHighlights.length > 0 && (
+            <div className="mb-4">
+              <h3 className="text-[12px] font-bold uppercase mt-4 mb-2">Key Highlights</h3>
+              <ul className="grid grid-cols-2 gap-x-4 gap-y-1 pl-4 list-disc text-[11px] leading-relaxed text-slate-700">
+                {keyHighlights.map((h, i) => (
+                  <li key={i}>{h}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+{p.summary && (
               <div>
                 <AcadSectionTitle label="Research Statement / Summary" />
                 <p className="mt-2 text-[11px] leading-loose text-slate-700 text-justify">{p.summary}</p>
@@ -1131,25 +1252,7 @@ export const AcademicTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
               </div>
             )}
 
-            {education.length > 0 && (
-              <div>
-                <AcadSectionTitle label="Education" />
-                <div className="mt-2 space-y-3">
-                  {education.map((edu) => (
-                    <div key={edu.id} className="flex justify-between">
-                      <div>
-                        <p className="text-[12px] font-bold text-slate-900">{edu.degree}</p>
-                        <p className="text-[11px] italic text-slate-600">{edu.school}</p>
-                      </div>
-                      <span className="text-[11px] text-slate-600 shrink-0">{edu.year}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-          {/* ── PROJECTS ── */}
-          {projects.length > 0 && (
+            {projects.length > 0 && (
               <div>
                 <AcadSectionTitle label="Projects" />
                 <div className="mt-2 space-y-3">
@@ -1165,6 +1268,24 @@ export const AcademicTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
 <div className="whitespace-pre-wrap mt-2 text-[11px] leading-relaxed text-slate-700">{proj.description}</div>
 )}
 </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+          {/* ── PROJECTS ── */}
+          {education.length > 0 && (
+              <div>
+                <AcadSectionTitle label="Education" />
+                <div className="mt-2 space-y-3">
+                  {education.map((edu) => (
+                    <div key={edu.id} className="flex justify-between">
+                      <div>
+                        <p className="text-[12px] font-bold text-slate-900">{edu.degree}</p>
+                        <p className="text-[11px] italic text-slate-600">{edu.school}</p>
+                      </div>
+                      <span className="text-[11px] text-slate-600 shrink-0">{edu.year}</span>
+                    </div>
                   ))}
                 </div>
               </div>
@@ -1192,7 +1313,7 @@ AcademicTemplate.displayName = "AcademicTemplate";
 ══════════════════════════════════════════════════════════ */
 export const EditorialTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
   ({ data }, ref) => {
-    const { personalInfo: p, experience, education, skills, projects = [] } = data;
+    const { personalInfo: p, experience, education, skills, projects = [], keyHighlights = [], certifications = [], languages = [] } = data;
     const INK = "#1c1917";
 
     return (
@@ -1240,7 +1361,19 @@ export const EditorialTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
         <div className="flex gap-0 px-12 pt-7" style={{ fontFamily: "'Georgia', serif" }}>
           {/* Wide main col */}
           <div className="flex-1 pr-10 space-y-6">
-            {p.summary && (
+            
+          {/* ── KEY HIGHLIGHTS ── */}
+          {keyHighlights.length > 0 && (
+            <div className="mb-4">
+              <h3 className="text-[12px] font-bold uppercase mt-4 mb-2">Key Highlights</h3>
+              <ul className="grid grid-cols-2 gap-x-4 gap-y-1 pl-4 list-disc text-[11px] leading-relaxed text-slate-700">
+                {keyHighlights.map((h, i) => (
+                  <li key={i}>{h}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+{p.summary && (
               <div>
                 <p className="text-[8px] tracking-[0.4em] uppercase font-sans text-stone-400 mb-3">Profile</p>
                 <p className="text-[12px] leading-loose text-stone-700 italic border-l-2 border-stone-300 pl-4">
@@ -1279,23 +1412,7 @@ export const EditorialTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
 
           {/* Narrow side col */}
           <div className="w-48 shrink-0 border-l border-stone-200 pl-8 space-y-6">
-            {education.length > 0 && (
-              <div>
-                <p className="text-[8px] tracking-[0.4em] uppercase font-sans text-stone-400 mb-3">Education</p>
-                <div className="space-y-4">
-                  {education.map((edu) => (
-                    <div key={edu.id}>
-                      <p className="text-[11px] font-bold text-stone-900 leading-tight">{edu.degree}</p>
-                      <p className="text-[10px] font-sans text-stone-500 mt-0.5">{edu.school}</p>
-                      <p className="text-[10px] font-sans text-stone-400 mt-0.5 italic">{edu.year}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-          {/* ── PROJECTS ── */}
-          {projects.length > 0 && (
+            {projects.length > 0 && (
               <div>
                 <p className="text-[8px] tracking-[0.4em] uppercase font-sans text-stone-400 mb-3">Projects</p>
                 <div className="space-y-4">
@@ -1309,6 +1426,22 @@ export const EditorialTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
 <div className="whitespace-pre-wrap mt-2 text-[11px] leading-relaxed text-slate-700">{proj.description}</div>
 )}
 </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+          {/* ── PROJECTS ── */}
+          {education.length > 0 && (
+              <div>
+                <p className="text-[8px] tracking-[0.4em] uppercase font-sans text-stone-400 mb-3">Education</p>
+                <div className="space-y-4">
+                  {education.map((edu) => (
+                    <div key={edu.id}>
+                      <p className="text-[11px] font-bold text-stone-900 leading-tight">{edu.degree}</p>
+                      <p className="text-[10px] font-sans text-stone-500 mt-0.5">{edu.school}</p>
+                      <p className="text-[10px] font-sans text-stone-400 mt-0.5 italic">{edu.year}</p>
+                    </div>
                   ))}
                 </div>
               </div>
@@ -1340,7 +1473,7 @@ EditorialTemplate.displayName = "EditorialTemplate";
 ══════════════════════════════════════════════════════════ */
 export const DarkBoldTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
   ({ data }, ref) => {
-    const { personalInfo: p, experience, education, skills, projects = [] } = data;
+    const { personalInfo: p, experience, education, skills, projects = [], keyHighlights = [], certifications = [], languages = [] } = data;
     const NEON = "#22d3ee"; // cyan accent
 
     return (
@@ -1386,7 +1519,19 @@ export const DarkBoldTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
         <div className="flex gap-6 px-10 py-8 flex-1 dark-panel">
           {/* Main */}
           <div className="flex-1 space-y-6">
-            {p.summary && (
+            
+          {/* ── KEY HIGHLIGHTS ── */}
+          {keyHighlights.length > 0 && (
+            <div className="mb-4">
+              <h3 className="text-[12px] font-bold uppercase mt-4 mb-2">Key Highlights</h3>
+              <ul className="grid grid-cols-2 gap-x-4 gap-y-1 pl-4 list-disc text-[11px] leading-relaxed text-slate-700">
+                {keyHighlights.map((h, i) => (
+                  <li key={i}>{h}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+{p.summary && (
               <div>
                 <DarkSectionTitle label="About" neon={NEON} />
                 <p className="mt-3 text-[11px] leading-relaxed text-slate-400">{p.summary}</p>
@@ -1419,25 +1564,7 @@ export const DarkBoldTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
                 </div>
               </div>
             )}
-            {education.length > 0 && (
-              <div>
-                <DarkSectionTitle label="Education" neon={NEON} />
-                <div className="mt-3 space-y-3">
-                  {education.map((edu) => (
-                    <div key={edu.id} className="flex justify-between">
-                      <div>
-                        <p className="text-sm font-bold text-white">{edu.degree}</p>
-                        <p className="text-[11px] text-slate-400">{edu.school}</p>
-                      </div>
-                      <span className="text-[10px] text-slate-500 shrink-0">{edu.year}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-          {/* ── PROJECTS ── */}
-          {projects.length > 0 && (
+            {projects.length > 0 && (
               <div>
                 <DarkSectionTitle label="Projects" neon={NEON} />
                 <div className="mt-3 space-y-3">
@@ -1453,6 +1580,24 @@ export const DarkBoldTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
 <div className="whitespace-pre-wrap mt-2 text-[11px] leading-relaxed text-slate-700">{proj.description}</div>
 )}
 </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+          {/* ── PROJECTS ── */}
+          {education.length > 0 && (
+              <div>
+                <DarkSectionTitle label="Education" neon={NEON} />
+                <div className="mt-3 space-y-3">
+                  {education.map((edu) => (
+                    <div key={edu.id} className="flex justify-between">
+                      <div>
+                        <p className="text-sm font-bold text-white">{edu.degree}</p>
+                        <p className="text-[11px] text-slate-400">{edu.school}</p>
+                      </div>
+                      <span className="text-[10px] text-slate-500 shrink-0">{edu.year}</span>
+                    </div>
                   ))}
                 </div>
               </div>
@@ -1489,7 +1634,7 @@ DarkBoldTemplate.displayName = "DarkBoldTemplate";
 ══════════════════════════════════════════════════════════ */
 export const VisualTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
   ({ data }, ref) => {
-    const { personalInfo: p, experience, education, skills, projects = [] } = data;
+    const { personalInfo: p, experience, education, skills, projects = [], keyHighlights = [], certifications = [], languages = [] } = data;
     const TEAL = "#0d9488";
     const TEAL_LIGHT = "#f0fdfa";
 
@@ -1752,7 +1897,7 @@ function VisualContactRow({ icon, text, teal }: { icon: React.ReactNode; text: s
 ══════════════════════════════════════════════════════════ */
 export const ATSClassicTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
   ({ data }, ref) => {
-    const { personalInfo: p, experience, education, skills, projects = [] } = data;
+    const { personalInfo: p, experience, education, skills, projects = [], keyHighlights = [], certifications = [], languages = [] } = data;
     return (
       <div
         ref={ref}
@@ -1777,13 +1922,13 @@ export const ATSClassicTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
                 p.linkedin && (
                   <a key="ln" href={p.linkedin.startsWith('http') ? p.linkedin : `https://${p.linkedin}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors">
                     <Linkedin className="w-3.5 h-3.5"/>
-                    <span className="sr-only">LinkedIn</span>
+                    <span className="ml-1 text-[10px]">{p.linkedin.replace(/^https?:\/\/(www\.)?/, "")}</span>
                   </a>
                 ),
                 p.github && (
                   <a key="gh" href={p.github.startsWith('http') ? p.github : `https://${p.github}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors">
                     <Github className="w-3.5 h-3.5"/>
-                    <span className="sr-only">GitHub</span>
+                    <span className="ml-1 text-[10px]">{p.github?.replace(/^https?:\/\/(www\.)?/, "")}</span>
                   </a>
                 ),
                 p.portfolioUrl && (
@@ -1802,7 +1947,19 @@ export const ATSClassicTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
           </div>
 
           {/* ── Summary ── */}
-          {p.summary && (
+          
+          {/* ── KEY HIGHLIGHTS ── */}
+          {keyHighlights.length > 0 && (
+            <div className="mb-4">
+              <ATSSectionRule label="Professional Summary" />
+              <ul className="grid grid-cols-2 gap-x-4 gap-y-1 pl-4 list-disc text-[11px] leading-relaxed text-slate-700">
+                {keyHighlights.map((h, i) => (
+                  <li key={i}>{h}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+{p.summary && (
             <div className="mb-4">
               <ATSSectionRule label="Professional Summary" />
               <p className="mt-2 text-[11px] leading-relaxed text-slate-700">{p.summary}</p>
@@ -1835,24 +1992,6 @@ export const ATSClassicTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
           )}
 
           {/* ── Education ── */}
-          {education.length > 0 && (
-            <div className="mb-4">
-              <ATSSectionRule label="Education" />
-              <div className="mt-2 space-y-3">
-                {education.map((edu) => (
-                  <div key={edu.id} className="flex justify-between items-baseline">
-                    <div>
-                      <p className="text-[12px] font-bold text-slate-900">{edu.degree}</p>
-                      <p className="text-[11px] text-slate-600">{edu.school}</p>
-                    </div>
-                    <span className="text-[10px] text-slate-600 shrink-0">{edu.year}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* ── PROJECTS ── */}
           {projects.length > 0 && (
             <div className="mb-4">
               <ATSSectionRule label="Projects" />
@@ -1874,6 +2013,24 @@ export const ATSClassicTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
             </div>
           )}
 
+          {/* ── PROJECTS ── */}
+          {education.length > 0 && (
+            <div className="mb-4">
+              <ATSSectionRule label="Education" />
+              <div className="mt-2 space-y-3">
+                {education.map((edu) => (
+                  <div key={edu.id} className="flex justify-between items-baseline">
+                    <div>
+                      <p className="text-[12px] font-bold text-slate-900">{edu.degree}</p>
+                      <p className="text-[11px] text-slate-600">{edu.school}</p>
+                    </div>
+                    <span className="text-[10px] text-slate-600 shrink-0">{edu.year}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* ── Skills ── */}
           {skills.length > 0 && (
             <div className="mb-4">
@@ -1885,14 +2042,31 @@ export const ATSClassicTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
           )}
 
           {/* ── Additional Info ── */}
-          {data.additionalInfo && (
-            <div>
-              <ATSSectionRule label="Additional Information" />
-              <div className="mt-2 text-[11px] leading-relaxed text-slate-700 whitespace-pre-wrap">
-                {data.additionalInfo}
-              </div>
+          
+          {/* ── CERTIFICATIONS ── */}
+          {certifications.length > 0 && (
+            <div className="mb-4">
+              <ATSSectionRule label="Professional Summary" />
+              <ul className="flex flex-wrap gap-2 text-[11px] leading-relaxed text-slate-700">
+                {certifications.map((c, i) => (
+                  <li key={i} className="border border-slate-300 rounded px-2 py-0.5">{c}</li>
+                ))}
+              </ul>
             </div>
           )}
+
+          {/* ── LANGUAGES ── */}
+          {languages.length > 0 && (
+            <div className="mb-4">
+              <ATSSectionRule label="Professional Summary" />
+              <ul className="flex flex-wrap gap-x-4 gap-y-1 text-[11px] leading-relaxed text-slate-700 list-disc pl-4">
+                {languages.map((l, i) => (
+                  <li key={i}>{l}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+
         </div>
       </div>
     );
@@ -1907,7 +2081,7 @@ ATSClassicTemplate.displayName = "ATSClassicTemplate";
 ══════════════════════════════════════════════════════════ */
 export const ATSModernTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
   ({ data }, ref) => {
-    const { personalInfo: p, experience, education, skills, projects = [] } = data;
+    const { personalInfo: p, experience, education, skills, projects = [], keyHighlights = [], certifications = [], languages = [] } = data;
     const ACCENT = "#5b21b6"; // deep violet — readable when printed B&W
 
     return (
@@ -1933,13 +2107,13 @@ export const ATSModernTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
               {p.linkedin && (
                 <a href={p.linkedin.startsWith('http') ? p.linkedin : `https://${p.linkedin}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors">
                   <Linkedin className="w-3.5 h-3.5"/>
-                  <span className="sr-only">LinkedIn</span>
+                  <span className="ml-1 text-[10px]">{p.linkedin.replace(/^https?:\/\/(www\.)?/, "")}</span>
                 </a>
               )}
               {p.github && (
                 <a href={p.github.startsWith('http') ? p.github : `https://${p.github}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors">
                   <Github className="w-3.5 h-3.5"/>
-                  <span className="sr-only">GitHub</span>
+                  <span className="ml-1 text-[10px]">{p.github?.replace(/^https?:\/\/(www\.)?/, "")}</span>
                 </a>
               )}
               {p.portfolioUrl && (
@@ -1952,7 +2126,19 @@ export const ATSModernTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
           </div>
 
           {/* ── Summary ── */}
-          {p.summary && (
+          
+          {/* ── KEY HIGHLIGHTS ── */}
+          {keyHighlights.length > 0 && (
+            <div className="mb-4">
+              <h3 className="text-[12px] font-bold uppercase mt-4 mb-2">Key Highlights</h3>
+              <ul className="grid grid-cols-2 gap-x-4 gap-y-1 pl-4 list-disc text-[11px] leading-relaxed text-slate-700">
+                {keyHighlights.map((h, i) => (
+                  <li key={i}>{h}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+{p.summary && (
             <div className="mb-5">
               <ATSModernSectionTitle label="Summary" accent={ACCENT} />
               <p className="mt-2 text-[11px] leading-relaxed text-slate-600">{p.summary}</p>
@@ -1987,24 +2173,6 @@ export const ATSModernTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
           )}
 
           {/* ── Education ── */}
-          {education.length > 0 && (
-            <div className="mb-5">
-              <ATSModernSectionTitle label="Education" accent={ACCENT} />
-              <div className="mt-3 space-y-3">
-                {education.map((edu) => (
-                  <div key={edu.id} className="flex justify-between">
-                    <div>
-                      <p className="text-[12px] font-bold text-slate-900">{edu.degree}</p>
-                      <p className="text-[11px] text-slate-500">{edu.school}</p>
-                    </div>
-                    <span className="text-[10px] text-slate-500 shrink-0">{edu.year}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* ── PROJECTS ── */}
           {projects.length > 0 && (
             <div className="mb-5">
               <ATSModernSectionTitle label="Projects" accent={ACCENT} />
@@ -2026,6 +2194,24 @@ export const ATSModernTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
             </div>
           )}
 
+          {/* ── PROJECTS ── */}
+          {education.length > 0 && (
+            <div className="mb-5">
+              <ATSModernSectionTitle label="Education" accent={ACCENT} />
+              <div className="mt-3 space-y-3">
+                {education.map((edu) => (
+                  <div key={edu.id} className="flex justify-between">
+                    <div>
+                      <p className="text-[12px] font-bold text-slate-900">{edu.degree}</p>
+                      <p className="text-[11px] text-slate-500">{edu.school}</p>
+                    </div>
+                    <span className="text-[10px] text-slate-500 shrink-0">{edu.year}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* ── Skills ── */}
           {skills.length > 0 && (
             <div className="mb-5">
@@ -2039,14 +2225,31 @@ export const ATSModernTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
           )}
 
           {/* ── Additional Info ── */}
-          {data.additionalInfo && (
-            <div>
-              <ATSModernSectionTitle label="Additional Information" accent={ACCENT} />
-              <div className="mt-3 text-[11px] leading-relaxed text-slate-600 whitespace-pre-wrap">
-                {data.additionalInfo}
-              </div>
+          
+          {/* ── CERTIFICATIONS ── */}
+          {certifications.length > 0 && (
+            <div className="mb-4">
+              <h3 className="text-[12px] font-bold uppercase mt-4 mb-2">Certifications</h3>
+              <ul className="flex flex-wrap gap-2 text-[11px] leading-relaxed text-slate-700">
+                {certifications.map((c, i) => (
+                  <li key={i} className="border border-slate-300 rounded px-2 py-0.5">{c}</li>
+                ))}
+              </ul>
             </div>
           )}
+
+          {/* ── LANGUAGES ── */}
+          {languages.length > 0 && (
+            <div className="mb-4">
+              <h3 className="text-[12px] font-bold uppercase mt-4 mb-2">Languages</h3>
+              <ul className="flex flex-wrap gap-x-4 gap-y-1 text-[11px] leading-relaxed text-slate-700 list-disc pl-4">
+                {languages.map((l, i) => (
+                  <li key={i}>{l}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+
         </div>
       </div>
     );
@@ -2062,7 +2265,7 @@ ATSModernTemplate.displayName = "ATSModernTemplate";
 ══════════════════════════════════════════════════════════ */
 export const HarvardStandardTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
   ({ data }, ref) => {
-    const { personalInfo: p, experience, education, skills, projects = [] } = data;
+    const { personalInfo: p, experience, education, skills, projects = [], keyHighlights = [], certifications = [], languages = [] } = data;
     return (
       <div
         ref={ref}
@@ -2089,13 +2292,13 @@ export const HarvardStandardTemplate = forwardRef<HTMLDivElement, { data: CvStat
                 p.linkedin && (
                   <a key="ln" href={p.linkedin.startsWith('http') ? p.linkedin : `https://${p.linkedin}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors">
                     <Linkedin className="w-3.5 h-3.5"/>
-                    <span className="sr-only">LinkedIn</span>
+                    <span className="ml-1 text-[10px]">{p.linkedin.replace(/^https?:\/\/(www\.)?/, "")}</span>
                   </a>
                 ),
                 p.github && (
                   <a key="gh" href={p.github.startsWith('http') ? p.github : `https://${p.github}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center text-gray-800 hover:text-black transition-colors ml-3">
                     <Github className="w-3.5 h-3.5 mr-1"/>
-                    <span className="sr-only">GitHub</span>
+                    <span className="ml-1 text-[10px]">{p.github?.replace(/^https?:\/\/(www\.)?/, "")}</span>
                   </a>
                 ),
                 p.portfolioUrl && (
@@ -2114,7 +2317,19 @@ export const HarvardStandardTemplate = forwardRef<HTMLDivElement, { data: CvStat
           </div>
 
           {/* ── Summary / Profile ── */}
-          {p.summary && (
+          
+          {/* ── KEY HIGHLIGHTS ── */}
+          {keyHighlights.length > 0 && (
+            <div className="mb-4">
+              <HarvardSectionTitle label="Profile" />
+              <ul className="grid grid-cols-2 gap-x-4 gap-y-1 pl-4 list-disc text-[11px] leading-relaxed text-slate-700">
+                {keyHighlights.map((h, i) => (
+                  <li key={i}>{h}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+{p.summary && (
             <div className="mb-4">
               <HarvardSectionTitle label="Profile" />
               <p className="mt-2 text-[11px] leading-relaxed text-slate-700">{p.summary}</p>
@@ -2147,24 +2362,6 @@ export const HarvardStandardTemplate = forwardRef<HTMLDivElement, { data: CvStat
           )}
 
           {/* ── Education ── */}
-          {education.length > 0 && (
-            <div className="mb-4">
-              <HarvardSectionTitle label="Education" />
-              <div className="mt-2 space-y-3">
-                {education.map((edu) => (
-                  <div key={edu.id} className="flex justify-between items-baseline">
-                    <div>
-                      <p className="text-[12px] font-bold text-slate-900">{edu.school}</p>
-                      <p className="text-[11px] italic text-slate-700">{edu.degree}</p>
-                    </div>
-                    <span className="text-[10px] text-slate-600 shrink-0">{edu.year}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* ── PROJECTS ── */}
           {projects.length > 0 && (
             <div className="mb-4">
               <HarvardSectionTitle label="Projects" />
@@ -2186,6 +2383,24 @@ export const HarvardStandardTemplate = forwardRef<HTMLDivElement, { data: CvStat
             </div>
           )}
 
+          {/* ── PROJECTS ── */}
+          {education.length > 0 && (
+            <div className="mb-4">
+              <HarvardSectionTitle label="Education" />
+              <div className="mt-2 space-y-3">
+                {education.map((edu) => (
+                  <div key={edu.id} className="flex justify-between items-baseline">
+                    <div>
+                      <p className="text-[12px] font-bold text-slate-900">{edu.school}</p>
+                      <p className="text-[11px] italic text-slate-700">{edu.degree}</p>
+                    </div>
+                    <span className="text-[10px] text-slate-600 shrink-0">{edu.year}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* ── Skills ── */}
           {skills.length > 0 && (
             <div className="mb-4">
@@ -2194,14 +2409,31 @@ export const HarvardStandardTemplate = forwardRef<HTMLDivElement, { data: CvStat
             </div>
           )}
           
-          {data.additionalInfo && (
+          
+          {/* ── CERTIFICATIONS ── */}
+          {certifications.length > 0 && (
             <div className="mb-4">
-              <h2 className="text-[10px] md:text-xs font-bold tracking-[0.15em] uppercase border-b border-black pb-1 mb-2">Additional Information</h2>
-              <div className="text-[10px] md:text-[11px] leading-relaxed text-gray-800 whitespace-pre-wrap">
-                {data.additionalInfo}
-              </div>
+              <HarvardSectionTitle label="Profile" />
+              <ul className="flex flex-wrap gap-2 text-[11px] leading-relaxed text-slate-700">
+                {certifications.map((c, i) => (
+                  <li key={i} className="border border-slate-300 rounded px-2 py-0.5">{c}</li>
+                ))}
+              </ul>
             </div>
           )}
+
+          {/* ── LANGUAGES ── */}
+          {languages.length > 0 && (
+            <div className="mb-4">
+              <HarvardSectionTitle label="Profile" />
+              <ul className="flex flex-wrap gap-x-4 gap-y-1 text-[11px] leading-relaxed text-slate-700 list-disc pl-4">
+                {languages.map((l, i) => (
+                  <li key={i}>{l}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+
         </div>
       </div>
     );
@@ -2257,7 +2489,7 @@ function ATSExecSection({ label }: { label: string }) {
 
 export const ATSExecutiveTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
   ({ data }, ref) => {
-    const { personalInfo: p, experience = [], education = [], skills = [], projects = [] } = data;
+    const { personalInfo: p, experience = [], education = [], skills = [], projects = [], keyHighlights = [], certifications = [], languages = [] } = data;
 
     return (
       <div
@@ -2286,13 +2518,13 @@ export const ATSExecutiveTemplate = forwardRef<HTMLDivElement, { data: CvState }
                 p.linkedin && (
                   <a key="ln" href={p.linkedin.startsWith('http') ? p.linkedin : `https://${p.linkedin}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors">
                     <Linkedin className="w-3.5 h-3.5"/>
-                    <span className="sr-only">LinkedIn</span>
+                    <span className="ml-1 text-[10px]">{p.linkedin.replace(/^https?:\/\/(www\.)?/, "")}</span>
                   </a>
                 ),
                 p.github && (
                   <a key="gh" href={p.github.startsWith('http') ? p.github : `https://${p.github}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors">
                     <Github className="w-3.5 h-3.5"/>
-                    <span className="sr-only">GitHub</span>
+                    <span className="ml-1 text-[10px]">{p.github?.replace(/^https?:\/\/(www\.)?/, "")}</span>
                   </a>
                 ),
                 p.portfolioUrl && (
@@ -2311,7 +2543,19 @@ export const ATSExecutiveTemplate = forwardRef<HTMLDivElement, { data: CvState }
           </div>
 
           {/* ── PROFESSIONAL SUMMARY ── */}
-          {p.summary && (
+          
+          {/* ── KEY HIGHLIGHTS ── */}
+          {keyHighlights.length > 0 && (
+            <div className="mb-4">
+              <ATSExecSection label="Professional Summary" />
+              <ul className="grid grid-cols-2 gap-x-4 gap-y-1 pl-4 list-disc text-[11px] leading-relaxed text-slate-700">
+                {keyHighlights.map((h, i) => (
+                  <li key={i}>{h}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+{p.summary && (
             <>
               <ATSExecSection label="Professional Summary" />
               <p className="text-[11px] leading-relaxed text-black">
@@ -2356,28 +2600,6 @@ export const ATSExecutiveTemplate = forwardRef<HTMLDivElement, { data: CvState }
           )}
 
           {/* ── EDUCATION ── */}
-          {education.length > 0 && (
-            <>
-              <ATSExecSection label="Education" />
-              <div className="space-y-3">
-                {education.map((edu) => (
-                  <div key={edu.id} className="flex justify-between items-baseline">
-                    <div>
-                      <span className="text-[12px] font-bold uppercase">{edu.degree}</span>
-                      {edu.school && (
-                        <span className="text-[11px]"> — {edu.school}</span>
-                      )}
-                    </div>
-                    {edu.year && (
-                      <span className="text-[11px] shrink-0 ml-4">{edu.year}</span>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </>
-          )}
-
-          {/* ── PROJECTS ── */}
           {projects.length > 0 && (
             <>
               <ATSExecSection label="Projects" />
@@ -2399,6 +2621,28 @@ export const ATSExecutiveTemplate = forwardRef<HTMLDivElement, { data: CvState }
             </>
           )}
 
+          {/* ── PROJECTS ── */}
+          {education.length > 0 && (
+            <>
+              <ATSExecSection label="Education" />
+              <div className="space-y-3">
+                {education.map((edu) => (
+                  <div key={edu.id} className="flex justify-between items-baseline">
+                    <div>
+                      <span className="text-[12px] font-bold uppercase">{edu.degree}</span>
+                      {edu.school && (
+                        <span className="text-[11px]"> — {edu.school}</span>
+                      )}
+                    </div>
+                    {edu.year && (
+                      <span className="text-[11px] shrink-0 ml-4">{edu.year}</span>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+
           {/* ── SKILLS ── */}
           {skills.length > 0 && (
             <>
@@ -2414,14 +2658,31 @@ export const ATSExecutiveTemplate = forwardRef<HTMLDivElement, { data: CvState }
           )}
 
           {/* ── ADDITIONAL INFO ── */}
-          {data.additionalInfo && (
-            <>
-              <ATSExecSection label="Additional Information" />
-              <div className="text-[11px] leading-relaxed text-black whitespace-pre-wrap">
-                {data.additionalInfo}
-              </div>
-            </>
+          
+          {/* ── CERTIFICATIONS ── */}
+          {certifications.length > 0 && (
+            <div className="mb-4">
+              <ATSExecSection label="Professional Summary" />
+              <ul className="flex flex-wrap gap-2 text-[11px] leading-relaxed text-slate-700">
+                {certifications.map((c, i) => (
+                  <li key={i} className="border border-slate-300 rounded px-2 py-0.5">{c}</li>
+                ))}
+              </ul>
+            </div>
           )}
+
+          {/* ── LANGUAGES ── */}
+          {languages.length > 0 && (
+            <div className="mb-4">
+              <ATSExecSection label="Professional Summary" />
+              <ul className="flex flex-wrap gap-x-4 gap-y-1 text-[11px] leading-relaxed text-slate-700 list-disc pl-4">
+                {languages.map((l, i) => (
+                  <li key={i}>{l}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+
 
         </div>
       </div>

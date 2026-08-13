@@ -66,6 +66,9 @@ export type CvState = {
   }[];
   highlights?: { id: string; date: string; content: string }[];
   additionalInfo?: string;
+  keyHighlights?: string[];
+  certifications?: string[];
+  languages?: string[];
 };
 
 export const EMPTY_CV_STATE: CvState = {
@@ -84,6 +87,9 @@ export const EMPTY_CV_STATE: CvState = {
   experience: [],
   education: [],
   skills: [],
+  keyHighlights: [],
+  certifications: [],
+  languages: [],
 };
 
 export const DEMO_CV_STATE: CvState = {
@@ -120,6 +126,9 @@ export const DEMO_CV_STATE: CvState = {
     { id: "2", degree: "B.Sc. Computer Science", school: "INSAT", year: "2018" },
   ],
   skills: ["React.js", "Node.js", "TypeScript", "PostgreSQL", "Docker", "AWS"],
+  keyHighlights: ["Shipped 5+ Enterprise systems", "Led a team of 10+ devs", "Reduced AWS costs by 30%"],
+  certifications: ["AWS Certified Solutions Architect", "Certified Kubernetes Administrator"],
+  languages: ["English (Native)", "French (Fluent)", "Arabic (Native)"],
 };
 
 export const TEMPLATE_LIST = [
