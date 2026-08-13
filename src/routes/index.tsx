@@ -25,6 +25,10 @@ function useLandingData() {
   });
 }
 
+export const Route = createFileRoute("/")({
+  component: Landing,
+});
+
 
 /* ── CSS keyframes injected once — all infinite animations live here (GPU) ── */
 // Animation components removed
