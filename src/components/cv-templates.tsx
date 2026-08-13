@@ -58,10 +58,15 @@ const PRINT_STYLES = `
     body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     .cv-root {
       width: 210mm !important;
-      height: 297mm !important;
+      min-height: 297mm !important;
+      height: auto !important;
       box-shadow: none !important;
       border-radius: 0 !important;
       transform: none !important;
+      overflow: visible !important;
+    }
+    .cv-root > div > div {
+      page-break-inside: avoid;
     }
   }
 `;

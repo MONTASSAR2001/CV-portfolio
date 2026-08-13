@@ -332,32 +332,32 @@ function CvStudioPage() {
             </div>
 
             {/* ════════════ Body: form | preview ════════════ */}
-            <div className="flex flex-1 overflow-hidden">
+            <div className="flex flex-1 overflow-hidden print:overflow-visible">
               {/* ── Left: Form panel ── */}
               <motion.aside
                 initial={{ x: -32, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
                 transition={{ delay: 0.1, duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-                className="w-[460px] shrink-0 overflow-hidden p-4"
+                className="w-[460px] shrink-0 overflow-hidden p-4 print:hidden"
                 style={{ borderRight: "1px solid #e5e7eb", background: "#ffffff" }}
               >
                 <CVFormPanel cvData={cvData} setCvData={setCvData} />
               </motion.aside>
 
               {/* ── Right: CV preview canvas ── */}
-              <div className="relative flex flex-1 items-start justify-center overflow-auto bg-white p-8 pt-10">
+              <div className="relative flex flex-1 items-start justify-center overflow-auto bg-white p-8 pt-10 print:h-auto print:block print:overflow-visible print:p-0">
                 {/* Subtle background container */}
 
                 <motion.div
                   layout
-                  className="relative pb-12"
+                  className="relative pb-12 print:h-auto print:m-0 print:pb-0"
                   animate={{ width: device === "mobile" ? 360 : 794 }}
                   transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
                   style={{ minHeight: device === "mobile" ? 520 : 1123, height: "auto" }}
                 >
                   {/* Glass frame */}
                   <div
-                    className="absolute -inset-3 rounded-3xl"
+                    className="absolute -inset-3 rounded-3xl print:hidden print:shadow-none"
                     style={{
                       background: "white",
                       border: "1px solid #e5e7eb",
@@ -366,7 +366,7 @@ function CvStudioPage() {
                   />
                   {/* The actual CV template */}
                   <div
-                    className="relative h-auto w-full overflow-hidden rounded-2xl"
+                    className="relative h-auto w-full overflow-hidden rounded-2xl print:overflow-visible print:rounded-none"
                     style={{
                       transform: device === "mobile" ? "scale(0.85)" : "scale(1)",
                       transformOrigin: "top center",
