@@ -63,46 +63,30 @@ function SignupPage() {
   if (loading) return null;
 
   return (
-    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-slate-950">
-      {/* Background orbs */}
-      <div className="pointer-events-none absolute inset-0" aria-hidden="true">
-        <div
-          className="absolute right-[-10%] top-[-10%] h-[500px] w-[500px] rounded-full"
-          style={{ background: "radial-gradient(circle, rgba(16, 185, 129, 0.15) 0%, transparent 70%)", filter: "blur(60px)" }}
-        />
-        <div
-          className="absolute bottom-[-10%] left-[-10%] h-[400px] w-[400px] rounded-full"
-          style={{ background: "radial-gradient(circle, rgba(16, 185, 129, 0.1) 0%, transparent 70%)", filter: "blur(60px)" }}
-        />
-      </div>
-
+    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-white">
       <motion.div
-        initial={{ opacity: 0, y: 24 }}
+        initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-        className="relative w-full max-w-md px-4"
+        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+        className="relative w-full max-w-sm px-4"
       >
-        {/* Logo */}
-        <div className="mb-8 flex flex-col items-center gap-3">
-          <div className="relative h-10 w-10">
-            <div
-              className="absolute inset-0 rounded-xl"
-              style={{ background: "conic-gradient(from 0deg, #10b981, #059669, #10b981)" }}
-            />
-            <div className="absolute inset-[2px] rounded-[10px] bg-slate-950 grid place-items-center font-display text-base font-bold text-emerald-400">
-              N
-            </div>
+        {/* Logo / Header */}
+        <div className="mb-8 flex flex-col items-center gap-2 text-center">
+          <div className="flex h-10 w-10 items-center justify-center border-2 border-black bg-white">
+            <span className="font-display text-lg font-bold text-black tracking-widest">
+              CV
+            </span>
           </div>
-          <span className="font-display text-xl font-semibold tracking-tight">
-            Create your CareerOS account
-          </span>
-          <p className="text-sm text-muted-foreground">
-            Let AI engineer your career
+          <h1 className="mt-4 font-display text-2xl font-semibold tracking-tight text-black">
+            CareerOS
+          </h1>
+          <p className="text-xs uppercase tracking-widest text-gray-500">
+            Craft your ultimate CV
           </p>
         </div>
 
         {/* Card */}
-        <div className="bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-3xl p-8 shadow-2xl">
+        <div className="bg-white border border-black p-8 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
           {/* Confirmation notice */}
           {notice ? (
             <motion.div
@@ -111,19 +95,14 @@ function SignupPage() {
               className="space-y-4 text-center"
             >
               <div
-                className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl"
-                style={{
-                  background:
-                    "radial-gradient(circle, oklch(0.85 0.18 210 / 0.2), transparent)",
-                  border: "1px solid oklch(0.85 0.18 210 / 0.35)",
-                }}
+                className="mx-auto flex h-12 w-12 items-center justify-center border-2 border-black bg-white"
               >
-                <span className="text-2xl">✉️</span>
+                <span className="text-xl">✉️</span>
               </div>
-              <p className="text-sm text-foreground/85">{notice}</p>
+              <p className="text-sm font-medium text-black leading-relaxed">{notice}</p>
               <Link
                 to="/login"
-                className="inline-block text-sm font-semibold text-foreground underline-offset-2 hover:underline"
+                className="inline-block text-[10px] font-bold uppercase tracking-widest text-black hover:underline"
               >
                 Go to login →
               </Link>
@@ -133,7 +112,7 @@ function SignupPage() {
               id="signup-form"
               onSubmit={handleSubmit}
               noValidate
-              className="space-y-5"
+              className="space-y-6"
             >
               {/* Error banner */}
               {error && (
@@ -148,10 +127,10 @@ function SignupPage() {
               )}
 
               {/* Email */}
-              <div className="space-y-1.5">
+              <div className="space-y-2">
                 <label
                   htmlFor="signup-email"
-                  className="block text-xs font-medium uppercase tracking-widest text-muted-foreground"
+                  className="block text-[10px] font-bold uppercase tracking-widest text-black"
                 >
                   Email
                 </label>
@@ -163,15 +142,15 @@ function SignupPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="you@example.com"
-                  className="w-full rounded-xl border border-white/10 bg-slate-950/50 px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/50 outline-none transition focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50"
+                  className="w-full rounded-none border border-gray-300 bg-transparent px-3 py-2.5 text-sm text-black placeholder:text-gray-400 outline-none transition-all focus:border-black focus:ring-1 focus:ring-black"
                 />
               </div>
 
               {/* Password */}
-              <div className="space-y-1.5">
+              <div className="space-y-2">
                 <label
                   htmlFor="signup-password"
-                  className="block text-xs font-medium uppercase tracking-widest text-muted-foreground"
+                  className="block text-[10px] font-bold uppercase tracking-widest text-black"
                 >
                   Password
                 </label>
@@ -183,15 +162,15 @@ function SignupPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Min. 8 characters"
-                  className="w-full rounded-xl border border-white/10 bg-slate-950/50 px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/50 outline-none transition focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50"
+                  className="w-full rounded-none border border-gray-300 bg-transparent px-3 py-2.5 text-sm text-black placeholder:text-gray-400 outline-none transition-all focus:border-black focus:ring-1 focus:ring-black"
                 />
               </div>
 
               {/* Confirm password */}
-              <div className="space-y-1.5">
+              <div className="space-y-2">
                 <label
                   htmlFor="signup-confirm"
-                  className="block text-xs font-medium uppercase tracking-widest text-muted-foreground"
+                  className="block text-[10px] font-bold uppercase tracking-widest text-black"
                 >
                   Confirm password
                 </label>
@@ -203,7 +182,7 @@ function SignupPage() {
                   value={confirm}
                   onChange={(e) => setConfirm(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full rounded-xl border border-white/10 bg-slate-950/50 px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/50 outline-none transition focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50"
+                  className="w-full rounded-none border border-gray-300 bg-transparent px-3 py-2.5 text-sm text-black placeholder:text-gray-400 outline-none transition-all focus:border-black focus:ring-1 focus:ring-black"
                 />
               </div>
 
@@ -212,22 +191,19 @@ function SignupPage() {
                 id="signup-submit"
                 type="submit"
                 disabled={isSubmitting}
-                className="group relative mt-4 flex w-full items-center justify-center overflow-hidden rounded-2xl bg-emerald-500 px-4 py-3.5 text-sm font-semibold text-slate-950 transition-all hover:bg-emerald-400 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="mt-6 flex w-full items-center justify-center rounded-none bg-black px-4 py-3 text-xs font-bold uppercase tracking-widest text-white transition-colors hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <div className="absolute inset-0 flex h-full w-full justify-center [transform:skew(-12deg)_translateX(-100%)] group-hover:duration-1000 group-hover:[transform:skew(-12deg)_translateX(100%)]">
-                  <div className="relative h-full w-8 bg-white/20" />
-                </div>
-                <span className="relative z-10">{isSubmitting ? "Creating account..." : "Create account"}</span>
+                {isSubmitting ? "Creating account..." : "Create account"}
               </button>
             </form>
           )}
 
           {!notice && (
-            <p className="mt-6 text-center text-sm text-muted-foreground">
+            <p className="mt-8 text-center text-[11px] text-gray-500">
               Already have an account?{" "}
               <Link
                 to="/login"
-                className="font-semibold text-foreground underline-offset-2 hover:underline"
+                className="font-bold text-black underline-offset-2 hover:underline"
               >
                 Sign in
               </Link>
@@ -239,7 +215,7 @@ function SignupPage() {
         <div className="mt-6 text-center">
           <Link
             to="/"
-            className="text-xs text-muted-foreground transition hover:text-foreground"
+            className="text-[10px] uppercase tracking-widest text-gray-500 hover:text-black transition-colors"
           >
             ← Back to home
           </Link>

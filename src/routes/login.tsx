@@ -42,39 +42,34 @@ function LoginPage() {
 
   return (
     <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-white">
-
       <motion.div
-        initial={{ opacity: 0, y: 24 }}
+        initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-        className="relative w-full max-w-md px-4"
+        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+        className="relative w-full max-w-sm px-4"
       >
-        {/* Logo */}
-        <div className="mb-8 flex flex-col items-center gap-3">
-          <div className="relative h-10 w-10">
-            <div
-              className="absolute inset-0 rounded-xl"
-              style={{ background: "conic-gradient(from 0deg, #D4AF37, #C5A059, #D4AF37)" }}
-            />
-            <div className="absolute inset-[2px] rounded-[10px] bg-white grid place-items-center font-display text-base font-bold text-[#D4AF37]">
-              N
-            </div>
+        {/* Logo / Header */}
+        <div className="mb-8 flex flex-col items-center gap-2 text-center">
+          <div className="flex h-10 w-10 items-center justify-center border-2 border-black bg-white">
+            <span className="font-display text-lg font-bold text-black tracking-widest">
+              CV
+            </span>
           </div>
-          <span className="font-display text-xl font-semibold tracking-tight">
-            Welcome back to CareerOS
-          </span>
-          <p className="text-sm text-muted-foreground">
-            Sign in to continue building your career
+          <h1 className="mt-4 font-display text-2xl font-semibold tracking-tight text-black">
+            CareerOS
+          </h1>
+          <p className="text-xs uppercase tracking-widest text-gray-500">
+            Sign in to your document
           </p>
         </div>
 
         {/* Card */}
-        <div className="bg-white border border-gray-200 rounded-3xl p-8 shadow-xl">
+        <div className="bg-white border border-black p-8 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
           <form
             id="login-form"
             onSubmit={handleSubmit}
             noValidate
-            className="space-y-5"
+            className="space-y-6"
           >
             {/* Error banner */}
             {error && (
@@ -89,10 +84,10 @@ function LoginPage() {
             )}
 
             {/* Email */}
-            <div className="space-y-1.5">
+            <div className="space-y-2">
               <label
                 htmlFor="login-email"
-                className="block text-xs font-medium uppercase tracking-widest text-muted-foreground"
+                className="block text-[10px] font-bold uppercase tracking-widest text-black"
               >
                 Email
               </label>
@@ -104,24 +99,24 @@ function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@example.com"
-                className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-black placeholder:text-gray-400 outline-none transition focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                className="w-full rounded-none border border-gray-300 bg-transparent px-3 py-2.5 text-sm text-black placeholder:text-gray-400 outline-none transition-all focus:border-black focus:ring-1 focus:ring-black"
               />
             </div>
 
             {/* Password */}
-            <div className="space-y-1.5">
+            <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <label
                   htmlFor="login-password"
-                  className="block text-xs font-medium uppercase tracking-widest text-muted-foreground"
+                  className="block text-[10px] font-bold uppercase tracking-widest text-black"
                 >
                   Password
                 </label>
                 <Link
                   to="/forgot-password"
-                  className="text-xs text-muted-foreground transition hover:text-foreground"
+                  className="text-[10px] uppercase tracking-widest text-gray-500 hover:text-black transition-colors"
                 >
-                  Forgot password?
+                  Forgot?
                 </Link>
               </div>
               <input
@@ -132,7 +127,7 @@ function LoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-black placeholder:text-gray-400 outline-none transition focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                className="w-full rounded-none border border-gray-300 bg-transparent px-3 py-2.5 text-sm text-black placeholder:text-gray-400 outline-none transition-all focus:border-black focus:ring-1 focus:ring-black"
               />
             </div>
 
@@ -141,20 +136,17 @@ function LoginPage() {
               id="login-submit"
               type="submit"
               disabled={isSubmitting}
-              className="group relative mt-4 flex w-full items-center justify-center overflow-hidden rounded-2xl bg-[#D4AF37] px-4 py-3.5 text-sm font-semibold text-white transition-all hover:bg-[#C5A059] disabled:opacity-50 disabled:cursor-not-allowed"
+              className="mt-6 flex w-full items-center justify-center rounded-none bg-black px-4 py-3 text-xs font-bold uppercase tracking-widest text-white transition-colors hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <div className="absolute inset-0 flex h-full w-full justify-center [transform:skew(-12deg)_translateX(-100%)] group-hover:duration-1000 group-hover:[transform:skew(-12deg)_translateX(100%)]">
-                <div className="relative h-full w-8 bg-white/20" />
-              </div>
-              <span className="relative z-10">{isSubmitting ? "Signing in..." : "Sign in"}</span>
+              {isSubmitting ? "Signing in..." : "Sign in"}
             </button>
           </form>
 
-          <p className="mt-6 text-center text-sm text-muted-foreground">
+          <p className="mt-8 text-center text-[11px] text-gray-500">
             Don't have an account?{" "}
             <Link
               to="/signup"
-              className="font-semibold text-foreground underline-offset-2 hover:underline"
+              className="font-bold text-black underline-offset-2 hover:underline"
             >
               Create one
             </Link>
@@ -165,7 +157,7 @@ function LoginPage() {
         <div className="mt-6 text-center">
           <Link
             to="/"
-            className="text-xs text-muted-foreground transition hover:text-foreground"
+            className="text-[10px] uppercase tracking-widest text-gray-500 hover:text-black transition-colors"
           >
             ← Back to home
           </Link>
