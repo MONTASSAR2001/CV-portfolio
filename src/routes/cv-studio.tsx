@@ -149,23 +149,26 @@ function CvStudioPage() {
   useEffect(() => {
     if (!loading && !user) navigate({ to: "/login" });
     if (user) {
-      // Fetch subscription tier
-      supabase.from("profiles").select("subscription_tier").eq("id", user.id).single().then(({ data }) => {
-        if (data) setSubscriptionTier(data.subscription_tier || "free");
-      });
+      const fetchData = async () => {
+        try {
+          const { data } = await supabase.from("profiles").select("subscription_tier").eq("id", user.id).single();
+          if (data) setSubscriptionTier(data.subscription_tier || "free");
+        } catch (error) {
+          console.error("Error fetching profile:", error);
+        }
 
-      // Fetch saved CV
-      supabase
-        .from("cvs")
-        .select("cv_data_json")
-        .eq("user_id", user.id)
-        .maybeSingle()
-        .then(({ data }) => {
+        try {
+          const { data } = await supabase.from("cvs").select("cv_data_json").eq("user_id", user.id).maybeSingle();
           if (data && data.cv_data_json) {
             setCvData(data.cv_data_json as unknown as CvState);
             setPhase("editor"); // Skip import modal if CV exists
           }
-        });
+        } catch (error) {
+          console.error("Error fetching CV:", error);
+        }
+      };
+
+      fetchData();
     }
   }, [user, loading, navigate]);
 

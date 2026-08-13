@@ -7,6 +7,7 @@ import { supabase } from "@/lib/supabase";
 import {
   User, Lock, Mail, ArrowLeft, Loader2,
   CheckCircle2, Eye, EyeOff, ShieldCheck, Send,
+  type LucideIcon
 } from "lucide-react";
 
 export const Route = createFileRoute("/settings")({
@@ -27,7 +28,7 @@ function Section({
   children,
   hue = "300",
 }: {
-  icon: React.ElementType;
+  icon: LucideIcon;
   title: string;
   subtitle: string;
   children: React.ReactNode;

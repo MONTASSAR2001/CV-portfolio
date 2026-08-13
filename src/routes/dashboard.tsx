@@ -6,7 +6,8 @@ import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/lib/supabase";
 import {
   FileText, Briefcase, Globe, ArrowRight, Loader2,
-  ExternalLink, Plus, Clock, History, Rocket, MessageSquarePlus, X
+  ExternalLink, Plus, Clock, History, Rocket, MessageSquarePlus, X,
+  type LucideIcon
 } from "lucide-react";
 
 export const Route = createFileRoute("/dashboard")({
@@ -59,7 +60,7 @@ function formatDate(iso: string): string {
 function StatCard({
   icon: Icon, label, value, sub, hue, loading, href, cta,
 }: {
-  icon: React.ElementType;
+  icon: LucideIcon;
   label: string;
   value: string | number;
   sub?: string;

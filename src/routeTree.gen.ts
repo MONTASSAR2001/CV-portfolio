@@ -9,57 +9,18 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as SignupRouteImport } from './routes/signup'
-import { Route as SettingsRouteImport } from './routes/settings'
-import { Route as PricingRouteImport } from './routes/pricing'
-import { Route as LoginRouteImport } from './routes/login'
-import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
-import { Route as DashboardRouteImport } from './routes/dashboard'
-import { Route as CvStudioRouteImport } from './routes/cv-studio'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as TemplatesVogueRouteImport } from './routes/templates/vogue'
-import { Route as TemplatesVibrantGlassRouteImport } from './routes/templates/vibrant-glass'
-import { Route as TemplatesSterlingRouteImport } from './routes/templates/sterling'
-import { Route as TemplatesNeonCanvasRouteImport } from './routes/templates/neon-canvas'
-import { Route as TemplatesLuminaMedRouteImport } from './routes/templates/lumina-med'
-import { Route as TemplatesLuminaRouteImport } from './routes/templates/lumina'
-import { Route as TemplatesLiquidLensRouteImport } from './routes/templates/liquid-lens'
-import { Route as TemplatesKineticInkMainRouteImport } from './routes/templates/kinetic-ink-main'
-import { Route as TemplatesGoldenLegacyRouteImport } from './routes/templates/golden-legacy'
-import { Route as TemplatesFutureForwardRouteImport } from './routes/templates/future-forward'
-import { Route as TemplatesDataScientistRouteImport } from './routes/templates/data-scientist'
-import { Route as TemplatesBlueprintSphereMainRouteImport } from './routes/templates/blueprint-sphere-main'
-import { Route as TemplatesBiotechRouteImport } from './routes/templates/biotech'
-import { Route as TemplatesArchitectRouteImport } from './routes/templates/architect'
+import { Route as CvStudioRouteImport } from './routes/cv-studio'
+import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as PricingRouteImport } from './routes/pricing'
+import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as SignupRouteImport } from './routes/signup'
 
-const SignupRoute = SignupRouteImport.update({
-  id: '/signup',
-  path: '/signup',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SettingsRoute = SettingsRouteImport.update({
-  id: '/settings',
-  path: '/settings',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PricingRoute = PricingRouteImport.update({
-  id: '/pricing',
-  path: '/pricing',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LoginRoute = LoginRouteImport.update({
-  id: '/login',
-  path: '/login',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
-  id: '/forgot-password',
-  path: '/forgot-password',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DashboardRoute = DashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CvStudioRoute = CvStudioRouteImport.update({
@@ -67,80 +28,34 @@ const CvStudioRoute = CvStudioRouteImport.update({
   path: '/cv-studio',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
-const TemplatesVogueRoute = TemplatesVogueRouteImport.update({
-  id: '/templates/vogue',
-  path: '/templates/vogue',
+const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
   getParentRoute: () => rootRouteImport,
 } as any)
-const TemplatesVibrantGlassRoute = TemplatesVibrantGlassRouteImport.update({
-  id: '/templates/vibrant-glass',
-  path: '/templates/vibrant-glass',
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
-const TemplatesSterlingRoute = TemplatesSterlingRouteImport.update({
-  id: '/templates/sterling',
-  path: '/templates/sterling',
+const PricingRoute = PricingRouteImport.update({
+  id: '/pricing',
+  path: '/pricing',
   getParentRoute: () => rootRouteImport,
 } as any)
-const TemplatesNeonCanvasRoute = TemplatesNeonCanvasRouteImport.update({
-  id: '/templates/neon-canvas',
-  path: '/templates/neon-canvas',
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
-const TemplatesLuminaMedRoute = TemplatesLuminaMedRouteImport.update({
-  id: '/templates/lumina-med',
-  path: '/templates/lumina-med',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TemplatesLuminaRoute = TemplatesLuminaRouteImport.update({
-  id: '/templates/lumina',
-  path: '/templates/lumina',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TemplatesLiquidLensRoute = TemplatesLiquidLensRouteImport.update({
-  id: '/templates/liquid-lens',
-  path: '/templates/liquid-lens',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TemplatesKineticInkMainRoute = TemplatesKineticInkMainRouteImport.update({
-  id: '/templates/kinetic-ink-main',
-  path: '/templates/kinetic-ink-main',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TemplatesGoldenLegacyRoute = TemplatesGoldenLegacyRouteImport.update({
-  id: '/templates/golden-legacy',
-  path: '/templates/golden-legacy',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TemplatesFutureForwardRoute = TemplatesFutureForwardRouteImport.update({
-  id: '/templates/future-forward',
-  path: '/templates/future-forward',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TemplatesDataScientistRoute = TemplatesDataScientistRouteImport.update({
-  id: '/templates/data-scientist',
-  path: '/templates/data-scientist',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TemplatesBlueprintSphereMainRoute =
-  TemplatesBlueprintSphereMainRouteImport.update({
-    id: '/templates/blueprint-sphere-main',
-    path: '/templates/blueprint-sphere-main',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const TemplatesBiotechRoute = TemplatesBiotechRouteImport.update({
-  id: '/templates/biotech',
-  path: '/templates/biotech',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TemplatesArchitectRoute = TemplatesArchitectRouteImport.update({
-  id: '/templates/architect',
-  path: '/templates/architect',
+const SignupRoute = SignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -153,20 +68,6 @@ export interface FileRoutesByFullPath {
   '/pricing': typeof PricingRoute
   '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
-  '/templates/architect': typeof TemplatesArchitectRoute
-  '/templates/biotech': typeof TemplatesBiotechRoute
-  '/templates/blueprint-sphere-main': typeof TemplatesBlueprintSphereMainRoute
-  '/templates/data-scientist': typeof TemplatesDataScientistRoute
-  '/templates/future-forward': typeof TemplatesFutureForwardRoute
-  '/templates/golden-legacy': typeof TemplatesGoldenLegacyRoute
-  '/templates/kinetic-ink-main': typeof TemplatesKineticInkMainRoute
-  '/templates/liquid-lens': typeof TemplatesLiquidLensRoute
-  '/templates/lumina': typeof TemplatesLuminaRoute
-  '/templates/lumina-med': typeof TemplatesLuminaMedRoute
-  '/templates/neon-canvas': typeof TemplatesNeonCanvasRoute
-  '/templates/sterling': typeof TemplatesSterlingRoute
-  '/templates/vibrant-glass': typeof TemplatesVibrantGlassRoute
-  '/templates/vogue': typeof TemplatesVogueRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -177,20 +78,6 @@ export interface FileRoutesByTo {
   '/pricing': typeof PricingRoute
   '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
-  '/templates/architect': typeof TemplatesArchitectRoute
-  '/templates/biotech': typeof TemplatesBiotechRoute
-  '/templates/blueprint-sphere-main': typeof TemplatesBlueprintSphereMainRoute
-  '/templates/data-scientist': typeof TemplatesDataScientistRoute
-  '/templates/future-forward': typeof TemplatesFutureForwardRoute
-  '/templates/golden-legacy': typeof TemplatesGoldenLegacyRoute
-  '/templates/kinetic-ink-main': typeof TemplatesKineticInkMainRoute
-  '/templates/liquid-lens': typeof TemplatesLiquidLensRoute
-  '/templates/lumina': typeof TemplatesLuminaRoute
-  '/templates/lumina-med': typeof TemplatesLuminaMedRoute
-  '/templates/neon-canvas': typeof TemplatesNeonCanvasRoute
-  '/templates/sterling': typeof TemplatesSterlingRoute
-  '/templates/vibrant-glass': typeof TemplatesVibrantGlassRoute
-  '/templates/vogue': typeof TemplatesVogueRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -202,20 +89,6 @@ export interface FileRoutesById {
   '/pricing': typeof PricingRoute
   '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
-  '/templates/architect': typeof TemplatesArchitectRoute
-  '/templates/biotech': typeof TemplatesBiotechRoute
-  '/templates/blueprint-sphere-main': typeof TemplatesBlueprintSphereMainRoute
-  '/templates/data-scientist': typeof TemplatesDataScientistRoute
-  '/templates/future-forward': typeof TemplatesFutureForwardRoute
-  '/templates/golden-legacy': typeof TemplatesGoldenLegacyRoute
-  '/templates/kinetic-ink-main': typeof TemplatesKineticInkMainRoute
-  '/templates/liquid-lens': typeof TemplatesLiquidLensRoute
-  '/templates/lumina': typeof TemplatesLuminaRoute
-  '/templates/lumina-med': typeof TemplatesLuminaMedRoute
-  '/templates/neon-canvas': typeof TemplatesNeonCanvasRoute
-  '/templates/sterling': typeof TemplatesSterlingRoute
-  '/templates/vibrant-glass': typeof TemplatesVibrantGlassRoute
-  '/templates/vogue': typeof TemplatesVogueRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -228,20 +101,6 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/settings'
     | '/signup'
-    | '/templates/architect'
-    | '/templates/biotech'
-    | '/templates/blueprint-sphere-main'
-    | '/templates/data-scientist'
-    | '/templates/future-forward'
-    | '/templates/golden-legacy'
-    | '/templates/kinetic-ink-main'
-    | '/templates/liquid-lens'
-    | '/templates/lumina'
-    | '/templates/lumina-med'
-    | '/templates/neon-canvas'
-    | '/templates/sterling'
-    | '/templates/vibrant-glass'
-    | '/templates/vogue'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -252,20 +111,6 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/settings'
     | '/signup'
-    | '/templates/architect'
-    | '/templates/biotech'
-    | '/templates/blueprint-sphere-main'
-    | '/templates/data-scientist'
-    | '/templates/future-forward'
-    | '/templates/golden-legacy'
-    | '/templates/kinetic-ink-main'
-    | '/templates/liquid-lens'
-    | '/templates/lumina'
-    | '/templates/lumina-med'
-    | '/templates/neon-canvas'
-    | '/templates/sterling'
-    | '/templates/vibrant-glass'
-    | '/templates/vogue'
   id:
     | '__root__'
     | '/'
@@ -276,20 +121,6 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/settings'
     | '/signup'
-    | '/templates/architect'
-    | '/templates/biotech'
-    | '/templates/blueprint-sphere-main'
-    | '/templates/data-scientist'
-    | '/templates/future-forward'
-    | '/templates/golden-legacy'
-    | '/templates/kinetic-ink-main'
-    | '/templates/liquid-lens'
-    | '/templates/lumina'
-    | '/templates/lumina-med'
-    | '/templates/neon-canvas'
-    | '/templates/sterling'
-    | '/templates/vibrant-glass'
-    | '/templates/vogue'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -301,64 +132,15 @@ export interface RootRouteChildren {
   PricingRoute: typeof PricingRoute
   SettingsRoute: typeof SettingsRoute
   SignupRoute: typeof SignupRoute
-  TemplatesArchitectRoute: typeof TemplatesArchitectRoute
-  TemplatesBiotechRoute: typeof TemplatesBiotechRoute
-  TemplatesBlueprintSphereMainRoute: typeof TemplatesBlueprintSphereMainRoute
-  TemplatesDataScientistRoute: typeof TemplatesDataScientistRoute
-  TemplatesFutureForwardRoute: typeof TemplatesFutureForwardRoute
-  TemplatesGoldenLegacyRoute: typeof TemplatesGoldenLegacyRoute
-  TemplatesKineticInkMainRoute: typeof TemplatesKineticInkMainRoute
-  TemplatesLiquidLensRoute: typeof TemplatesLiquidLensRoute
-  TemplatesLuminaRoute: typeof TemplatesLuminaRoute
-  TemplatesLuminaMedRoute: typeof TemplatesLuminaMedRoute
-  TemplatesNeonCanvasRoute: typeof TemplatesNeonCanvasRoute
-  TemplatesSterlingRoute: typeof TemplatesSterlingRoute
-  TemplatesVibrantGlassRoute: typeof TemplatesVibrantGlassRoute
-  TemplatesVogueRoute: typeof TemplatesVogueRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/signup': {
-      id: '/signup'
-      path: '/signup'
-      fullPath: '/signup'
-      preLoaderRoute: typeof SignupRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/settings': {
-      id: '/settings'
-      path: '/settings'
-      fullPath: '/settings'
-      preLoaderRoute: typeof SettingsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/pricing': {
-      id: '/pricing'
-      path: '/pricing'
-      fullPath: '/pricing'
-      preLoaderRoute: typeof PricingRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/forgot-password': {
-      id: '/forgot-password'
-      path: '/forgot-password'
-      fullPath: '/forgot-password'
-      preLoaderRoute: typeof ForgotPasswordRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/dashboard': {
-      id: '/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof DashboardRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/cv-studio': {
@@ -368,109 +150,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CvStudioRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/templates/vogue': {
-      id: '/templates/vogue'
-      path: '/templates/vogue'
-      fullPath: '/templates/vogue'
-      preLoaderRoute: typeof TemplatesVogueRouteImport
+    '/forgot-password': {
+      id: '/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof ForgotPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/templates/vibrant-glass': {
-      id: '/templates/vibrant-glass'
-      path: '/templates/vibrant-glass'
-      fullPath: '/templates/vibrant-glass'
-      preLoaderRoute: typeof TemplatesVibrantGlassRouteImport
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/templates/sterling': {
-      id: '/templates/sterling'
-      path: '/templates/sterling'
-      fullPath: '/templates/sterling'
-      preLoaderRoute: typeof TemplatesSterlingRouteImport
+    '/pricing': {
+      id: '/pricing'
+      path: '/pricing'
+      fullPath: '/pricing'
+      preLoaderRoute: typeof PricingRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/templates/neon-canvas': {
-      id: '/templates/neon-canvas'
-      path: '/templates/neon-canvas'
-      fullPath: '/templates/neon-canvas'
-      preLoaderRoute: typeof TemplatesNeonCanvasRouteImport
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/templates/lumina-med': {
-      id: '/templates/lumina-med'
-      path: '/templates/lumina-med'
-      fullPath: '/templates/lumina-med'
-      preLoaderRoute: typeof TemplatesLuminaMedRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/templates/lumina': {
-      id: '/templates/lumina'
-      path: '/templates/lumina'
-      fullPath: '/templates/lumina'
-      preLoaderRoute: typeof TemplatesLuminaRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/templates/liquid-lens': {
-      id: '/templates/liquid-lens'
-      path: '/templates/liquid-lens'
-      fullPath: '/templates/liquid-lens'
-      preLoaderRoute: typeof TemplatesLiquidLensRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/templates/kinetic-ink-main': {
-      id: '/templates/kinetic-ink-main'
-      path: '/templates/kinetic-ink-main'
-      fullPath: '/templates/kinetic-ink-main'
-      preLoaderRoute: typeof TemplatesKineticInkMainRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/templates/golden-legacy': {
-      id: '/templates/golden-legacy'
-      path: '/templates/golden-legacy'
-      fullPath: '/templates/golden-legacy'
-      preLoaderRoute: typeof TemplatesGoldenLegacyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/templates/future-forward': {
-      id: '/templates/future-forward'
-      path: '/templates/future-forward'
-      fullPath: '/templates/future-forward'
-      preLoaderRoute: typeof TemplatesFutureForwardRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/templates/data-scientist': {
-      id: '/templates/data-scientist'
-      path: '/templates/data-scientist'
-      fullPath: '/templates/data-scientist'
-      preLoaderRoute: typeof TemplatesDataScientistRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/templates/blueprint-sphere-main': {
-      id: '/templates/blueprint-sphere-main'
-      path: '/templates/blueprint-sphere-main'
-      fullPath: '/templates/blueprint-sphere-main'
-      preLoaderRoute: typeof TemplatesBlueprintSphereMainRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/templates/biotech': {
-      id: '/templates/biotech'
-      path: '/templates/biotech'
-      fullPath: '/templates/biotech'
-      preLoaderRoute: typeof TemplatesBiotechRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/templates/architect': {
-      id: '/templates/architect'
-      path: '/templates/architect'
-      fullPath: '/templates/architect'
-      preLoaderRoute: typeof TemplatesArchitectRouteImport
+    '/signup': {
+      id: '/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof SignupRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -485,31 +204,7 @@ const rootRouteChildren: RootRouteChildren = {
   PricingRoute: PricingRoute,
   SettingsRoute: SettingsRoute,
   SignupRoute: SignupRoute,
-  TemplatesArchitectRoute: TemplatesArchitectRoute,
-  TemplatesBiotechRoute: TemplatesBiotechRoute,
-  TemplatesBlueprintSphereMainRoute: TemplatesBlueprintSphereMainRoute,
-  TemplatesDataScientistRoute: TemplatesDataScientistRoute,
-  TemplatesFutureForwardRoute: TemplatesFutureForwardRoute,
-  TemplatesGoldenLegacyRoute: TemplatesGoldenLegacyRoute,
-  TemplatesKineticInkMainRoute: TemplatesKineticInkMainRoute,
-  TemplatesLiquidLensRoute: TemplatesLiquidLensRoute,
-  TemplatesLuminaRoute: TemplatesLuminaRoute,
-  TemplatesLuminaMedRoute: TemplatesLuminaMedRoute,
-  TemplatesNeonCanvasRoute: TemplatesNeonCanvasRoute,
-  TemplatesSterlingRoute: TemplatesSterlingRoute,
-  TemplatesVibrantGlassRoute: TemplatesVibrantGlassRoute,
-  TemplatesVogueRoute: TemplatesVogueRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

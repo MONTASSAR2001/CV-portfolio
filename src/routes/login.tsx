@@ -19,7 +19,7 @@ function LoginPage() {
   // Redirect if already authenticated
   useEffect(() => {
     if (!loading && user) {
-      navigate({ to: "/dashboard" });
+      navigate({ to: "/cv-studio" });
     }
   }, [user, loading, navigate]);
 
@@ -34,7 +34,7 @@ function LoginPage() {
       setError(authError.message);
       setIsSubmitting(false);
     } else {
-      navigate({ to: "/dashboard" });
+      navigate({ to: "/cv-studio" });
     }
   };
 

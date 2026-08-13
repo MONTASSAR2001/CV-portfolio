@@ -21,7 +21,7 @@ function SignupPage() {
   // Redirect if already authenticated
   useEffect(() => {
     if (!loading && user) {
-      navigate({ to: "/dashboard" });
+      navigate({ to: "/cv-studio" });
     }
   }, [user, loading, navigate]);
 
@@ -51,7 +51,7 @@ function SignupPage() {
 
     // If email confirmation is required, Supabase returns a user but no session
     if (data.session) {
-      navigate({ to: "/dashboard" });
+      navigate({ to: "/cv-studio" });
     } else {
       setNotice(
         "Almost there! Check your inbox for a confirmation email to activate your account."
