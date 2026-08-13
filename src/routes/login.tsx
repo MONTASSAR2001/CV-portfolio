@@ -41,18 +41,7 @@ function LoginPage() {
   if (loading) return null;
 
   return (
-    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-slate-950">
-      {/* Background orbs */}
-      <div className="pointer-events-none absolute inset-0" aria-hidden="true">
-        <div
-          className="absolute left-[-10%] top-[-10%] h-[500px] w-[500px] rounded-full"
-          style={{ background: "radial-gradient(circle, rgba(16, 185, 129, 0.15) 0%, transparent 70%)", filter: "blur(60px)" }}
-        />
-        <div
-          className="absolute bottom-[-10%] right-[-10%] h-[400px] w-[400px] rounded-full"
-          style={{ background: "radial-gradient(circle, rgba(16, 185, 129, 0.1) 0%, transparent 70%)", filter: "blur(60px)" }}
-        />
-      </div>
+    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-white">
 
       <motion.div
         initial={{ opacity: 0, y: 24 }}
@@ -65,9 +54,9 @@ function LoginPage() {
           <div className="relative h-10 w-10">
             <div
               className="absolute inset-0 rounded-xl"
-              style={{ background: "conic-gradient(from 0deg, #10b981, #059669, #10b981)" }}
+              style={{ background: "conic-gradient(from 0deg, #D4AF37, #C5A059, #D4AF37)" }}
             />
-            <div className="absolute inset-[2px] rounded-[10px] bg-slate-950 grid place-items-center font-display text-base font-bold text-emerald-400">
+            <div className="absolute inset-[2px] rounded-[10px] bg-white grid place-items-center font-display text-base font-bold text-[#D4AF37]">
               N
             </div>
           </div>
@@ -80,7 +69,7 @@ function LoginPage() {
         </div>
 
         {/* Card */}
-        <div className="bg-slate-900/50 backdrop-blur-xl border border-white/10 rounded-3xl p-8 shadow-2xl">
+        <div className="bg-white border border-gray-200 rounded-3xl p-8 shadow-xl">
           <form
             id="login-form"
             onSubmit={handleSubmit}
@@ -115,7 +104,7 @@ function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@example.com"
-                className="w-full rounded-xl border border-white/10 bg-slate-950/50 px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/50 outline-none transition focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50"
+                className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-black placeholder:text-gray-400 outline-none transition focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
               />
             </div>
 
@@ -143,7 +132,7 @@ function LoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full rounded-xl border border-white/10 bg-slate-950/50 px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/50 outline-none transition focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50"
+                className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-black placeholder:text-gray-400 outline-none transition focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
               />
             </div>
 
@@ -152,7 +141,7 @@ function LoginPage() {
               id="login-submit"
               type="submit"
               disabled={isSubmitting}
-              className="group relative mt-4 flex w-full items-center justify-center overflow-hidden rounded-2xl bg-emerald-500 px-4 py-3.5 text-sm font-semibold text-slate-950 transition-all hover:bg-emerald-400 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="group relative mt-4 flex w-full items-center justify-center overflow-hidden rounded-2xl bg-[#D4AF37] px-4 py-3.5 text-sm font-semibold text-white transition-all hover:bg-[#C5A059] disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <div className="absolute inset-0 flex h-full w-full justify-center [transform:skew(-12deg)_translateX(-100%)] group-hover:duration-1000 group-hover:[transform:skew(-12deg)_translateX(100%)]">
                 <div className="relative h-full w-8 bg-white/20" />

@@ -164,47 +164,7 @@ const WebMeshGlyph = memo(function WebMeshGlyph() {
 });
 
 const FloatingShapes = memo(function FloatingShapes() {
-  const reduce = useReducedMotion();
-  const shapes = [
-    { size: 380, x: "-8%",  y: "6%",  hue: "300", dur: 10 },
-    { size: 260, x: "72%",  y: "12%", hue: "275", dur: 12 },
-    { size: 200, x: "55%",  y: "60%", hue: "210", dur: 14 },
-    { size: 140, x: "10%",  y: "70%", hue: "340", dur: 16 },
-  ];
-  return (
-    <div className="pointer-events-none absolute inset-0 overflow-hidden">
-      {shapes.map((s, i) => (
-        <div
-          key={i}
-          className="absolute rounded-full"
-          style={{
-            width: s.size, height: s.size, left: s.x, top: s.y,
-            background: `radial-gradient(circle at 30% 30%, oklch(0.75 0.22 ${s.hue} / 0.45), oklch(0.75 0.22 ${s.hue} / 0.04) 60%, transparent 75%)`,
-            filter: "blur(28px)",
-            animation: reduce ? "none" : `float-blob-${i} ${s.dur}s ease-in-out infinite`,
-            willChange: "transform",
-          }}
-        />
-      ))}
-      {/* glass shards — CSS float, no JS */}
-      <div
-        className="glass absolute rounded-3xl"
-        style={{
-          width: 220, height: 140, left: "62%", top: "48%",
-          animation: reduce ? "none" : "float-glass-a 9s ease-in-out infinite",
-          willChange: "transform",
-        }}
-      />
-      <div
-        className="glass absolute rounded-2xl"
-        style={{
-          width: 140, height: 90, left: "8%", top: "38%",
-          animation: reduce ? "none" : "float-glass-b 11s ease-in-out infinite",
-          willChange: "transform",
-        }}
-      />
-    </div>
-  );
+  return null;
 });
 
 const KineticBorder = memo(function KineticBorder({ children, className = "" }: { children: React.ReactNode; className?: string }) {
@@ -378,8 +338,7 @@ function Hero() {
               </div>
             </div>
           </KineticBorder>
-          <div className="absolute -inset-x-10 -bottom-10 h-40 rounded-full blur-3xl"
-            style={{ background: "radial-gradient(ellipse, oklch(0.72 0.24 300 / 0.35), transparent 70%)" }} />
+          
         </motion.div>
       </motion.div>
     </section>
@@ -525,11 +484,7 @@ function HowItWorks() {
                 whileHover={{ y: -6 }}
                 className="glass-strong relative overflow-hidden rounded-3xl p-8"
               >
-                {/* background hue glow */}
-                <div
-                  className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full"
-                  style={{ background: `radial-gradient(circle, oklch(0.75 0.22 ${s.hue} / 0.25), transparent 70%)`, filter: "blur(24px)" }}
-                />
+                {/* background hue glow removed */}
                 {/* step number */}
                 <div className="absolute right-6 top-6 font-display text-5xl font-bold tracking-tight"
                   style={{ color: `oklch(0.75 0.22 ${s.hue} / 0.12)` }}>
@@ -596,11 +551,7 @@ function TemplateShowcase() {
               className="group relative overflow-hidden rounded-3xl border border-white/8 bg-white/[0.03] p-6 transition-all duration-300 hover:-translate-y-2 hover:border-white/20 hover:shadow-[0_0_40px_oklch(0.75_0.22_var(--t-hue)/0.15)]"
               style={{ "--t-hue": t.hue } as React.CSSProperties}
             >
-              {/* ambient glow */}
-              <div
-                className="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full opacity-0 transition-opacity duration-500 group-hover:opacity-100"
-                style={{ background: `radial-gradient(circle, oklch(0.75 0.22 ${t.hue} / 0.3), transparent 70%)`, filter: "blur(20px)" }}
-              />
+              {/* ambient glow removed */}
               {/* header */}
               <div className="flex items-start justify-between">
                 <div

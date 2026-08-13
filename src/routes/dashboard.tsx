@@ -457,22 +457,7 @@ function DashboardPage() {
   return (
     <main className="relative min-h-screen overflow-hidden">
       {/* ── Background ── */}
-      <div className="pointer-events-none absolute inset-0" aria-hidden="true">
-        <div
-          className="absolute left-[-5%] top-[-5%] h-[600px] w-[600px] rounded-full"
-          style={{
-            background: "radial-gradient(circle, oklch(0.72 0.24 300 / 0.18) 0%, transparent 70%)",
-            filter: "blur(80px)",
-          }}
-        />
-        <div
-          className="absolute bottom-[-10%] right-[-5%] h-[400px] w-[400px] rounded-full"
-          style={{
-            background: "radial-gradient(circle, oklch(0.85 0.18 210 / 0.18) 0%, transparent 70%)",
-            filter: "blur(80px)",
-          }}
-        />
-      </div>
+      <div className="pointer-events-none absolute inset-0" aria-hidden="true" />
 
       {/* ── Nav ── */}
       <header className="relative z-10 border-b border-white/5">

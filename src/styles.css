@@ -75,10 +75,6 @@
 @layer base {
   * { border-color: var(--color-border); }
   html, body { background: var(--color-background); color: var(--color-foreground); font-family: var(--font-sans); }
-  body {
-    background-image: var(--gradient-aurora);
-    background-attachment: fixed;
-  }
 }
 
 @utility text-gradient {
