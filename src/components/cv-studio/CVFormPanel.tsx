@@ -131,7 +131,7 @@ export function CVFormPanel({ cvData, setCvData }: CVFormPanelProps) {
                 <Field label="Portfolio URL" value={info.portfolioUrl || ""} onChange={v => setInfo("portfolioUrl", v)} placeholder="mysite.com or https://…" />
               </div>
               <TextArea label="Professional Summary" value={info.summary} onChange={v => setInfo("summary", v)} rows={4} placeholder="Brief professional bio…" />
-              <button onClick={() => setActiveTab(1)} className="w-full flex items-center justify-center gap-2 rounded-xl bg-black py-2.5 text-sm font-bold text-white transition hover:bg-gray-800 active:scale-[0.98]">
+              <button type="button" onClick={() => setActiveTab(1)} className="w-full flex items-center justify-center gap-2 rounded-xl bg-black py-2.5 text-sm font-bold text-white transition hover:bg-gray-800 active:scale-[0.98]">
                 Next: Experience <ChevronRight size={14} />
               </button>
             </motion.div>
@@ -156,7 +156,7 @@ export function CVFormPanel({ cvData, setCvData }: CVFormPanelProps) {
               <button onClick={addExp} className="w-full flex items-center justify-center gap-1.5 rounded-xl border border-dashed border-gray-300 py-3 text-xs font-bold text-gray-600 hover:bg-gray-100 hover:text-black transition">
                 <Plus size={14} /> Add Experience
               </button>
-              <button onClick={() => setActiveTab(2)} className="w-full flex items-center justify-center gap-2 rounded-xl bg-black py-2.5 text-sm font-bold text-white transition hover:bg-gray-800 active:scale-[0.98]">
+              <button type="button" onClick={() => setActiveTab(2)} className="w-full flex items-center justify-center gap-2 rounded-xl bg-black py-2.5 text-sm font-bold text-white transition hover:bg-gray-800 active:scale-[0.98]">
                 Next: Education <ChevronRight size={14} />
               </button>
             </motion.div>
@@ -178,7 +178,7 @@ export function CVFormPanel({ cvData, setCvData }: CVFormPanelProps) {
               <button onClick={addEdu} className="w-full flex items-center justify-center gap-1.5 rounded-xl border border-dashed border-gray-300 py-3 text-xs font-bold text-gray-600 hover:bg-gray-100 hover:text-black transition">
                 <Plus size={14} /> Add Education
               </button>
-              <button onClick={() => setActiveTab(3)} className="w-full flex items-center justify-center gap-2 rounded-xl bg-black py-2.5 text-sm font-bold text-white transition hover:bg-gray-800 active:scale-[0.98]">
+              <button type="button" onClick={() => setActiveTab(3)} className="w-full flex items-center justify-center gap-2 rounded-xl bg-black py-2.5 text-sm font-bold text-white transition hover:bg-gray-800 active:scale-[0.98]">
                 Next: Skills <ChevronRight size={14} />
               </button>
             </motion.div>
@@ -209,7 +209,7 @@ export function CVFormPanel({ cvData, setCvData }: CVFormPanelProps) {
               <div className="pt-4 border-t border-gray-200">
                 <TextArea label="Additional Information (Languages, Certifications, etc.)" value={cvData.additionalInfo || ""} onChange={v => setCvData(p => ({ ...p, additionalInfo: v }))} rows={4} placeholder="Fluent in English and Spanish. AWS Certified Solutions Architect..." />
               </div>
-              <button onClick={() => setActiveTab(4)} className="w-full flex items-center justify-center gap-2 rounded-xl bg-black py-2.5 text-sm font-bold text-white transition hover:bg-gray-800 active:scale-[0.98]">
+              <button type="button" onClick={() => setActiveTab(4)} className="w-full flex items-center justify-center gap-2 rounded-xl bg-black py-2.5 text-sm font-bold text-white transition hover:bg-gray-800 active:scale-[0.98]">
                 Next: Projects <ChevronRight size={14} />
               </button>
             </motion.div>
