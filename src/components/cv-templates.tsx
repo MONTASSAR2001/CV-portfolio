@@ -134,7 +134,7 @@ export const MinimalistTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
           {/* Highlights Timeline */}
           {highlights && highlights.length > 0 && (
             <div className="mb-8">
-              <h2 className="text-[9px] font-bold tracking-[0.3em] uppercase text-zinc-700 mb-5">
+              <h2 className="text-[9px] font-bold tracking-[0.3em] uppercase text-zinc-700 mb-5 print:break-after-avoid">
                 Recent Milestones
               </h2>
               <div className="space-y-4 relative border-l border-slate-200 ml-[52px]">
@@ -158,12 +158,12 @@ export const MinimalistTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
           {/* Experience */}
           {experience.length > 0 && (
             <div className="mb-8">
-              <h2 className="text-[9px] font-bold tracking-[0.3em] uppercase text-zinc-700 mb-5">
+              <h2 className="text-[9px] font-bold tracking-[0.3em] uppercase text-zinc-700 mb-5 print:break-after-avoid">
                 Experience
               </h2>
               <div className="space-y-6">
                 {experience.map((exp) => (
-                  <div key={exp.id} className="flex gap-8">
+                  <div key={exp.id} className="flex gap-8 print:break-inside-avoid">
                     <div className="w-28 shrink-0 text-[10px] text-zinc-700 pt-0.5">
                       {exp.period}
                     </div>
@@ -195,12 +195,12 @@ export const MinimalistTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
           {/* Education */}
           {projects.length > 0 && (
             <div className="mb-8">
-              <h2 className="text-[9px] font-bold tracking-[0.3em] uppercase text-zinc-700 mb-5">
+              <h2 className="text-[9px] font-bold tracking-[0.3em] uppercase text-zinc-700 mb-5 print:break-after-avoid">
                 Education
               </h2>
               <div className="space-y-4">
                 {projects.map((proj, i) => (
-                <div key={i} className="mb-3">
+                <div key={i} className="mb-3 print:break-inside-avoid">
                   <div className="mb-1">
                     <strong className="font-bold text-zinc-900">{proj.title}</strong>
                     {proj.projectLabel && <span className="italic text-sm font-normal text-zinc-700 ml-2">[{proj.projectLabel}]</span>}
@@ -222,12 +222,12 @@ export const MinimalistTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
           {/* ── PROJECTS ── */}
           {education.length > 0 && (
             <div className="mb-8">
-              <h2 className="text-[9px] font-bold tracking-[0.3em] uppercase text-zinc-700 mb-5">
+              <h2 className="text-[9px] font-bold tracking-[0.3em] uppercase text-zinc-700 mb-5 print:break-after-avoid">
                 Education
               </h2>
               <div className="space-y-4">
                 {education.map((edu) => (
-                  <div key={edu.id} className="flex gap-8">
+                  <div key={edu.id} className="flex gap-8 print:break-inside-avoid">
                     <div className="w-28 shrink-0 text-[10px] text-zinc-700 pt-0.5">
                       {edu.year}
                     </div>
@@ -244,7 +244,7 @@ export const MinimalistTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
           {/* Skills */}
           {skills.length > 0 && (
             <div>
-              <h2 className="text-[9px] font-bold tracking-[0.3em] uppercase text-zinc-700 mb-4">
+              <h2 className="text-[9px] font-bold tracking-[0.3em] uppercase text-zinc-700 mb-4 print:break-after-avoid">
                 Skills
               </h2>
               <p className="text-[11px] text-zinc-900 leading-relaxed">
@@ -388,7 +388,7 @@ export const CorporateTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
                 <SectionHeader label="Projects" color={NAVY} />
                 <div className="mt-3 space-y-3">
                   {projects.map((proj, i) => (
-                <div key={i} className="mb-3">
+                <div key={i} className="mb-3 print:break-inside-avoid">
                   <div className="mb-1">
                     <strong className="font-bold text-zinc-900">{proj.title}</strong>
                     {proj.projectLabel && <span className="italic text-sm font-normal text-zinc-700 ml-2">[{proj.projectLabel}]</span>}
@@ -413,7 +413,7 @@ export const CorporateTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
                 <SectionHeader label="Education" color={NAVY} />
                 <div className="mt-3 space-y-3">
                   {education.map((edu) => (
-                    <div key={edu.id} className="flex justify-between items-start">
+                    <div key={edu.id} className="flex justify-between items-start print:break-inside-avoid">
                       <div>
                         <p className="text-sm font-bold text-slate-900">{edu.degree}</p>
                         <p className="text-[11px] text-zinc-800">{edu.school}</p>
@@ -429,10 +429,10 @@ export const CorporateTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
           {/* ── CERTIFICATIONS ── */}
           {certifications.length > 0 && (
             <div className="mb-4">
-              <h3 className="text-[12px] font-bold uppercase mt-4 mb-2">Certifications</h3>
+              <h3 className="text-[12px] font-bold uppercase mt-4 mb-2 print:break-after-avoid">Certifications</h3>
               <ul className="flex flex-wrap gap-2 text-[11px] leading-relaxed text-zinc-900">
                 {certifications.map((c, i) => (
-                  <li key={i} className="border border-slate-300 rounded px-2 py-0.5">{c}</li>
+                  <li key={i} className="border border-slate-300 rounded px-2 py-0.5 print:break-inside-avoid">{c}</li>
                 ))}
               </ul>
             </div>
@@ -441,7 +441,7 @@ export const CorporateTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
           {/* ── LANGUAGES ── */}
           {languages.length > 0 && (
             <div className="mb-4">
-              <h3 className="text-[12px] font-bold uppercase mt-4 mb-2">Languages</h3>
+              <h3 className="text-[12px] font-bold uppercase mt-4 mb-2 print:break-after-avoid">Languages</h3>
               <ul className="flex flex-wrap gap-x-4 gap-y-1 text-[11px] leading-relaxed text-zinc-900 list-disc pl-4">
                 {languages.map((l, i) => (
                   <li key={i}>{l}</li>
@@ -580,7 +580,7 @@ export const TechTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
                 <TechSectionTitle label="Experience" accent={ACCENT} />
                 <div className="mt-3 space-y-4">
                   {experience.map((exp) => (
-                    <div key={exp.id} className="pl-3" style={{ borderLeft: `2px solid ${ACCENT}22` }}>
+                    <div key={exp.id} className="pl-3 print:break-inside-avoid" style={{ borderLeft: `2px solid ${ACCENT}22` }}>
                       <div className="flex justify-between items-start">
                         <div>
                           <p className="text-sm font-bold text-slate-900">{exp.role}</p>
@@ -615,7 +615,7 @@ export const TechTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
                 <TechSectionTitle label="Projects" accent={ACCENT} />
                 <div className="mt-3 space-y-3">
                   {projects.map((proj, i) => (
-                <div key={i} className="mb-3">
+                <div key={i} className="mb-3 print:break-inside-avoid">
                   <div className="mb-1">
                     <strong className="font-bold text-zinc-900">{proj.title}</strong>
                     {proj.projectLabel && <span className="italic text-sm font-normal text-zinc-700 ml-2">[{proj.projectLabel}]</span>}
@@ -640,7 +640,7 @@ export const TechTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
                 <TechSectionTitle label="Education" accent={ACCENT} />
                 <div className="mt-3 space-y-3">
                   {education.map((edu) => (
-                    <div key={edu.id} className="flex justify-between items-start">
+                    <div key={edu.id} className="flex justify-between items-start print:break-inside-avoid">
                       <div>
                         <p className="text-sm font-bold text-slate-900">{edu.degree}</p>
                         <p className="text-[11px] text-zinc-800">{edu.school}</p>
@@ -656,10 +656,10 @@ export const TechTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
           {/* ── CERTIFICATIONS ── */}
           {certifications.length > 0 && (
             <div className="mb-4">
-              <h3 className="text-[12px] font-bold uppercase mt-4 mb-2">Certifications</h3>
+              <h3 className="text-[12px] font-bold uppercase mt-4 mb-2 print:break-after-avoid">Certifications</h3>
               <ul className="flex flex-wrap gap-2 text-[11px] leading-relaxed text-zinc-900">
                 {certifications.map((c, i) => (
-                  <li key={i} className="border border-slate-300 rounded px-2 py-0.5">{c}</li>
+                  <li key={i} className="border border-slate-300 rounded px-2 py-0.5 print:break-inside-avoid">{c}</li>
                 ))}
               </ul>
             </div>
@@ -668,7 +668,7 @@ export const TechTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
           {/* ── LANGUAGES ── */}
           {languages.length > 0 && (
             <div className="mb-4">
-              <h3 className="text-[12px] font-bold uppercase mt-4 mb-2">Languages</h3>
+              <h3 className="text-[12px] font-bold uppercase mt-4 mb-2 print:break-after-avoid">Languages</h3>
               <ul className="flex flex-wrap gap-x-4 gap-y-1 text-[11px] leading-relaxed text-zinc-900 list-disc pl-4">
                 {languages.map((l, i) => (
                   <li key={i}>{l}</li>
@@ -784,7 +784,7 @@ export const CreativeTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
                 <CreativeSectionTitle label="Projects" rose={ROSE} />
                 <div className="mt-3 space-y-3">
                   {projects.map((proj, i) => (
-                <div key={i} className="mb-3">
+                <div key={i} className="mb-3 print:break-inside-avoid">
                   <div className="mb-1">
                     <strong className="font-bold text-zinc-900">{proj.title}</strong>
                     {proj.projectLabel && <span className="italic text-sm font-normal text-zinc-700 ml-2">[{proj.projectLabel}]</span>}
@@ -809,7 +809,7 @@ export const CreativeTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
                 <CreativeSectionTitle label="Education" rose={ROSE} />
                 <div className="mt-3 space-y-3">
                   {education.map((edu) => (
-                    <div key={edu.id} className="flex justify-between">
+                    <div key={edu.id} className="flex justify-between print:break-inside-avoid">
                       <div>
                         <p className="text-sm font-bold text-slate-900">{edu.degree}</p>
                         <p className="text-[11px] text-zinc-800">{edu.school}</p>
@@ -930,7 +930,7 @@ export const ExecutiveTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
                 <ExecSectionTitle label="Projects" gold={GOLD} />
                 <div className="mt-4 space-y-3">
                   {projects.map((proj, i) => (
-                <div key={i} className="mb-3">
+                <div key={i} className="mb-3 print:break-inside-avoid">
                   <div className="mb-1">
                     <strong className="font-bold text-zinc-900">{proj.title}</strong>
                     {proj.projectLabel && <span className="italic text-sm font-normal text-zinc-700 ml-2">[{proj.projectLabel}]</span>}
@@ -1068,7 +1068,7 @@ export const StartupTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
                 <p className="text-[9px] font-bold tracking-[0.25em] uppercase text-indigo-400 mb-3">Experience</p>
                 <div className="space-y-3">
                   {experience.map((exp) => (
-                    <div key={exp.id} className="rounded-2xl bg-white p-5 shadow-sm border border-indigo-50">
+                    <div key={exp.id} className="rounded-2xl bg-white p-5 shadow-sm border border-indigo-50 print:break-inside-avoid">
                       <div className="flex justify-between items-start">
                         <div>
                           <p className="text-sm font-bold text-slate-900">{exp.role}</p>
@@ -1096,7 +1096,7 @@ export const StartupTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
                 <p className="text-[9px] font-bold tracking-[0.25em] uppercase text-indigo-400 mb-3">Projects</p>
                 <div className="space-y-3">
                   {projects.map((proj, i) => (
-                <div key={i} className="mb-3">
+                <div key={i} className="mb-3 print:break-inside-avoid">
                   <div className="mb-1">
                     <strong className="font-bold text-zinc-900">{proj.title}</strong>
                     {proj.projectLabel && <span className="italic text-sm font-normal text-zinc-700 ml-2">[{proj.projectLabel}]</span>}
@@ -1121,7 +1121,7 @@ export const StartupTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
                 <p className="text-[9px] font-bold tracking-[0.25em] uppercase text-indigo-400 mb-3">Education</p>
                 <div className="space-y-3">
                   {education.map((edu) => (
-                    <div key={edu.id} className="rounded-2xl bg-white p-4 shadow-sm border border-indigo-50 flex justify-between items-start">
+                    <div key={edu.id} className="rounded-2xl bg-white p-4 shadow-sm border border-indigo-50 flex justify-between items-start print:break-inside-avoid">
                       <div>
                         <p className="text-sm font-bold text-slate-900">{edu.degree}</p>
                         <p className="text-[11px] text-zinc-800">{edu.school}</p>
@@ -1234,7 +1234,7 @@ export const AcademicTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
                 <AcadSectionTitle label="Projects" />
                 <div className="mt-2 space-y-3">
                   {projects.map((proj, i) => (
-                <div key={i} className="mb-3">
+                <div key={i} className="mb-3 print:break-inside-avoid">
                   <div className="mb-1">
                     <strong className="font-bold text-zinc-900">{proj.title}</strong>
                     {proj.projectLabel && <span className="italic text-sm font-normal text-zinc-700 ml-2">[{proj.projectLabel}]</span>}
@@ -1259,7 +1259,7 @@ export const AcademicTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
                 <AcadSectionTitle label="Education" />
                 <div className="mt-2 space-y-3">
                   {education.map((edu) => (
-                    <div key={edu.id} className="flex justify-between">
+                    <div key={edu.id} className="flex justify-between print:break-inside-avoid">
                       <div>
                         <p className="text-[12px] font-bold text-slate-900">{edu.degree}</p>
                         <p className="text-[11px] italic text-zinc-900">{edu.school}</p>
@@ -1392,7 +1392,7 @@ export const EditorialTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
                 <p className="text-[8px] tracking-[0.4em] uppercase font-sans text-stone-400 mb-3">Projects</p>
                 <div className="space-y-4">
                   {projects.map((proj, i) => (
-                <div key={i} className="mb-3">
+                <div key={i} className="mb-3 print:break-inside-avoid">
                   <div className="mb-1">
                     <strong className="font-bold text-zinc-900">{proj.title}</strong>
                     {proj.projectLabel && <span className="italic text-sm font-normal text-zinc-700 ml-2">[{proj.projectLabel}]</span>}
@@ -1517,7 +1517,7 @@ export const DarkBoldTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
                 <DarkSectionTitle label="Experience" neon={NEON} />
                 <div className="mt-3 space-y-5">
                   {experience.map((exp) => (
-                    <div key={exp.id} className="pl-3" style={{ borderLeft: `2px solid ${NEON}33` }}>
+                    <div key={exp.id} className="pl-3 print:break-inside-avoid" style={{ borderLeft: `2px solid ${NEON}33` }}>
                       <div className="flex justify-between items-start">
                         <div>
                           <p className="text-sm font-bold text-white">{exp.role}</p>
@@ -1544,7 +1544,7 @@ export const DarkBoldTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
                 <DarkSectionTitle label="Projects" neon={NEON} />
                 <div className="mt-3 space-y-3">
                   {projects.map((proj, i) => (
-                <div key={i} className="mb-3">
+                <div key={i} className="mb-3 print:break-inside-avoid">
                   <div className="mb-1">
                     <strong className="font-bold text-zinc-900">{proj.title}</strong>
                     {proj.projectLabel && <span className="italic text-sm font-normal text-zinc-700 ml-2">[{proj.projectLabel}]</span>}
@@ -1569,7 +1569,7 @@ export const DarkBoldTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
                 <DarkSectionTitle label="Education" neon={NEON} />
                 <div className="mt-3 space-y-3">
                   {education.map((edu) => (
-                    <div key={edu.id} className="flex justify-between">
+                    <div key={edu.id} className="flex justify-between print:break-inside-avoid">
                       <div>
                         <p className="text-sm font-bold text-white">{edu.degree}</p>
                         <p className="text-[11px] text-zinc-700">{edu.school}</p>
@@ -1691,7 +1691,7 @@ export const VisualTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
                   <div className="absolute left-3 top-0 bottom-0 w-0.5 rounded-full" style={{ background: `${TEAL}30` }} />
                   <div className="space-y-6">
                     {experience.map((exp) => (
-                      <div key={exp.id} className="relative">
+                      <div key={exp.id} className="relative print:break-inside-avoid">
                         {/* Timeline dot */}
                         <div
                           className="absolute -left-8 top-1 h-4 w-4 rounded-full border-2 border-white"
@@ -1733,7 +1733,7 @@ export const VisualTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
                   <div className="absolute left-3 top-0 bottom-0 w-0.5 rounded-full" style={{ background: `${TEAL}30` }} />
                   <div className="space-y-5">
                     {education.map((edu) => (
-                      <div key={edu.id} className="relative">
+                      <div key={edu.id} className="relative print:break-inside-avoid">
                         <div
                           className="absolute -left-8 top-1 h-4 w-4 rounded-full border-2 border-white"
                           style={{ background: `${TEAL}88`, marginLeft: "4px" }}
@@ -1760,7 +1760,7 @@ export const VisualTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
                   <div className="absolute left-3 top-0 bottom-0 w-0.5 rounded-full" style={{ background: `${TEAL}30` }} />
                   <div className="space-y-5">
                     {projects.map((proj, i) => (
-                <div key={i} className="mb-3">
+                <div key={i} className="mb-3 print:break-inside-avoid">
                   <div className="mb-1">
                     <strong className="font-bold text-zinc-900">{proj.title}</strong>
                     {proj.projectLabel && <span className="italic text-sm font-normal text-zinc-700 ml-2">[{proj.projectLabel}]</span>}
@@ -1790,7 +1790,7 @@ VisualTemplate.displayName = "VisualTemplate";
 /* ─── Shared small helpers ───────────────────────────────── */
 function SectionHeader({ label, color }: { label: string; color: string }) {
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center gap-3 print:break-after-avoid">
       <span className="text-[9px] font-bold tracking-[0.2em] uppercase" style={{ color }}>
         {label}
       </span>
@@ -1801,7 +1801,7 @@ function SectionHeader({ label, color }: { label: string; color: string }) {
 
 function TechSectionTitle({ label, accent }: { label: string; accent: string }) {
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-2 print:break-after-avoid">
       <span className="text-[9px] font-mono font-bold tracking-widest uppercase" style={{ color: accent }}>
         // {label}
       </span>
@@ -1820,7 +1820,7 @@ function ContactRow({ icon, text }: { icon: React.ReactNode; text: string }) {
 
 function CreativeSectionTitle({ label, rose }: { label: string; rose: string }) {
   return (
-    <div className="flex items-center gap-3 mt-2">
+    <div className="flex items-center gap-3 mt-2 print:break-after-avoid">
       <span className="h-3 w-1 rounded-full" style={{ backgroundColor: rose }} />
       <span className="text-[10px] font-black tracking-[0.25em] uppercase" style={{ color: rose }}>
         {label}
@@ -1840,7 +1840,7 @@ function ExecSectionTitle({ label, gold }: { label: string; gold: string }) {
 
 function AcadSectionTitle({ label }: { label: string }) {
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center gap-3 print:break-after-avoid">
       <span className="text-[9px] font-bold tracking-[0.25em] uppercase text-zinc-900">{label}</span>
       <div className="flex-1 h-px bg-slate-400" />
     </div>
@@ -1849,7 +1849,7 @@ function AcadSectionTitle({ label }: { label: string }) {
 
 function DarkSectionTitle({ label, neon }: { label: string; neon: string }) {
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center gap-3 print:break-after-avoid">
       <span className="text-[9px] font-bold tracking-[0.25em] uppercase" style={{ color: neon }}>{label}</span>
       <div className="flex-1 h-px" style={{ backgroundColor: neon + "33" }} />
     </div>
@@ -1961,7 +1961,7 @@ export const ATSClassicTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
               <ATSSectionRule label="Projects" />
               <div className="mt-2 space-y-3">
                 {projects.map((proj, i) => (
-                <div key={i} className="mb-3">
+                <div key={i} className="mb-3 print:break-inside-avoid">
                   <div className="mb-1">
                     <strong className="font-bold text-zinc-900">{proj.title}</strong>
                     {proj.projectLabel && <span className="italic text-sm font-normal text-zinc-700 ml-2">[{proj.projectLabel}]</span>}
@@ -1986,7 +1986,7 @@ export const ATSClassicTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
               <ATSSectionRule label="Education" />
               <div className="mt-2 space-y-3">
                 {education.map((edu) => (
-                  <div key={edu.id} className="flex justify-between items-baseline">
+                  <div key={edu.id} className="flex justify-between items-baseline print:break-inside-avoid">
                     <div>
                       <p className="text-[12px] font-bold text-slate-900">{edu.degree}</p>
                       <p className="text-[11px] text-zinc-900">{edu.school}</p>
@@ -2016,7 +2016,7 @@ export const ATSClassicTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
               <ATSSectionRule label="Certifications" />
               <ul className="flex flex-wrap gap-2 text-[11px] leading-relaxed text-zinc-900">
                 {certifications.map((c, i) => (
-                  <li key={i} className="border border-slate-300 rounded px-2 py-0.5">{c}</li>
+                  <li key={i} className="border border-slate-300 rounded px-2 py-0.5 print:break-inside-avoid">{c}</li>
                 ))}
               </ul>
             </div>
@@ -2134,7 +2134,7 @@ export const ATSModernTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
               <ATSModernSectionTitle label="Projects" accent={ACCENT} />
               <div className="mt-3 space-y-3">
                 {projects.map((proj, i) => (
-                <div key={i} className="mb-3">
+                <div key={i} className="mb-3 print:break-inside-avoid">
                   <div className="mb-1">
                     <strong className="font-bold text-zinc-900">{proj.title}</strong>
                     {proj.projectLabel && <span className="italic text-sm font-normal text-zinc-700 ml-2">[{proj.projectLabel}]</span>}
@@ -2159,7 +2159,7 @@ export const ATSModernTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
               <ATSModernSectionTitle label="Education" accent={ACCENT} />
               <div className="mt-3 space-y-3">
                 {education.map((edu) => (
-                  <div key={edu.id} className="flex justify-between">
+                  <div key={edu.id} className="flex justify-between print:break-inside-avoid">
                     <div>
                       <p className="text-[12px] font-bold text-slate-900">{edu.degree}</p>
                       <p className="text-[11px] text-zinc-800">{edu.school}</p>
@@ -2188,10 +2188,10 @@ export const ATSModernTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
           {/* ── CERTIFICATIONS ── */}
           {certifications.length > 0 && (
             <div className="mb-4">
-              <h3 className="text-[12px] font-bold uppercase mt-4 mb-2">Certifications</h3>
+              <h3 className="text-[12px] font-bold uppercase mt-4 mb-2 print:break-after-avoid">Certifications</h3>
               <ul className="flex flex-wrap gap-2 text-[11px] leading-relaxed text-zinc-900">
                 {certifications.map((c, i) => (
-                  <li key={i} className="border border-slate-300 rounded px-2 py-0.5">{c}</li>
+                  <li key={i} className="border border-slate-300 rounded px-2 py-0.5 print:break-inside-avoid">{c}</li>
                 ))}
               </ul>
             </div>
@@ -2200,7 +2200,7 @@ export const ATSModernTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
           {/* ── LANGUAGES ── */}
           {languages.length > 0 && (
             <div className="mb-4">
-              <h3 className="text-[12px] font-bold uppercase mt-4 mb-2">Languages</h3>
+              <h3 className="text-[12px] font-bold uppercase mt-4 mb-2 print:break-after-avoid">Languages</h3>
               <ul className="flex flex-wrap gap-x-4 gap-y-1 text-[11px] leading-relaxed text-zinc-900 list-disc pl-4">
                 {languages.map((l, i) => (
                   <li key={i}>{l}</li>
@@ -2315,7 +2315,7 @@ export const HarvardStandardTemplate = forwardRef<HTMLDivElement, { data: CvStat
               <HarvardSectionTitle label="Projects" />
               <div className="mt-2 space-y-3">
                 {projects.map((proj, i) => (
-                <div key={i} className="mb-3">
+                <div key={i} className="mb-3 print:break-inside-avoid">
                   <div className="mb-1">
                     <strong className="font-bold text-zinc-900">{proj.title}</strong>
                     {proj.projectLabel && <span className="italic text-sm font-normal text-zinc-700 ml-2">[{proj.projectLabel}]</span>}
@@ -2340,7 +2340,7 @@ export const HarvardStandardTemplate = forwardRef<HTMLDivElement, { data: CvStat
               <HarvardSectionTitle label="Education" />
               <div className="mt-2 space-y-3">
                 {education.map((edu) => (
-                  <div key={edu.id} className="flex justify-between items-baseline">
+                  <div key={edu.id} className="flex justify-between items-baseline print:break-inside-avoid">
                     <div>
                       <p className="text-[12px] font-bold text-slate-900">{edu.school}</p>
                       <p className="text-[11px] italic text-zinc-900">{edu.degree}</p>
@@ -2367,7 +2367,7 @@ export const HarvardStandardTemplate = forwardRef<HTMLDivElement, { data: CvStat
               <HarvardSectionTitle label="Profile" />
               <ul className="flex flex-wrap gap-2 text-[11px] leading-relaxed text-zinc-900">
                 {certifications.map((c, i) => (
-                  <li key={i} className="border border-slate-300 rounded px-2 py-0.5">{c}</li>
+                  <li key={i} className="border border-slate-300 rounded px-2 py-0.5 print:break-inside-avoid">{c}</li>
                 ))}
               </ul>
             </div>
@@ -2404,7 +2404,7 @@ function ATSSectionRule({ label }: { label: string }) {
 
 function ATSModernSectionTitle({ label, accent }: { label: string; accent: string }) {
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center gap-3 print:break-after-avoid">
       <div className="w-1 h-4 rounded-full shrink-0" style={{ backgroundColor: accent }} />
       <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-slate-800">{label}</p>
       <div className="flex-1 h-px bg-slate-200" />
@@ -2431,7 +2431,7 @@ function HarvardSectionTitle({ label }: { label: string }) {
 
 function ATSExecSection({ label }: { label: string }) {
   return (
-    <div className="mt-5 mb-2">
+    <div className="mt-5 mb-2 print:break-after-avoid">
       <p className="text-[12.5px] font-bold uppercase tracking-wider text-black">{label}</p>
       <div className="h-[1px] bg-black mt-0.5" />
     </div>
@@ -2545,7 +2545,7 @@ export const ATSExecutiveTemplate = forwardRef<HTMLDivElement, { data: CvState }
               <ATSExecSection label="Projects" />
               <div className="space-y-3">
                 {projects.map((proj, i) => (
-                <div key={i} className="mb-3">
+                <div key={i} className="mb-3 print:break-inside-avoid">
                   <div className="mb-1">
                     <strong className="font-bold text-zinc-900">{proj.title}</strong>
                     {proj.projectLabel && <span className="italic text-sm font-normal text-zinc-700 ml-2">[{proj.projectLabel}]</span>}
@@ -2570,7 +2570,7 @@ export const ATSExecutiveTemplate = forwardRef<HTMLDivElement, { data: CvState }
               <ATSExecSection label="Education" />
               <div className="space-y-3">
                 {education.map((edu) => (
-                  <div key={edu.id} className="flex justify-between items-baseline">
+                  <div key={edu.id} className="flex justify-between items-baseline print:break-inside-avoid">
                     <div>
                       <span className="text-[12px] font-bold uppercase">{edu.degree}</span>
                       {edu.school && (
@@ -2608,7 +2608,7 @@ export const ATSExecutiveTemplate = forwardRef<HTMLDivElement, { data: CvState }
               <ATSExecSection label="Certifications" />
               <ul className="flex flex-wrap gap-2 text-[11px] leading-relaxed text-zinc-900">
                 {certifications.map((c, i) => (
-                  <li key={i} className="border border-slate-300 rounded px-2 py-0.5">{c}</li>
+                  <li key={i} className="border border-slate-300 rounded px-2 py-0.5 print:break-inside-avoid">{c}</li>
                 ))}
               </ul>
             </div>
