@@ -114,14 +114,9 @@ export const MinimalistTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
           
           {/* ── KEY HIGHLIGHTS ── */}
           {keyHighlights.length > 0 && (
-            <div className="mb-4">
-              <h3 className="text-[12px] font-bold uppercase mt-4 mb-2">Key Highlights</h3>
-              <ul className="grid grid-cols-2 gap-x-4 gap-y-1 pl-4 list-disc text-[11px] leading-relaxed text-zinc-900">
-                {keyHighlights.map((h, i) => (
-                  <li key={i}>{h}</li>
-                ))}
-              </ul>
-            </div>
+            <p className="text-[11px] font-semibold text-zinc-900 mt-2 mb-3 tracking-wide">
+              {keyHighlights.join(" • ")}
+            </p>
           )}
 {p.summary && (
             <div className="mb-8">
@@ -315,14 +310,9 @@ export const CorporateTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
             
           {/* ── KEY HIGHLIGHTS ── */}
           {keyHighlights.length > 0 && (
-            <div className="mb-4">
-              <h3 className="text-[12px] font-bold uppercase mt-4 mb-2">Key Highlights</h3>
-              <ul className="grid grid-cols-2 gap-x-4 gap-y-1 pl-4 list-disc text-[11px] leading-relaxed text-zinc-900">
-                {keyHighlights.map((h, i) => (
-                  <li key={i}>{h}</li>
-                ))}
-              </ul>
-            </div>
+            <p className="text-[11px] font-semibold text-zinc-900 mt-2 mb-3 tracking-wide">
+              {keyHighlights.join(" • ")}
+            </p>
           )}
 {p.summary && (
               <div>
@@ -565,14 +555,9 @@ export const TechTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
             
           {/* ── KEY HIGHLIGHTS ── */}
           {keyHighlights.length > 0 && (
-            <div className="mb-4">
-              <h3 className="text-[12px] font-bold uppercase mt-4 mb-2">Key Highlights</h3>
-              <ul className="grid grid-cols-2 gap-x-4 gap-y-1 pl-4 list-disc text-[11px] leading-relaxed text-zinc-900">
-                {keyHighlights.map((h, i) => (
-                  <li key={i}>{h}</li>
-                ))}
-              </ul>
-            </div>
+            <p className="text-[11px] font-semibold text-zinc-900 mt-2 mb-3 tracking-wide">
+              {keyHighlights.join(" • ")}
+            </p>
           )}
 {p.summary && (
               <div>
@@ -744,14 +729,9 @@ export const CreativeTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
             
           {/* ── KEY HIGHLIGHTS ── */}
           {keyHighlights.length > 0 && (
-            <div className="mb-4">
-              <h3 className="text-[12px] font-bold uppercase mt-4 mb-2">Key Highlights</h3>
-              <ul className="grid grid-cols-2 gap-x-4 gap-y-1 pl-4 list-disc text-[11px] leading-relaxed text-zinc-900">
-                {keyHighlights.map((h, i) => (
-                  <li key={i}>{h}</li>
-                ))}
-              </ul>
-            </div>
+            <p className="text-[11px] font-semibold text-zinc-900 mt-2 mb-3 tracking-wide">
+              {keyHighlights.join(" • ")}
+            </p>
           )}
 {p.summary && (
               <div>
@@ -890,14 +870,9 @@ export const ExecutiveTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
           
           {/* ── KEY HIGHLIGHTS ── */}
           {keyHighlights.length > 0 && (
-            <div className="mb-4">
-              <h3 className="text-[12px] font-bold uppercase mt-4 mb-2">Key Highlights</h3>
-              <ul className="grid grid-cols-2 gap-x-4 gap-y-1 pl-4 list-disc text-[11px] leading-relaxed text-zinc-900">
-                {keyHighlights.map((h, i) => (
-                  <li key={i}>{h}</li>
-                ))}
-              </ul>
-            </div>
+            <p className="text-[11px] font-semibold text-zinc-900 mt-2 mb-3 tracking-wide">
+              {keyHighlights.join(" • ")}
+            </p>
           )}
 {p.summary && (
             <div className="border-l-2 pl-6" style={{ borderColor: GOLD }}>
@@ -1056,14 +1031,9 @@ export const StartupTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
             
           {/* ── KEY HIGHLIGHTS ── */}
           {keyHighlights.length > 0 && (
-            <div className="mb-4">
-              <h3 className="text-[12px] font-bold uppercase mt-4 mb-2">Key Highlights</h3>
-              <ul className="grid grid-cols-2 gap-x-4 gap-y-1 pl-4 list-disc text-[11px] leading-relaxed text-zinc-900">
-                {keyHighlights.map((h, i) => (
-                  <li key={i}>{h}</li>
-                ))}
-              </ul>
-            </div>
+            <p className="text-[11px] font-semibold text-zinc-900 mt-2 mb-3 tracking-wide">
+              {keyHighlights.join(" • ")}
+            </p>
           )}
 {p.summary && (
               <div className="rounded-2xl bg-white p-5 shadow-sm border border-indigo-50">
@@ -1200,14 +1170,9 @@ export const AcademicTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
             
           {/* ── KEY HIGHLIGHTS ── */}
           {keyHighlights.length > 0 && (
-            <div className="mb-4">
-              <h3 className="text-[12px] font-bold uppercase mt-4 mb-2">Key Highlights</h3>
-              <ul className="grid grid-cols-2 gap-x-4 gap-y-1 pl-4 list-disc text-[11px] leading-relaxed text-zinc-900">
-                {keyHighlights.map((h, i) => (
-                  <li key={i}>{h}</li>
-                ))}
-              </ul>
-            </div>
+            <p className="text-[11px] font-semibold text-zinc-900 mt-2 mb-3 tracking-wide">
+              {keyHighlights.join(" • ")}
+            </p>
           )}
 {p.summary && (
               <div>
@@ -1352,14 +1317,9 @@ export const EditorialTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
             
           {/* ── KEY HIGHLIGHTS ── */}
           {keyHighlights.length > 0 && (
-            <div className="mb-4">
-              <h3 className="text-[12px] font-bold uppercase mt-4 mb-2">Key Highlights</h3>
-              <ul className="grid grid-cols-2 gap-x-4 gap-y-1 pl-4 list-disc text-[11px] leading-relaxed text-zinc-900">
-                {keyHighlights.map((h, i) => (
-                  <li key={i}>{h}</li>
-                ))}
-              </ul>
-            </div>
+            <p className="text-[11px] font-semibold text-zinc-900 mt-2 mb-3 tracking-wide">
+              {keyHighlights.join(" • ")}
+            </p>
           )}
 {p.summary && (
               <div>
@@ -1510,14 +1470,9 @@ export const DarkBoldTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
             
           {/* ── KEY HIGHLIGHTS ── */}
           {keyHighlights.length > 0 && (
-            <div className="mb-4">
-              <h3 className="text-[12px] font-bold uppercase mt-4 mb-2">Key Highlights</h3>
-              <ul className="grid grid-cols-2 gap-x-4 gap-y-1 pl-4 list-disc text-[11px] leading-relaxed text-zinc-900">
-                {keyHighlights.map((h, i) => (
-                  <li key={i}>{h}</li>
-                ))}
-              </ul>
-            </div>
+            <p className="text-[11px] font-semibold text-zinc-900 mt-2 mb-3 tracking-wide">
+              {keyHighlights.join(" • ")}
+            </p>
           )}
 {p.summary && (
               <div>
@@ -1932,14 +1887,9 @@ export const ATSClassicTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
           
           {/* ── KEY HIGHLIGHTS ── */}
           {keyHighlights.length > 0 && (
-            <div className="mb-4">
-              <ATSSectionRule label="Professional Summary" />
-              <ul className="grid grid-cols-2 gap-x-4 gap-y-1 pl-4 list-disc text-[11px] leading-relaxed text-zinc-900">
-                {keyHighlights.map((h, i) => (
-                  <li key={i}>{h}</li>
-                ))}
-              </ul>
-            </div>
+            <p className="text-[11px] font-semibold text-zinc-900 mt-2 mb-3 tracking-wide">
+              {keyHighlights.join(" • ")}
+            </p>
           )}
 {p.summary && (
             <div className="mb-4">
@@ -2105,14 +2055,9 @@ export const ATSModernTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
           
           {/* ── KEY HIGHLIGHTS ── */}
           {keyHighlights.length > 0 && (
-            <div className="mb-4">
-              <h3 className="text-[12px] font-bold uppercase mt-4 mb-2">Key Highlights</h3>
-              <ul className="grid grid-cols-2 gap-x-4 gap-y-1 pl-4 list-disc text-[11px] leading-relaxed text-zinc-900">
-                {keyHighlights.map((h, i) => (
-                  <li key={i}>{h}</li>
-                ))}
-              </ul>
-            </div>
+            <p className="text-[11px] font-semibold text-zinc-900 mt-2 mb-3 tracking-wide">
+              {keyHighlights.join(" • ")}
+            </p>
           )}
 {p.summary && (
             <div className="mb-5">
@@ -2290,14 +2235,9 @@ export const HarvardStandardTemplate = forwardRef<HTMLDivElement, { data: CvStat
           
           {/* ── KEY HIGHLIGHTS ── */}
           {keyHighlights.length > 0 && (
-            <div className="mb-4">
-              <HarvardSectionTitle label="Profile" />
-              <ul className="grid grid-cols-2 gap-x-4 gap-y-1 pl-4 list-disc text-[11px] leading-relaxed text-zinc-900">
-                {keyHighlights.map((h, i) => (
-                  <li key={i}>{h}</li>
-                ))}
-              </ul>
-            </div>
+            <p className="text-[11px] font-semibold text-zinc-900 mt-2 mb-3 tracking-wide">
+              {keyHighlights.join(" • ")}
+            </p>
           )}
 {p.summary && (
             <div className="mb-4">
@@ -2510,14 +2450,9 @@ export const ATSExecutiveTemplate = forwardRef<HTMLDivElement, { data: CvState }
           
           {/* ── KEY HIGHLIGHTS ── */}
           {keyHighlights.length > 0 && (
-            <div className="mb-4">
-              <ATSExecSection label="Professional Summary" />
-              <ul className="grid grid-cols-2 gap-x-4 gap-y-1 pl-4 list-disc text-[11px] leading-relaxed text-zinc-900">
-                {keyHighlights.map((h, i) => (
-                  <li key={i}>{h}</li>
-                ))}
-              </ul>
-            </div>
+            <p className="text-[11px] font-semibold text-zinc-900 mt-2 mb-3 tracking-wide">
+              {keyHighlights.join(" • ")}
+            </p>
           )}
 {p.summary && (
             <>
