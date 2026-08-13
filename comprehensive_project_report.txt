@@ -24,7 +24,7 @@ Based on `package.json`, `bunfig.toml`, and `vite.config.ts`, the project is bui
 - **AI Integration:** Groq API using LLaMA 3.3 (`llama-3.3-70b-versatile`) for CV parsing and autonomous portfolio generation.
 - **Payments:** Stripe (`stripe`) for the "CareerOS Pro" subscription checkout.   cv
 
-**Build & Tooling:**
+**Build & Tooling:**  n
 - **Vite** with specialized plugins (`@lovable.dev/vite-tanstack-config`).
 - **Bun** as the package manager and runner.
 - **TypeScript**, ESLint, and Prettier for code quality.
