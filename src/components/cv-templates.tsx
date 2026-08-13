@@ -2008,7 +2008,7 @@ export const ATSClassicTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
           {/* ── CERTIFICATIONS ── */}
           {certifications.length > 0 && (
             <div className="mb-4">
-              <ATSSectionRule label="Professional Summary" />
+              <ATSSectionRule label="Certifications" />
               <ul className="flex flex-wrap gap-2 text-[11px] leading-relaxed text-zinc-900">
                 {certifications.map((c, i) => (
                   <li key={i} className="border border-slate-300 rounded px-2 py-0.5">{c}</li>
@@ -2020,7 +2020,7 @@ export const ATSClassicTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
           {/* ── LANGUAGES ── */}
           {languages.length > 0 && (
             <div className="mb-4">
-              <ATSSectionRule label="Professional Summary" />
+              <ATSSectionRule label="Languages" />
               <ul className="flex flex-wrap gap-x-4 gap-y-1 text-[11px] leading-relaxed text-zinc-900 list-disc pl-4">
                 {languages.map((l, i) => (
                   <li key={i}>{l}</li>
@@ -2600,7 +2600,7 @@ export const ATSExecutiveTemplate = forwardRef<HTMLDivElement, { data: CvState }
           {/* ── CERTIFICATIONS ── */}
           {certifications.length > 0 && (
             <div className="mb-4">
-              <ATSExecSection label="Professional Summary" />
+              <ATSExecSection label="Certifications" />
               <ul className="flex flex-wrap gap-2 text-[11px] leading-relaxed text-zinc-900">
                 {certifications.map((c, i) => (
                   <li key={i} className="border border-slate-300 rounded px-2 py-0.5">{c}</li>
@@ -2612,7 +2612,7 @@ export const ATSExecutiveTemplate = forwardRef<HTMLDivElement, { data: CvState }
           {/* ── LANGUAGES ── */}
           {languages.length > 0 && (
             <div className="mb-4">
-              <ATSExecSection label="Professional Summary" />
+              <ATSExecSection label="Languages" />
               <ul className="flex flex-wrap gap-x-4 gap-y-1 text-[11px] leading-relaxed text-zinc-900 list-disc pl-4">
                 {languages.map((l, i) => (
                   <li key={i}>{l}</li>

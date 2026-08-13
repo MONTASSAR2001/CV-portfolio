@@ -336,10 +336,10 @@ function CvStudioPage() {
 
                 <motion.div
                   layout
-                  className="relative"
+                  className="relative pb-12"
                   animate={{ width: device === "mobile" ? 360 : 794 }}
                   transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-                  style={{ height: device === "mobile" ? 520 : 1123 }}
+                  style={{ minHeight: device === "mobile" ? 520 : 1123, height: "auto" }}
                 >
                   {/* Glass frame */}
                   <div
@@ -352,7 +352,7 @@ function CvStudioPage() {
                   />
                   {/* The actual CV template */}
                   <div
-                    className="relative h-full w-full overflow-hidden rounded-2xl"
+                    className="relative h-auto w-full overflow-hidden rounded-2xl"
                     style={{
                       transform: device === "mobile" ? "scale(0.85)" : "scale(1)",
                       transformOrigin: "top center",
