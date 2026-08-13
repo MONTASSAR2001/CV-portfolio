@@ -12,7 +12,6 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as PricingRouteImport } from './routes/pricing'
-import { Route as PortfolioBuilderRouteImport } from './routes/portfolio-builder'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as DashboardRouteImport } from './routes/dashboard'
@@ -32,7 +31,6 @@ import { Route as TemplatesDataScientistRouteImport } from './routes/templates/d
 import { Route as TemplatesBlueprintSphereMainRouteImport } from './routes/templates/blueprint-sphere-main'
 import { Route as TemplatesBiotechRouteImport } from './routes/templates/biotech'
 import { Route as TemplatesArchitectRouteImport } from './routes/templates/architect'
-import { Route as PSlugRouteImport } from './routes/p.$slug'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
@@ -47,11 +45,6 @@ const SettingsRoute = SettingsRouteImport.update({
 const PricingRoute = PricingRouteImport.update({
   id: '/pricing',
   path: '/pricing',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PortfolioBuilderRoute = PortfolioBuilderRouteImport.update({
-  id: '/portfolio-builder',
-  path: '/portfolio-builder',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -150,11 +143,6 @@ const TemplatesArchitectRoute = TemplatesArchitectRouteImport.update({
   path: '/templates/architect',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PSlugRoute = PSlugRouteImport.update({
-  id: '/p/$slug',
-  path: '/p/$slug',
-  getParentRoute: () => rootRouteImport,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -162,11 +150,9 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof DashboardRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
-  '/portfolio-builder': typeof PortfolioBuilderRoute
   '/pricing': typeof PricingRoute
   '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
-  '/p/$slug': typeof PSlugRoute
   '/templates/architect': typeof TemplatesArchitectRoute
   '/templates/biotech': typeof TemplatesBiotechRoute
   '/templates/blueprint-sphere-main': typeof TemplatesBlueprintSphereMainRoute
@@ -188,11 +174,9 @@ export interface FileRoutesByTo {
   '/dashboard': typeof DashboardRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
-  '/portfolio-builder': typeof PortfolioBuilderRoute
   '/pricing': typeof PricingRoute
   '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
-  '/p/$slug': typeof PSlugRoute
   '/templates/architect': typeof TemplatesArchitectRoute
   '/templates/biotech': typeof TemplatesBiotechRoute
   '/templates/blueprint-sphere-main': typeof TemplatesBlueprintSphereMainRoute
@@ -215,11 +199,9 @@ export interface FileRoutesById {
   '/dashboard': typeof DashboardRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
-  '/portfolio-builder': typeof PortfolioBuilderRoute
   '/pricing': typeof PricingRoute
   '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
-  '/p/$slug': typeof PSlugRoute
   '/templates/architect': typeof TemplatesArchitectRoute
   '/templates/biotech': typeof TemplatesBiotechRoute
   '/templates/blueprint-sphere-main': typeof TemplatesBlueprintSphereMainRoute
@@ -243,11 +225,9 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/forgot-password'
     | '/login'
-    | '/portfolio-builder'
     | '/pricing'
     | '/settings'
     | '/signup'
-    | '/p/$slug'
     | '/templates/architect'
     | '/templates/biotech'
     | '/templates/blueprint-sphere-main'
@@ -269,11 +249,9 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/forgot-password'
     | '/login'
-    | '/portfolio-builder'
     | '/pricing'
     | '/settings'
     | '/signup'
-    | '/p/$slug'
     | '/templates/architect'
     | '/templates/biotech'
     | '/templates/blueprint-sphere-main'
@@ -295,11 +273,9 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/forgot-password'
     | '/login'
-    | '/portfolio-builder'
     | '/pricing'
     | '/settings'
     | '/signup'
-    | '/p/$slug'
     | '/templates/architect'
     | '/templates/biotech'
     | '/templates/blueprint-sphere-main'
@@ -322,11 +298,9 @@ export interface RootRouteChildren {
   DashboardRoute: typeof DashboardRoute
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   LoginRoute: typeof LoginRoute
-  PortfolioBuilderRoute: typeof PortfolioBuilderRoute
   PricingRoute: typeof PricingRoute
   SettingsRoute: typeof SettingsRoute
   SignupRoute: typeof SignupRoute
-  PSlugRoute: typeof PSlugRoute
   TemplatesArchitectRoute: typeof TemplatesArchitectRoute
   TemplatesBiotechRoute: typeof TemplatesBiotechRoute
   TemplatesBlueprintSphereMainRoute: typeof TemplatesBlueprintSphereMainRoute
@@ -364,13 +338,6 @@ declare module '@tanstack/react-router' {
       path: '/pricing'
       fullPath: '/pricing'
       preLoaderRoute: typeof PricingRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/portfolio-builder': {
-      id: '/portfolio-builder'
-      path: '/portfolio-builder'
-      fullPath: '/portfolio-builder'
-      preLoaderRoute: typeof PortfolioBuilderRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -506,13 +473,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TemplatesArchitectRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/p/$slug': {
-      id: '/p/$slug'
-      path: '/p/$slug'
-      fullPath: '/p/$slug'
-      preLoaderRoute: typeof PSlugRouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
@@ -522,11 +482,9 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardRoute: DashboardRoute,
   ForgotPasswordRoute: ForgotPasswordRoute,
   LoginRoute: LoginRoute,
-  PortfolioBuilderRoute: PortfolioBuilderRoute,
   PricingRoute: PricingRoute,
   SettingsRoute: SettingsRoute,
   SignupRoute: SignupRoute,
-  PSlugRoute: PSlugRoute,
   TemplatesArchitectRoute: TemplatesArchitectRoute,
   TemplatesBiotechRoute: TemplatesBiotechRoute,
   TemplatesBlueprintSphereMainRoute: TemplatesBlueprintSphereMainRoute,

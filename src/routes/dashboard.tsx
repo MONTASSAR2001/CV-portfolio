@@ -105,22 +105,12 @@ function StatCard({
           </p>
         )}
 
-        er:bg-white/10 hover:text-foreground text-[10px]"
-                            >
-                              <ExternalLink size={12} className="mr-1" /> View Live
-                            </a>
-                          </div>
-                        </td>
-                      </motion.tr>
-                    );
-                  })}
-                </AnimatePresence>
-              </tbody>
-            </table>
-          </div>
-        )}
-      </div>
-    </motion.div>
+        {sub && <p className="mt-2 text-xs text-muted-foreground">{sub}</p>}
+        <div className="mt-6 flex items-center gap-1.5 text-xs font-semibold" style={{ color: `oklch(0.85 0.2 ${hue})` }}>
+          {cta} <ArrowRight size={12} className="transition-transform group-hover:translate-x-1" />
+        </div>
+      </motion.div>
+    </Link>
   );
 }
 
