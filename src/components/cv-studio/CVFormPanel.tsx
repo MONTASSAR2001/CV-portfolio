@@ -92,7 +92,7 @@ export function CVFormPanel({ cvData, setCvData }: CVFormPanelProps) {
     <div className="flex h-full flex-col overflow-hidden rounded-3xl border border-gray-200 bg-gray-50 backdrop-blur-xl">
       {/* ── Tab bar ── */}
       <div className="border-b border-gray-200 px-4 pt-4 pb-0">
-        <div className="flex gap-0.5">
+        <div className="flex gap-0.5 overflow-x-auto" style={{ scrollbarWidth: "none" }}>
           {TABS.map(tab => {
             const Icon = tab.icon;
             const done = completedTabs[tab.id];
@@ -209,6 +209,9 @@ export function CVFormPanel({ cvData, setCvData }: CVFormPanelProps) {
               <div className="pt-4 border-t border-gray-200">
                 <TextArea label="Additional Information (Languages, Certifications, etc.)" value={cvData.additionalInfo || ""} onChange={v => setCvData(p => ({ ...p, additionalInfo: v }))} rows={4} placeholder="Fluent in English and Spanish. AWS Certified Solutions Architect..." />
               </div>
+              <button onClick={() => setActiveTab(4)} className="w-full flex items-center justify-center gap-2 rounded-xl bg-black py-2.5 text-sm font-bold text-white transition hover:bg-gray-800 active:scale-[0.98]">
+                Next: Projects <ChevronRight size={14} />
+              </button>
             </motion.div>
           )}
         
