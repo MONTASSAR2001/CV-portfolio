@@ -195,20 +195,21 @@ export const MinimalistTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
               </h2>
               <div className="space-y-4">
                 {projects.map((proj, i) => (
-                  <div key={i} className="flex gap-8">
-                    <div className="w-28 shrink-0 text-[10px] text-zinc-700 pt-0.5">
-                      
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-sm font-semibold text-slate-900"><strong className="font-bold">{proj.title}</strong>{proj.projectLabel && <span className="italic text-sm font-normal ml-2">[{proj.projectLabel}]</span>}</p>
-                      <p className="text-[11px] text-zinc-800 mt-0.5">{proj.link}</p>
-                    </div>
-                  
-{proj.description && (
-<div className="whitespace-pre-wrap mt-2 text-[11px] leading-relaxed text-zinc-900">{proj.description}</div>
-)}
-</div>
-                ))}
+                <div key={i} className="mb-3">
+                  <div className="mb-1">
+                    <strong className="font-bold text-zinc-900">{proj.title}</strong>
+                    {proj.projectLabel && <span className="italic text-sm font-normal text-zinc-700 ml-2">[{proj.projectLabel}]</span>}
+                    {proj.link && (
+                      <a href={proj.link.startsWith('http') ? proj.link : `https://${proj.link}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-[10px] text-zinc-600 hover:underline break-all">
+                        {proj.link}
+                      </a>
+                    )}
+                  </div>
+                  {proj.description && (
+                    <div className="text-[11px] leading-relaxed text-zinc-900 whitespace-pre-wrap">{proj.description}</div>
+                  )}
+                </div>
+              ))}
               </div>
             </div>
           )}
@@ -382,18 +383,21 @@ export const CorporateTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
                 <SectionHeader label="Projects" color={NAVY} />
                 <div className="mt-3 space-y-3">
                   {projects.map((proj, i) => (
-                    <div key={i} className="flex justify-between items-start">
-                      <div>
-                        <p className="text-sm font-bold text-slate-900"><strong className="font-bold">{proj.title}</strong>{proj.projectLabel && <span className="italic text-sm font-normal ml-2">[{proj.projectLabel}]</span>}</p>
-                        <p className="text-[11px] text-zinc-800">{proj.link}</p>
-                      </div>
-                      <span className="text-[10px] text-zinc-800 shrink-0"></span>
-                    
-{proj.description && (
-<div className="whitespace-pre-wrap mt-2 text-[11px] leading-relaxed text-zinc-900">{proj.description}</div>
-)}
-</div>
-                  ))}
+                <div key={i} className="mb-3">
+                  <div className="mb-1">
+                    <strong className="font-bold text-zinc-900">{proj.title}</strong>
+                    {proj.projectLabel && <span className="italic text-sm font-normal text-zinc-700 ml-2">[{proj.projectLabel}]</span>}
+                    {proj.link && (
+                      <a href={proj.link.startsWith('http') ? proj.link : `https://${proj.link}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-[10px] text-zinc-600 hover:underline break-all">
+                        {proj.link}
+                      </a>
+                    )}
+                  </div>
+                  {proj.description && (
+                    <div className="text-[11px] leading-relaxed text-zinc-900 whitespace-pre-wrap">{proj.description}</div>
+                  )}
+                </div>
+              ))}
                 </div>
               </div>
             )}
@@ -606,18 +610,21 @@ export const TechTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
                 <TechSectionTitle label="Projects" accent={ACCENT} />
                 <div className="mt-3 space-y-3">
                   {projects.map((proj, i) => (
-                    <div key={i} className="flex justify-between items-start">
-                      <div>
-                        <p className="text-sm font-bold text-slate-900"><strong className="font-bold">{proj.title}</strong>{proj.projectLabel && <span className="italic text-sm font-normal ml-2">[{proj.projectLabel}]</span>}</p>
-                        <p className="text-[11px] text-zinc-800">{proj.link}</p>
-                      </div>
-                      <code className="text-[9px] text-zinc-700 font-mono shrink-0"></code>
-                    
-{proj.description && (
-<div className="whitespace-pre-wrap mt-2 text-[11px] leading-relaxed text-zinc-900">{proj.description}</div>
-)}
-</div>
-                  ))}
+                <div key={i} className="mb-3">
+                  <div className="mb-1">
+                    <strong className="font-bold text-zinc-900">{proj.title}</strong>
+                    {proj.projectLabel && <span className="italic text-sm font-normal text-zinc-700 ml-2">[{proj.projectLabel}]</span>}
+                    {proj.link && (
+                      <a href={proj.link.startsWith('http') ? proj.link : `https://${proj.link}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-[10px] text-zinc-600 hover:underline break-all">
+                        {proj.link}
+                      </a>
+                    )}
+                  </div>
+                  {proj.description && (
+                    <div className="text-[11px] leading-relaxed text-zinc-900 whitespace-pre-wrap">{proj.description}</div>
+                  )}
+                </div>
+              ))}
                 </div>
               </div>
             )}
@@ -772,18 +779,21 @@ export const CreativeTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
                 <CreativeSectionTitle label="Projects" rose={ROSE} />
                 <div className="mt-3 space-y-3">
                   {projects.map((proj, i) => (
-                    <div key={i} className="flex justify-between">
-                      <div>
-                        <p className="text-sm font-bold text-slate-900"><strong className="font-bold">{proj.title}</strong>{proj.projectLabel && <span className="italic text-sm font-normal ml-2">[{proj.projectLabel}]</span>}</p>
-                        <p className="text-[11px] text-zinc-800">{proj.link}</p>
-                      </div>
-                      <span className="text-[10px] text-zinc-700 italic shrink-0"></span>
-                    
-{proj.description && (
-<div className="whitespace-pre-wrap mt-2 text-[11px] leading-relaxed text-zinc-900">{proj.description}</div>
-)}
-</div>
-                  ))}
+                <div key={i} className="mb-3">
+                  <div className="mb-1">
+                    <strong className="font-bold text-zinc-900">{proj.title}</strong>
+                    {proj.projectLabel && <span className="italic text-sm font-normal text-zinc-700 ml-2">[{proj.projectLabel}]</span>}
+                    {proj.link && (
+                      <a href={proj.link.startsWith('http') ? proj.link : `https://${proj.link}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-[10px] text-zinc-600 hover:underline break-all">
+                        {proj.link}
+                      </a>
+                    )}
+                  </div>
+                  {proj.description && (
+                    <div className="text-[11px] leading-relaxed text-zinc-900 whitespace-pre-wrap">{proj.description}</div>
+                  )}
+                </div>
+              ))}
                 </div>
               </div>
             )}
@@ -915,15 +925,21 @@ export const ExecutiveTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
                 <ExecSectionTitle label="Projects" gold={GOLD} />
                 <div className="mt-4 space-y-3">
                   {projects.map((proj, i) => (
-                    <div key={i}>
-                      <p className="text-sm font-bold text-slate-900"><strong className="font-bold">{proj.title}</strong>{proj.projectLabel && <span className="italic text-sm font-normal ml-2">[{proj.projectLabel}]</span>}</p>
-                      <p className="text-[11px] text-zinc-800">{proj.link} · </p>
-                    
-{proj.description && (
-<div className="whitespace-pre-wrap mt-2 text-[11px] leading-relaxed text-zinc-900">{proj.description}</div>
-)}
-</div>
-                  ))}
+                <div key={i} className="mb-3">
+                  <div className="mb-1">
+                    <strong className="font-bold text-zinc-900">{proj.title}</strong>
+                    {proj.projectLabel && <span className="italic text-sm font-normal text-zinc-700 ml-2">[{proj.projectLabel}]</span>}
+                    {proj.link && (
+                      <a href={proj.link.startsWith('http') ? proj.link : `https://${proj.link}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-[10px] text-zinc-600 hover:underline break-all">
+                        {proj.link}
+                      </a>
+                    )}
+                  </div>
+                  {proj.description && (
+                    <div className="text-[11px] leading-relaxed text-zinc-900 whitespace-pre-wrap">{proj.description}</div>
+                  )}
+                </div>
+              ))}
                 </div>
               </div>
             )}
@@ -1075,18 +1091,21 @@ export const StartupTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
                 <p className="text-[9px] font-bold tracking-[0.25em] uppercase text-indigo-400 mb-3">Projects</p>
                 <div className="space-y-3">
                   {projects.map((proj, i) => (
-                    <div key={i} className="rounded-2xl bg-white p-4 shadow-sm border border-indigo-50 flex justify-between items-start">
-                      <div>
-                        <p className="text-sm font-bold text-slate-900"><strong className="font-bold">{proj.title}</strong>{proj.projectLabel && <span className="italic text-sm font-normal ml-2">[{proj.projectLabel}]</span>}</p>
-                        <p className="text-[11px] text-zinc-800">{proj.link}</p>
-                      </div>
-                      <span className="text-[9px] rounded-full bg-purple-50 text-purple-400 px-2 py-0.5 font-medium shrink-0"></span>
-                    
-{proj.description && (
-<div className="whitespace-pre-wrap mt-2 text-[11px] leading-relaxed text-zinc-900">{proj.description}</div>
-)}
-</div>
-                  ))}
+                <div key={i} className="mb-3">
+                  <div className="mb-1">
+                    <strong className="font-bold text-zinc-900">{proj.title}</strong>
+                    {proj.projectLabel && <span className="italic text-sm font-normal text-zinc-700 ml-2">[{proj.projectLabel}]</span>}
+                    {proj.link && (
+                      <a href={proj.link.startsWith('http') ? proj.link : `https://${proj.link}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-[10px] text-zinc-600 hover:underline break-all">
+                        {proj.link}
+                      </a>
+                    )}
+                  </div>
+                  {proj.description && (
+                    <div className="text-[11px] leading-relaxed text-zinc-900 whitespace-pre-wrap">{proj.description}</div>
+                  )}
+                </div>
+              ))}
                 </div>
               </div>
             )}
@@ -1210,18 +1229,21 @@ export const AcademicTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
                 <AcadSectionTitle label="Projects" />
                 <div className="mt-2 space-y-3">
                   {projects.map((proj, i) => (
-                    <div key={i} className="flex justify-between">
-                      <div>
-                        <p className="text-[12px] font-bold text-slate-900"><strong className="font-bold">{proj.title}</strong>{proj.projectLabel && <span className="italic text-sm font-normal ml-2">[{proj.projectLabel}]</span>}</p>
-                        <p className="text-[11px] italic text-zinc-900">{proj.link}</p>
-                      </div>
-                      <span className="text-[11px] text-zinc-900 shrink-0"></span>
-                    
-{proj.description && (
-<div className="whitespace-pre-wrap mt-2 text-[11px] leading-relaxed text-zinc-900">{proj.description}</div>
-)}
-</div>
-                  ))}
+                <div key={i} className="mb-3">
+                  <div className="mb-1">
+                    <strong className="font-bold text-zinc-900">{proj.title}</strong>
+                    {proj.projectLabel && <span className="italic text-sm font-normal text-zinc-700 ml-2">[{proj.projectLabel}]</span>}
+                    {proj.link && (
+                      <a href={proj.link.startsWith('http') ? proj.link : `https://${proj.link}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-[10px] text-zinc-600 hover:underline break-all">
+                        {proj.link}
+                      </a>
+                    )}
+                  </div>
+                  {proj.description && (
+                    <div className="text-[11px] leading-relaxed text-zinc-900 whitespace-pre-wrap">{proj.description}</div>
+                  )}
+                </div>
+              ))}
                 </div>
               </div>
             )}
@@ -1365,16 +1387,21 @@ export const EditorialTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
                 <p className="text-[8px] tracking-[0.4em] uppercase font-sans text-stone-400 mb-3">Projects</p>
                 <div className="space-y-4">
                   {projects.map((proj, i) => (
-                    <div key={i}>
-                      <p className="text-[11px] font-bold text-stone-900 leading-tight"><strong className="font-bold">{proj.title}</strong>{proj.projectLabel && <span className="italic text-sm font-normal ml-2">[{proj.projectLabel}]</span>}</p>
-                      <p className="text-[10px] font-sans text-stone-500 mt-0.5">{proj.link}</p>
-                      <p className="text-[10px] font-sans text-stone-400 mt-0.5 italic"></p>
-                    
-{proj.description && (
-<div className="whitespace-pre-wrap mt-2 text-[11px] leading-relaxed text-zinc-900">{proj.description}</div>
-)}
-</div>
-                  ))}
+                <div key={i} className="mb-3">
+                  <div className="mb-1">
+                    <strong className="font-bold text-zinc-900">{proj.title}</strong>
+                    {proj.projectLabel && <span className="italic text-sm font-normal text-zinc-700 ml-2">[{proj.projectLabel}]</span>}
+                    {proj.link && (
+                      <a href={proj.link.startsWith('http') ? proj.link : `https://${proj.link}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-[10px] text-zinc-600 hover:underline break-all">
+                        {proj.link}
+                      </a>
+                    )}
+                  </div>
+                  {proj.description && (
+                    <div className="text-[11px] leading-relaxed text-zinc-900 whitespace-pre-wrap">{proj.description}</div>
+                  )}
+                </div>
+              ))}
                 </div>
               </div>
             )}
@@ -1512,18 +1539,21 @@ export const DarkBoldTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
                 <DarkSectionTitle label="Projects" neon={NEON} />
                 <div className="mt-3 space-y-3">
                   {projects.map((proj, i) => (
-                    <div key={i} className="flex justify-between">
-                      <div>
-                        <p className="text-sm font-bold text-white"><strong className="font-bold">{proj.title}</strong>{proj.projectLabel && <span className="italic text-sm font-normal ml-2">[{proj.projectLabel}]</span>}</p>
-                        <p className="text-[11px] text-zinc-700">{proj.link}</p>
-                      </div>
-                      <span className="text-[10px] text-zinc-800 shrink-0"></span>
-                    
-{proj.description && (
-<div className="whitespace-pre-wrap mt-2 text-[11px] leading-relaxed text-zinc-900">{proj.description}</div>
-)}
-</div>
-                  ))}
+                <div key={i} className="mb-3">
+                  <div className="mb-1">
+                    <strong className="font-bold text-zinc-900">{proj.title}</strong>
+                    {proj.projectLabel && <span className="italic text-sm font-normal text-zinc-700 ml-2">[{proj.projectLabel}]</span>}
+                    {proj.link && (
+                      <a href={proj.link.startsWith('http') ? proj.link : `https://${proj.link}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-[10px] text-zinc-600 hover:underline break-all">
+                        {proj.link}
+                      </a>
+                    )}
+                  </div>
+                  {proj.description && (
+                    <div className="text-[11px] leading-relaxed text-zinc-900 whitespace-pre-wrap">{proj.description}</div>
+                  )}
+                </div>
+              ))}
                 </div>
               </div>
             )}
@@ -1725,24 +1755,21 @@ export const VisualTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
                   <div className="absolute left-3 top-0 bottom-0 w-0.5 rounded-full" style={{ background: `${TEAL}30` }} />
                   <div className="space-y-5">
                     {projects.map((proj, i) => (
-                      <div key={i} className="relative">
-                        <div
-                          className="absolute -left-8 top-1 h-4 w-4 rounded-full border-2 border-white"
-                          style={{ background: `${TEAL}88`, marginLeft: "4px" }}
-                        />
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <p className="text-sm font-bold text-slate-900"><strong className="font-bold">{proj.title}</strong>{proj.projectLabel && <span className="italic text-sm font-normal ml-2">[{proj.projectLabel}]</span>}</p>
-                            <p className="text-[11px] text-zinc-800">{proj.link}</p>
-                          </div>
-                          <span className="text-[9px] text-zinc-700 shrink-0"></span>
-                        </div>
-                      
-{proj.description && (
-<div className="whitespace-pre-wrap mt-2 text-[11px] leading-relaxed text-zinc-900">{proj.description}</div>
-)}
-</div>
-                    ))}
+                <div key={i} className="mb-3">
+                  <div className="mb-1">
+                    <strong className="font-bold text-zinc-900">{proj.title}</strong>
+                    {proj.projectLabel && <span className="italic text-sm font-normal text-zinc-700 ml-2">[{proj.projectLabel}]</span>}
+                    {proj.link && (
+                      <a href={proj.link.startsWith('http') ? proj.link : `https://${proj.link}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-[10px] text-zinc-600 hover:underline break-all">
+                        {proj.link}
+                      </a>
+                    )}
+                  </div>
+                  {proj.description && (
+                    <div className="text-[11px] leading-relaxed text-zinc-900 whitespace-pre-wrap">{proj.description}</div>
+                  )}
+                </div>
+              ))}
                   </div>
                 </div>
               </div>
@@ -1929,18 +1956,21 @@ export const ATSClassicTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
               <ATSSectionRule label="Projects" />
               <div className="mt-2 space-y-3">
                 {projects.map((proj, i) => (
-                  <div key={i} className="flex justify-between items-baseline">
-                    <div>
-                      <p className="text-[12px] font-bold text-slate-900"><strong className="font-bold">{proj.title}</strong>{proj.projectLabel && <span className="italic text-sm font-normal ml-2">[{proj.projectLabel}]</span>}</p>
-                      <p className="text-[11px] text-zinc-900">{proj.link}</p>
-                    </div>
-                    <span className="text-[10px] text-zinc-900 shrink-0"></span>
-                  
-{proj.description && (
-<div className="whitespace-pre-wrap mt-2 text-[11px] leading-relaxed text-zinc-900">{proj.description}</div>
-)}
-</div>
-                ))}
+                <div key={i} className="mb-3">
+                  <div className="mb-1">
+                    <strong className="font-bold text-zinc-900">{proj.title}</strong>
+                    {proj.projectLabel && <span className="italic text-sm font-normal text-zinc-700 ml-2">[{proj.projectLabel}]</span>}
+                    {proj.link && (
+                      <a href={proj.link.startsWith('http') ? proj.link : `https://${proj.link}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-[10px] text-zinc-600 hover:underline break-all">
+                        {proj.link}
+                      </a>
+                    )}
+                  </div>
+                  {proj.description && (
+                    <div className="text-[11px] leading-relaxed text-zinc-900 whitespace-pre-wrap">{proj.description}</div>
+                  )}
+                </div>
+              ))}
               </div>
             </div>
           )}
@@ -2099,18 +2129,21 @@ export const ATSModernTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
               <ATSModernSectionTitle label="Projects" accent={ACCENT} />
               <div className="mt-3 space-y-3">
                 {projects.map((proj, i) => (
-                  <div key={i} className="flex justify-between">
-                    <div>
-                      <p className="text-[12px] font-bold text-slate-900"><strong className="font-bold">{proj.title}</strong>{proj.projectLabel && <span className="italic text-sm font-normal ml-2">[{proj.projectLabel}]</span>}</p>
-                      <p className="text-[11px] text-zinc-800">{proj.link}</p>
-                    </div>
-                    <span className="text-[10px] text-zinc-800 shrink-0"></span>
-                  
-{proj.description && (
-<div className="whitespace-pre-wrap mt-2 text-[11px] leading-relaxed text-zinc-900">{proj.description}</div>
-)}
-</div>
-                ))}
+                <div key={i} className="mb-3">
+                  <div className="mb-1">
+                    <strong className="font-bold text-zinc-900">{proj.title}</strong>
+                    {proj.projectLabel && <span className="italic text-sm font-normal text-zinc-700 ml-2">[{proj.projectLabel}]</span>}
+                    {proj.link && (
+                      <a href={proj.link.startsWith('http') ? proj.link : `https://${proj.link}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-[10px] text-zinc-600 hover:underline break-all">
+                        {proj.link}
+                      </a>
+                    )}
+                  </div>
+                  {proj.description && (
+                    <div className="text-[11px] leading-relaxed text-zinc-900 whitespace-pre-wrap">{proj.description}</div>
+                  )}
+                </div>
+              ))}
               </div>
             </div>
           )}
@@ -2277,18 +2310,21 @@ export const HarvardStandardTemplate = forwardRef<HTMLDivElement, { data: CvStat
               <HarvardSectionTitle label="Projects" />
               <div className="mt-2 space-y-3">
                 {projects.map((proj, i) => (
-                  <div key={i} className="flex justify-between items-baseline">
-                    <div>
-                      <p className="text-[12px] font-bold text-slate-900">{proj.link}</p>
-                      <p className="text-[11px] italic text-zinc-900"><strong className="font-bold">{proj.title}</strong>{proj.projectLabel && <span className="italic text-sm font-normal ml-2">[{proj.projectLabel}]</span>}</p>
-                    </div>
-                    <span className="text-[10px] text-zinc-900 shrink-0"></span>
-                  
-{proj.description && (
-<div className="whitespace-pre-wrap mt-2 text-[11px] leading-relaxed text-zinc-900">{proj.description}</div>
-)}
-</div>
-                ))}
+                <div key={i} className="mb-3">
+                  <div className="mb-1">
+                    <strong className="font-bold text-zinc-900">{proj.title}</strong>
+                    {proj.projectLabel && <span className="italic text-sm font-normal text-zinc-700 ml-2">[{proj.projectLabel}]</span>}
+                    {proj.link && (
+                      <a href={proj.link.startsWith('http') ? proj.link : `https://${proj.link}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-[10px] text-zinc-600 hover:underline break-all">
+                        {proj.link}
+                      </a>
+                    )}
+                  </div>
+                  {proj.description && (
+                    <div className="text-[11px] leading-relaxed text-zinc-900 whitespace-pre-wrap">{proj.description}</div>
+                  )}
+                </div>
+              ))}
               </div>
             </div>
           )}
@@ -2504,18 +2540,21 @@ export const ATSExecutiveTemplate = forwardRef<HTMLDivElement, { data: CvState }
               <ATSExecSection label="Projects" />
               <div className="space-y-3">
                 {projects.map((proj, i) => (
-                  <div key={i} className="flex justify-between items-baseline">
-                    <div>
-                      <span className="text-[12px] font-bold uppercase"><strong className="font-bold">{proj.title}</strong>{proj.projectLabel && <span className="italic text-sm font-normal ml-2">[{proj.projectLabel}]</span>}</span>
-                      {proj.link && (<span className="text-[11px]"> — {proj.link}</span>)}
-                    </div>
-                    
-                  
-{proj.description && (
-<div className="whitespace-pre-wrap mt-2 text-[11px] leading-relaxed text-zinc-900">{proj.description}</div>
-)}
-</div>
-                ))}
+                <div key={i} className="mb-3">
+                  <div className="mb-1">
+                    <strong className="font-bold text-zinc-900">{proj.title}</strong>
+                    {proj.projectLabel && <span className="italic text-sm font-normal text-zinc-700 ml-2">[{proj.projectLabel}]</span>}
+                    {proj.link && (
+                      <a href={proj.link.startsWith('http') ? proj.link : `https://${proj.link}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-[10px] text-zinc-600 hover:underline break-all">
+                        {proj.link}
+                      </a>
+                    )}
+                  </div>
+                  {proj.description && (
+                    <div className="text-[11px] leading-relaxed text-zinc-900 whitespace-pre-wrap">{proj.description}</div>
+                  )}
+                </div>
+              ))}
               </div>
             </>
           )}
