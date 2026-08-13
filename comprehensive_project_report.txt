@@ -22,7 +22,7 @@ Based on `package.json`, `bunfig.toml`, and `vite.config.ts`, the project is bui
 - **Supabase** (`@supabase/supabase-js`) for user authentication, session management, and database operations.
 - **Server Functions:** TanStack Start server functions to securely handle API calls (e.g., AI integration, Stripe checkout).
 - **AI Integration:** Groq API using LLaMA 3.3 (`llama-3.3-70b-versatile`) for CV parsing and autonomous portfolio generation.
-- **Payments:** Stripe (`stripe`) for the "CareerOS Pro" subscription checkout.
+- **Payments:** Stripe (`stripe`) for the "CareerOS Pro" subscription checkout.   cv
 
 **Build & Tooling:**
 - **Vite** with specialized plugins (`@lovable.dev/vite-tanstack-config`).
