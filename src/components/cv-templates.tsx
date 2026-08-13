@@ -306,8 +306,8 @@ export const CorporateTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
               <MapPin size={10} style={{ color: NAVY }} /> {p.location}
             </span>
           )}
-          {p.linkedin && (<a href={p.linkedin.startsWith('http') ? p.linkedin : `https://${p.linkedin}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-[10px] text-zinc-900 hover:opacity-70 transition-opacity"><Linkedin size={10} style={{ color: NAVY }} /></a>)}
-          {p.github && (<a href={p.github.startsWith('http') ? p.github : `https://${p.github}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-[10px] text-zinc-900 hover:opacity-70 transition-opacity"><Github size={10} style={{ color: NAVY }} /></a>)}
+          {p.linkedin && (<a href={p.linkedin.startsWith('http') ? p.linkedin : `https://${p.linkedin}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-[10px] text-zinc-900 hover:opacity-70 transition-opacity"><Linkedin size={10} style={{ color: NAVY }} /> <span className="ml-1">{p.linkedin.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "")}</span></a>)}
+          {p.github && (<a href={p.github.startsWith('http') ? p.github : `https://${p.github}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-[10px] text-zinc-900 hover:opacity-70 transition-opacity"><Github size={10} style={{ color: NAVY }} /> <span className="ml-1">{p.github.replace(/^https?:\/\/(www\.)?(github\.com\/)?/, "").replace(/\/$/, "")}</span></a>)}
         </div>
 
         <div className="px-10 py-7 flex gap-8 flex-1">
@@ -519,8 +519,8 @@ export const TechTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
             {p.email && <ContactRow icon={<Mail size={10} />} text={p.email} />}
             {p.phone && <ContactRow icon={<Phone size={10} />} text={p.phone} />}
             {p.location && <ContactRow icon={<MapPin size={10} />} text={p.location} />}
-            {p.linkedin && (<a href={p.linkedin.startsWith('http') ? p.linkedin : `https://${p.linkedin}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-zinc-900 hover:opacity-70 transition-opacity"><Linkedin size={10} /></a>)}
-            {p.github && (<a href={p.github.startsWith('http') ? p.github : `https://${p.github}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-zinc-900 hover:opacity-70 transition-opacity"><Github size={10} /></a>)}
+            {p.linkedin && (<a href={p.linkedin.startsWith('http') ? p.linkedin : `https://${p.linkedin}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-zinc-900 hover:opacity-70 transition-opacity"><Linkedin size={10} /> <span className="ml-1">{p.linkedin.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "")}</span></a>)}
+            {p.github && (<a href={p.github.startsWith('http') ? p.github : `https://${p.github}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-zinc-900 hover:opacity-70 transition-opacity"><Github size={10} /> <span className="ml-1">{p.github.replace(/^https?:\/\/(www\.)?(github\.com\/)?/, "").replace(/\/$/, "")}</span></a>)}
           </div>
 
           {/* Skills */}
@@ -872,11 +872,26 @@ export const ExecutiveTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
             </p>
             <div className="h-px w-16" style={{ backgroundColor: GOLD }} />
           </div>
-          <div className="mt-4 flex flex-wrap justify-center gap-x-6 gap-y-1">
-            {p.email && <span className="text-[10px] text-zinc-800">{p.email}</span>}
-            {p.phone && <span className="text-[10px] text-zinc-800">· {p.phone}</span>}
-            {p.location && <span className="text-[10px] text-zinc-800">· {p.location}</span>}
-            {p.linkedin && (<a href={p.linkedin.startsWith('http') ? p.linkedin : `https://${p.linkedin}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-[10px] text-zinc-900 font-medium hover:underline transition-all"><Linkedin size={10} /></a>)}
+          <div className="mt-4 flex flex-wrap justify-center items-center gap-2 text-[10px] text-zinc-900 leading-relaxed">
+            {[
+              p.email && <span key="email" className="text-zinc-800">{p.email}</span>,
+              p.phone && <span key="phone" className="text-zinc-800">{p.phone}</span>,
+              p.location && <span key="loc" className="text-zinc-800">{p.location}</span>,
+              p.linkedin && (
+                <a key="ln" href={p.linkedin.startsWith('http') ? p.linkedin : `https://${p.linkedin}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 font-medium hover:underline transition-all"><Linkedin size={10} /> <span className="ml-1">{p.linkedin.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "")}</span></a>
+              ),
+              p.github && (
+                <a key="gh" href={p.github.startsWith('http') ? p.github : `https://${p.github}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 font-medium hover:underline transition-all"><Github size={10} /> <span className="ml-1">{p.github.replace(/^https?:\/\/(www\.)?(github\.com\/)?/, "").replace(/\/$/, "")}</span></a>
+              ),
+              p.portfolioUrl && (
+                <a key="portfolio" href={p.portfolioUrl.startsWith('http') ? p.portfolioUrl : `https://${p.portfolioUrl}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 font-medium hover:underline transition-all"><Globe size={10} /> <span className="ml-1">{p.portfolioUrl.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "")}</span></a>
+              )
+            ].filter(Boolean).map((el, i, arr) => (
+              <span key={i} className="flex items-center gap-2">
+                {el}
+                {i < arr.length - 1 && <span className="text-zinc-800">·</span>}
+              </span>
+            ))}
           </div>
         </div>
 
@@ -1184,7 +1199,7 @@ export const AcademicTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
                 <p>{[p.email, p.phone].filter(Boolean).join("  |  ")}</p>
               )}
               {(p.location || p.linkedin || p.github || p.portfolioUrl) && (
-                <p>{[p.location].filter(Boolean).join("")}{p.linkedin && <a href={p.linkedin.startsWith("http") ? p.linkedin : `https://${p.linkedin}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 ml-2 hover:opacity-70 transition-opacity"><Linkedin size={10} /></a>}{p.github && <a href={p.github.startsWith("http") ? p.github : `https://${p.github}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 ml-2 hover:opacity-70 transition-opacity"><Github size={10} /></a>}{p.portfolioUrl && <a href={p.portfolioUrl.startsWith("http") ? p.portfolioUrl : `https://${p.portfolioUrl}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 ml-2 hover:opacity-70 transition-opacity"><Globe size={10} /></a>}</p>
+                <p>{[p.location].filter(Boolean).join("")}{p.linkedin && <a href={p.linkedin.startsWith("http") ? p.linkedin : `https://${p.linkedin}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 ml-2 hover:opacity-70 transition-opacity"><Linkedin size={10} /> <span className="ml-1">{p.linkedin.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "")}</span></a>}{p.github && <a href={p.github.startsWith("http") ? p.github : `https://${p.github}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 ml-2 hover:opacity-70 transition-opacity"><Github size={10} /> <span className="ml-1">{p.github.replace(/^https?:\/\/(www\.)?(github\.com\/)?/, "").replace(/\/$/, "")}</span></a>}{p.portfolioUrl && <a href={p.portfolioUrl.startsWith("http") ? p.portfolioUrl : `https://${p.portfolioUrl}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 ml-2 hover:opacity-70 transition-opacity"><Globe size={10} /> <span className="ml-1">{p.portfolioUrl.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "")}</span></a>}</p>
               )}
             </div>
           </div>
@@ -1487,11 +1502,26 @@ export const DarkBoldTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
               {p.fullName ? p.fullName.substring(0, 2).toUpperCase() : "CV"}
             </div>
           </div>
-          <div className="flex flex-wrap gap-4 mt-5">
-            {p.email && <span className="text-[10px] text-zinc-700">{p.email}</span>}
-            {p.phone && <span className="text-[10px] text-zinc-700">· {p.phone}</span>}
-            {p.location && <span className="text-[10px] text-zinc-700">· {p.location}</span>}
-            {p.linkedin && (<a href={p.linkedin.startsWith('http') ? p.linkedin : `https://${p.linkedin}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-[10px] text-zinc-900 font-medium hover:underline transition-all"><Linkedin size={10} /></a>)}
+          <div className="flex flex-wrap items-center gap-2 mt-5 text-[10px] text-zinc-900 leading-relaxed">
+            {[
+              p.email && <span key="email" className="text-zinc-700">{p.email}</span>,
+              p.phone && <span key="phone" className="text-zinc-700">{p.phone}</span>,
+              p.location && <span key="loc" className="text-zinc-700">{p.location}</span>,
+              p.linkedin && (
+                <a key="ln" href={p.linkedin.startsWith('http') ? p.linkedin : `https://${p.linkedin}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 font-medium hover:underline transition-all"><Linkedin size={10} /> <span className="ml-1">{p.linkedin.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "")}</span></a>
+              ),
+              p.github && (
+                <a key="gh" href={p.github.startsWith('http') ? p.github : `https://${p.github}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 font-medium hover:underline transition-all"><Github size={10} /> <span className="ml-1">{p.github.replace(/^https?:\/\/(www\.)?(github\.com\/)?/, "").replace(/\/$/, "")}</span></a>
+              ),
+              p.portfolioUrl && (
+                <a key="portfolio" href={p.portfolioUrl.startsWith('http') ? p.portfolioUrl : `https://${p.portfolioUrl}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 font-medium hover:underline transition-all"><Globe size={10} /> <span className="ml-1">{p.portfolioUrl.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "")}</span></a>
+              )
+            ].filter(Boolean).map((el, i, arr) => (
+              <span key={i} className="flex items-center gap-2">
+                {el}
+                {i < arr.length - 1 && <span className="text-zinc-700">·</span>}
+              </span>
+            ))}
           </div>
         </div>
 
@@ -1644,7 +1674,7 @@ export const VisualTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
             {p.email && <VisualContactRow icon={<Mail size={11} />} text={p.email} teal={TEAL} />}
             {p.phone && <VisualContactRow icon={<Phone size={11} />} text={p.phone} teal={TEAL} />}
             {p.location && <VisualContactRow icon={<MapPin size={11} />} text={p.location} teal={TEAL} />}
-            {p.linkedin && (<a href={p.linkedin.startsWith('http') ? p.linkedin : `https://${p.linkedin}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-[10px] text-zinc-900 hover:opacity-70 transition-opacity"><Linkedin size={11} color={TEAL} /></a>)}
+            {p.linkedin && (<a href={p.linkedin.startsWith('http') ? p.linkedin : `https://${p.linkedin}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-[10px] text-zinc-900 hover:opacity-70 transition-opacity"><Linkedin size={11} color={TEAL} /> <span className="ml-1">{p.linkedin.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "")}</span></a>)}
           </div>
 
           {/* Skills as percentage bars */}
@@ -1895,16 +1925,13 @@ export const ATSClassicTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
                 p.phone && <span key="phone">{p.phone}</span>,
                 p.location && <span key="loc">{p.location}</span>,
                 p.linkedin && (
-                  <a key="ln" href={p.linkedin.startsWith('http') ? p.linkedin : `https://${p.linkedin}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-zinc-900 hover:opacity-70 transition-opacity"><Linkedin size={12} />
-                  </a>
+                  <a key="ln" href={p.linkedin.startsWith('http') ? p.linkedin : `https://${p.linkedin}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-zinc-900 hover:opacity-70 transition-opacity"><Linkedin size={12} /> <span className="ml-1">{p.linkedin.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "")}</span></a>
                 ),
                 p.github && (
-                  <a key="gh" href={p.github.startsWith('http') ? p.github : `https://${p.github}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-zinc-900 hover:opacity-70 transition-opacity"><Github size={12} />
-                  </a>
+                  <a key="gh" href={p.github.startsWith('http') ? p.github : `https://${p.github}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-zinc-900 hover:opacity-70 transition-opacity"><Github size={12} /> <span className="ml-1">{p.github.replace(/^https?:\/\/(www\.)?(github\.com\/)?/, "").replace(/\/$/, "")}</span></a>
                 ),
                 p.portfolioUrl && (
-                  <a key="portfolio" href={p.portfolioUrl.startsWith('http') ? p.portfolioUrl : `https://${p.portfolioUrl}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-zinc-900 hover:opacity-70 transition-opacity"><Globe size={12} />
-                  </a>
+                  <a key="portfolio" href={p.portfolioUrl.startsWith('http') ? p.portfolioUrl : `https://${p.portfolioUrl}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-zinc-900 hover:opacity-70 transition-opacity"><Globe size={12} /> <span className="ml-1">{p.portfolioUrl.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "")}</span></a>
                 )
               ].filter(Boolean).map((el, i, arr) => (
                 <span key={i} className="flex items-center gap-2">
@@ -2072,16 +2099,13 @@ export const ATSModernTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
               {p.phone    && <span className="text-[10px] text-zinc-800">{p.phone}</span>}
               {p.location && <span className="text-[10px] text-zinc-800">{p.location}</span>}
               {p.linkedin && (
-                <a href={p.linkedin.startsWith('http') ? p.linkedin : `https://${p.linkedin}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-zinc-900 hover:opacity-70 transition-opacity"><Linkedin size={12} />
-                </a>
+                <a href={p.linkedin.startsWith('http') ? p.linkedin : `https://${p.linkedin}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-zinc-900 hover:opacity-70 transition-opacity"><Linkedin size={12} /> <span className="ml-1">{p.linkedin.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "")}</span></a>
               )}
               {p.github && (
-                <a href={p.github.startsWith('http') ? p.github : `https://${p.github}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-zinc-900 hover:opacity-70 transition-opacity"><Github size={12} />
-                </a>
+                <a href={p.github.startsWith('http') ? p.github : `https://${p.github}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-zinc-900 hover:opacity-70 transition-opacity"><Github size={12} /> <span className="ml-1">{p.github.replace(/^https?:\/\/(www\.)?(github\.com\/)?/, "").replace(/\/$/, "")}</span></a>
               )}
               {p.portfolioUrl && (
-                <a href={p.portfolioUrl.startsWith('http') ? p.portfolioUrl : `https://${p.portfolioUrl}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-zinc-900 hover:opacity-70 transition-opacity"><Globe size={12} />
-                </a>
+                <a href={p.portfolioUrl.startsWith('http') ? p.portfolioUrl : `https://${p.portfolioUrl}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-zinc-900 hover:opacity-70 transition-opacity"><Globe size={12} /> <span className="ml-1">{p.portfolioUrl.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "")}</span></a>
               )}
             </div>
           </div>
@@ -2249,16 +2273,13 @@ export const HarvardStandardTemplate = forwardRef<HTMLDivElement, { data: CvStat
                 p.phone && <span key="phone">{p.phone}</span>,
                 p.email && <span key="email">{p.email}</span>,
                 p.linkedin && (
-                  <a key="ln" href={p.linkedin.startsWith('http') ? p.linkedin : `https://${p.linkedin}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-zinc-900 hover:opacity-70 transition-opacity"><Linkedin size={12} />
-                  </a>
+                  <a key="ln" href={p.linkedin.startsWith('http') ? p.linkedin : `https://${p.linkedin}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-zinc-900 hover:opacity-70 transition-opacity"><Linkedin size={12} /> <span className="ml-1">{p.linkedin.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "")}</span></a>
                 ),
                 p.github && (
-                  <a key="gh" href={p.github.startsWith('http') ? p.github : `https://${p.github}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-zinc-900 hover:opacity-70 transition-opacity"><Github className="w-3.5 h-3.5 mr-1"/>
-                  </a>
+                  <a key="gh" href={p.github.startsWith('http') ? p.github : `https://${p.github}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-zinc-900 hover:opacity-70 transition-opacity"><Github className="w-3.5 h-3.5 mr-1"/> <span className="ml-1">{p.github.replace(/^https?:\/\/(www\.)?(github\.com\/)?/, "").replace(/\/$/, "")}</span></a>
                 ),
                 p.portfolioUrl && (
-                  <a key="portfolio" href={p.portfolioUrl.startsWith('http') ? p.portfolioUrl : `https://${p.portfolioUrl}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-zinc-900 hover:opacity-70 transition-opacity"><Globe className="w-3.5 h-3.5 mr-1"/>
-                  </a>
+                  <a key="portfolio" href={p.portfolioUrl.startsWith('http') ? p.portfolioUrl : `https://${p.portfolioUrl}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-zinc-900 hover:opacity-70 transition-opacity"><Globe className="w-3.5 h-3.5 mr-1"/> <span className="ml-1">{p.portfolioUrl.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "")}</span></a>
                 )
               ].filter(Boolean).map((el, i, arr) => (
                 <span key={i} className="flex items-center gap-2">
@@ -2467,16 +2488,13 @@ export const ATSExecutiveTemplate = forwardRef<HTMLDivElement, { data: CvState }
                 p.email && <span key="email">{p.email}</span>,
                 p.location && <span key="loc">{p.location}</span>,
                 p.linkedin && (
-                  <a key="ln" href={p.linkedin.startsWith('http') ? p.linkedin : `https://${p.linkedin}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-zinc-900 hover:opacity-70 transition-opacity"><Linkedin size={12} />
-                  </a>
+                  <a key="ln" href={p.linkedin.startsWith('http') ? p.linkedin : `https://${p.linkedin}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-zinc-900 hover:opacity-70 transition-opacity"><Linkedin size={12} /> <span className="ml-1">{p.linkedin.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "")}</span></a>
                 ),
                 p.github && (
-                  <a key="gh" href={p.github.startsWith('http') ? p.github : `https://${p.github}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-zinc-900 hover:opacity-70 transition-opacity"><Github size={12} />
-                  </a>
+                  <a key="gh" href={p.github.startsWith('http') ? p.github : `https://${p.github}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-zinc-900 hover:opacity-70 transition-opacity"><Github size={12} /> <span className="ml-1">{p.github.replace(/^https?:\/\/(www\.)?(github\.com\/)?/, "").replace(/\/$/, "")}</span></a>
                 ),
                 p.portfolioUrl && (
-                  <a key="portfolio" href={p.portfolioUrl.startsWith('http') ? p.portfolioUrl : `https://${p.portfolioUrl}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-zinc-900 hover:opacity-70 transition-opacity"><Globe size={12} />
-                  </a>
+                  <a key="portfolio" href={p.portfolioUrl.startsWith('http') ? p.portfolioUrl : `https://${p.portfolioUrl}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-zinc-900 hover:opacity-70 transition-opacity"><Globe size={12} /> <span className="ml-1">{p.portfolioUrl.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "")}</span></a>
                 )
               ].filter(Boolean).map((el, i, arr) => (
                 <span key={i} className="flex items-center gap-2">
