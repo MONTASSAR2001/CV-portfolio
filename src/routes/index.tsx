@@ -50,9 +50,8 @@ const Nav = memo(function Nav() {
           <img src="/logo.png" alt="CareerOS Logo" className="h-7 w-auto object-contain" />
           <span className="font-display text-lg font-semibold tracking-tight">CareerOS</span>
         </div>
-        <div className="hidden items-center gap-7 text-sm text-muted-foreground md:flex">
-          <a href="#how-it-works" className="hover:text-foreground transition">How it works</a>
-          <a href="#pricing" className="hover:text-foreground transition">Pricing</a>
+        <div className="hidden items-center gap-7 text-sm text-gray-500 md:flex">
+          <a href="#how-it-works" className="hover:text-black font-semibold transition">How it works</a>
         </div>
         <div className="flex items-center gap-2">
           {isLoading ? (
@@ -62,7 +61,7 @@ const Nav = memo(function Nav() {
           ) : data?.session ? (
             <Link
               to="/dashboard"
-              className="btn-kinetic relative rounded-xl px-4 py-2 text-sm font-semibold"
+              className="bg-black text-white hover:bg-gray-800 transition rounded-xl px-4 py-2 text-sm font-semibold"
             >
               <span className="relative z-10">Dashboard</span>
             </Link>
@@ -70,13 +69,13 @@ const Nav = memo(function Nav() {
             <>
               <Link
                 to="/login"
-                className="hidden items-center gap-1 text-sm text-muted-foreground transition hover:text-foreground md:flex px-4 py-2"
+                className="hidden items-center gap-1 text-sm text-gray-500 transition hover:text-black font-medium md:flex px-4 py-2"
               >
                 Sign in
               </Link>
               <Link
                 to="/signup"
-                className="btn-kinetic relative rounded-xl px-4 py-2 text-sm font-semibold"
+                className="bg-black text-white hover:bg-gray-800 transition rounded-xl px-4 py-2 text-sm font-semibold"
               >
                 <span className="relative z-10">Launch app</span>
               </Link>
@@ -138,12 +137,11 @@ function Hero() {
           transition={{ delay: 0.5, duration: 0.7 }}
           className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row"
         >
-          <Link to="/cv-studio" className="btn-kinetic glow-pulse group relative inline-flex items-center gap-2 rounded-2xl px-7 py-4 font-display text-base font-semibold">
-            <span className="btn-kinetic-sweep" />
+          <Link to="/cv-studio" className="bg-black text-white hover:bg-gray-800 transition group relative inline-flex items-center gap-2 rounded-2xl px-7 py-4 font-display text-base font-semibold">
             <span className="relative z-10">Start Building for Free</span>
             <span className="relative z-10 transition-transform group-hover:translate-x-1">→</span>
           </Link>
-          <a href="#how-it-works" className="glass rounded-2xl px-6 py-4 font-display text-sm font-semibold text-foreground/90 transition hover:text-foreground">
+          <a href="#how-it-works" className="glass rounded-2xl px-6 py-4 font-display text-sm font-semibold text-black transition hover:bg-gray-100">
             See how it works
           </a>
         </motion.div>
@@ -274,120 +272,20 @@ function HowItWorks() {
 function TemplateShowcase() { return null; }
 function Dashboard() { return null; }
 
-function Pricing() {
-  const tiers = [
-    {
-      name: "Preview",
-      price: "$0",
-      cadence: "forever",
-      pitch: "Explore the studio, ship watermarked drafts.",
-      features: ["Full AI CV studio", "Watermarked PDF export", "AI content generation", "Multiple CV templates"],
-      cta: "Start free",
-      highlight: false,
-    },
-    {
-      name: "Pro Export",
-      price: "$15",
-      cadence: "one-time",
-      pitch: "Export a high-res, watermark-free PDF.",
-      features: ["High-res, watermark-free PDF", "ATS-optimized layouts", "Unlimited regenerations", "Priority agent runtime"],
-      cta: "Unlock Pro",
-      highlight: true,
-    },
-  ];
-  return (
-    <section id="pricing" className="relative py-28 sm:py-36">
-      <div className="mx-auto max-w-6xl px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }} transition={{ duration: 0.7 }}
-          className="mx-auto max-w-2xl text-center"
-        >
-          <div className="text-xs uppercase tracking-[0.3em] text-gray-900 font-bold">Pricing</div>
-          <h2 className="mt-4 font-display text-4xl font-bold tracking-tight sm:text-6xl text-black">
-            Preview free. Ship for $15.
-          </h2>
-          <p className="mt-4 text-gray-900 font-medium">Two tiers. No subscription theatre.</p>
-        </motion.div>
-
-        <div className="mx-auto mt-16 grid max-w-4xl gap-6 md:grid-cols-2">
-          {tiers.map((t, i) => (
-            <motion.div
-              key={t.name}
-              initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }} transition={{ delay: i * 0.1, duration: 0.7 }}
-              whileHover={{ y: -8 }}
-              className="group relative"
-            >
-              {t.highlight ? (
-                <div className="h-full rounded-3xl border-2 border-black bg-white shadow-lg">
-                  <TierBody t={t} />
-                </div>
-              ) : (
-                <div className="h-full rounded-3xl border border-gray-200 transition group-hover:border-gray-400 bg-gray-50">
-                  <TierBody t={t} />
-                </div>
-              )}
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-const TierBody = memo(function TierBody({ t }: { t: { name: string; price: string; cadence: string; pitch: string; features: string[]; cta: string; highlight: boolean } }) {
-  return (
-    <div className={`h-full rounded-3xl p-8 sm:p-10 ${t.highlight ? "glass-strong" : "glass"}`}>
-      <div className="flex items-baseline justify-between">
-        <div>
-          <div className="font-display text-lg font-semibold">{t.name}</div>
-          <div className="mt-1 text-xs uppercase tracking-widest text-muted-foreground">{t.cadence}</div>
-        </div>
-        {t.highlight && (
-          <span className="rounded-full px-3 py-1 text-[10px] font-semibold uppercase tracking-widest"
-            style={{ background: "oklch(0.72 0.24 300 / 0.15)", color: "oklch(0.9 0.14 300)", border: "1px solid oklch(0.72 0.24 300 / 0.35)" }}>
-            Most shipped
-          </span>
-        )}
-      </div>
-      <div className="mt-6 flex items-end gap-2">
-        <div className={`font-display text-6xl font-bold tracking-tight ${t.highlight ? "text-gradient" : ""}`}>{t.price}</div>
-        <div className="pb-2 text-sm text-muted-foreground">{t.cadence === "one-time" ? "/ export" : ""}</div>
-      </div>
-      <p className="mt-2 text-sm text-gray-900 font-medium">{t.pitch}</p>
-      <ul className="mt-8 space-y-3 text-sm">
-        {t.features.map((f) => (
-          <li key={f} className="flex items-start gap-3">
-            <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-black" />
-            <span className="text-black font-semibold">{f}</span>
-          </li>
-        ))}
-      </ul>
-      <Link
-        to="/signup"
-        className={`mt-10 flex w-full items-center justify-center rounded-2xl py-4 font-display text-sm font-semibold transition ${
-          t.highlight ? "btn-kinetic glow-pulse" : "glass hover:bg-white/[0.08]"
-        }`}
-      >
-        <span className="relative z-10">{t.cta}</span>
-      </Link>
-    </div>
-  );
-});
+function Pricing() { return null; }
 
 const Footer = memo(function Footer() {
   return (
-    <footer className="relative border-t border-white/5 py-12">
+    <footer className="relative border-t border-gray-200 py-12">
       <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-6 sm:flex-row">
         <div className="flex items-center gap-2.5">
           <div className="relative h-6 w-6">
-            <div className="absolute inset-0 rounded-md" style={{ background: "var(--gradient-kinetic)" }} />
-            <div className="absolute inset-[2px] rounded bg-background/70 grid place-items-center text-[10px] font-bold text-gradient font-display">N</div>
+            <div className="absolute inset-0 rounded-md bg-black" />
+            <div className="absolute inset-[2px] rounded bg-white grid place-items-center text-[10px] font-bold text-black font-display">N</div>
           </div>
-          <span className="font-display text-sm">CareerOS · Agentic Career Platform</span>
+          <span className="font-display text-sm font-semibold text-black">CareerOS · Agentic Career Platform</span>
         </div>
-        <div className="text-xs text-muted-foreground">© {new Date().getFullYear()} CareerOS. Engineered on the edge.</div>
+        <div className="text-xs text-gray-500 font-medium">© {new Date().getFullYear()} CareerOS. Completely Free.</div>
       </div>
     </footer>
   );
@@ -399,7 +297,6 @@ function Landing() {
       <Nav />
       <Hero />
       <HowItWorks />
-      <Pricing />
       <Footer />
     </main>
   );
