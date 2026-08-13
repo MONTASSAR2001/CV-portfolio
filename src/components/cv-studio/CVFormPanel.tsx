@@ -14,13 +14,13 @@ function Field({ label, value, onChange, placeholder, type = "text" }: {
 }) {
   return (
     <div className="space-y-1.5">
-      <label className="block text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground/70">{label}</label>
+      <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-gray-900">{label}</label>
       <input
         type={type}
         value={value}
         onChange={e => onChange(e.target.value)}
         placeholder={placeholder}
-        className="w-full rounded-xl border border-white/8 bg-white/4 px-3.5 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/30 outline-none transition focus:border-violet-500/40 focus:bg-white/6 focus:ring-1 focus:ring-violet-500/20"
+        className="w-full rounded-xl border border-gray-300 bg-white px-3.5 py-2.5 text-sm font-medium text-black placeholder:text-gray-400 outline-none transition focus:border-black focus:ring-1 focus:ring-black"
       />
     </div>
   );
@@ -31,13 +31,13 @@ function TextArea({ label, value, onChange, rows = 3, placeholder }: {
 }) {
   return (
     <div className="space-y-1.5">
-      <label className="block text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground/70">{label}</label>
+      <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-gray-900">{label}</label>
       <textarea
         value={value}
         onChange={e => onChange(e.target.value)}
         rows={rows}
         placeholder={placeholder}
-        className="w-full resize-none rounded-xl border border-white/8 bg-white/4 px-3.5 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/30 outline-none transition focus:border-violet-500/40 focus:bg-white/6 focus:ring-1 focus:ring-violet-500/20"
+        className="w-full resize-none rounded-xl border border-gray-300 bg-white px-3.5 py-2.5 text-sm font-medium text-black placeholder:text-gray-400 outline-none transition focus:border-black focus:ring-1 focus:ring-black"
       />
     </div>
   );
@@ -87,9 +87,9 @@ export function CVFormPanel({ cvData, setCvData }: CVFormPanelProps) {
   const pct = Math.round((totalDone / 4) * 100);
 
   return (
-    <div className="flex h-full flex-col overflow-hidden rounded-3xl border border-white/[0.07] bg-white/[0.03] backdrop-blur-xl">
+    <div className="flex h-full flex-col overflow-hidden rounded-3xl border border-gray-200 bg-gray-50 backdrop-blur-xl">
       {/* ── Tab bar ── */}
-      <div className="border-b border-white/[0.06] px-4 pt-4 pb-0">
+      <div className="border-b border-gray-200 px-4 pt-4 pb-0">
         <div className="flex gap-0.5">
           {TABS.map(tab => {
             const Icon = tab.icon;
@@ -99,12 +99,12 @@ export function CVFormPanel({ cvData, setCvData }: CVFormPanelProps) {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`group relative flex flex-1 flex-col items-center gap-1 rounded-t-xl px-2 py-2.5 text-[10px] font-semibold uppercase tracking-widest transition-all ${active ? "bg-white/6 text-foreground" : "text-muted-foreground/50 hover:text-muted-foreground"}`}
+                className={`group relative flex flex-1 flex-col items-center gap-1 rounded-t-xl px-2 py-2.5 text-[10px] font-bold uppercase tracking-widest transition-all ${active ? "bg-white text-black border-t border-l border-r border-gray-200" : "text-gray-500 hover:text-black"}`}
               >
-                {active && <motion.div layoutId="tab-indicator" className="absolute bottom-0 left-0 right-0 h-0.5 rounded-t-full bg-violet-500" />}
+                {active && <motion.div layoutId="tab-indicator" className="absolute top-0 left-0 right-0 h-0.5 rounded-t-full bg-black" />}
                 <div className="relative">
                   <Icon size={15} />
-                  {done && !active && <span className="absolute -right-1 -top-1 h-1.5 w-1.5 rounded-full bg-emerald-500" />}
+                  {done && !active && <span className="absolute -right-1 -top-1 h-1.5 w-1.5 rounded-full bg-black" />}
                 </div>
                 {tab.label}
               </button>
@@ -129,7 +129,7 @@ export function CVFormPanel({ cvData, setCvData }: CVFormPanelProps) {
                 <Field label="Portfolio URL" value={info.portfolioUrl || ""} onChange={v => setInfo("portfolioUrl", v)} placeholder="mysite.com or https://…" />
               </div>
               <TextArea label="Professional Summary" value={info.summary} onChange={v => setInfo("summary", v)} rows={4} placeholder="Brief professional bio…" />
-              <button onClick={() => setActiveTab(1)} className="w-full flex items-center justify-center gap-2 rounded-xl bg-violet-600/80 py-2.5 text-sm font-semibold text-white backdrop-blur transition hover:bg-violet-500 active:scale-[0.98]">
+              <button onClick={() => setActiveTab(1)} className="w-full flex items-center justify-center gap-2 rounded-xl bg-black py-2.5 text-sm font-bold text-white transition hover:bg-gray-800 active:scale-[0.98]">
                 Next: Experience <ChevronRight size={14} />
               </button>
             </motion.div>
@@ -138,10 +138,10 @@ export function CVFormPanel({ cvData, setCvData }: CVFormPanelProps) {
           {activeTab === 1 && (
             <motion.div key="experience" initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 12 }} transition={{ duration: 0.2 }} className="space-y-4">
               {cvData.experience.map((exp, i) => (
-                <div key={exp.id} className="rounded-2xl border border-white/[0.07] bg-white/[0.02] p-4 space-y-3">
+                <div key={exp.id} className="rounded-2xl border border-gray-200 bg-white p-4 space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-violet-400">Role {i + 1}</span>
-                    <button onClick={() => delExp(exp.id)} className="rounded-lg p-1 text-muted-foreground/40 transition hover:bg-red-500/10 hover:text-red-400"><Trash2 size={13} /></button>
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-black">Role {i + 1}</span>
+                    <button onClick={() => delExp(exp.id)} className="rounded-lg p-1 text-gray-400 transition hover:bg-red-50 hover:text-red-600"><Trash2 size={13} /></button>
                   </div>
                   <div className="grid grid-cols-2 gap-3">
                     <Field label="Role" value={exp.role} onChange={v => setExp(exp.id, "role", v)} placeholder="Software Engineer" />
@@ -151,10 +151,10 @@ export function CVFormPanel({ cvData, setCvData }: CVFormPanelProps) {
                   <TextArea label="Bullet points (one per line)" value={exp.bullets} onChange={v => setExp(exp.id, "bullets", v)} rows={3} placeholder="Led team of 5 engineers…" />
                 </div>
               ))}
-              <button onClick={addExp} className="w-full flex items-center justify-center gap-1.5 rounded-xl border border-dashed border-violet-500/30 py-3 text-xs font-semibold text-violet-400 hover:bg-violet-500/8 transition">
+              <button onClick={addExp} className="w-full flex items-center justify-center gap-1.5 rounded-xl border border-dashed border-gray-300 py-3 text-xs font-bold text-gray-600 hover:bg-gray-100 hover:text-black transition">
                 <Plus size={14} /> Add Experience
               </button>
-              <button onClick={() => setActiveTab(2)} className="w-full flex items-center justify-center gap-2 rounded-xl bg-violet-600/80 py-2.5 text-sm font-semibold text-white backdrop-blur transition hover:bg-violet-500 active:scale-[0.98]">
+              <button onClick={() => setActiveTab(2)} className="w-full flex items-center justify-center gap-2 rounded-xl bg-black py-2.5 text-sm font-bold text-white transition hover:bg-gray-800 active:scale-[0.98]">
                 Next: Education <ChevronRight size={14} />
               </button>
             </motion.div>
@@ -163,20 +163,20 @@ export function CVFormPanel({ cvData, setCvData }: CVFormPanelProps) {
           {activeTab === 2 && (
             <motion.div key="education" initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 12 }} transition={{ duration: 0.2 }} className="space-y-4">
               {cvData.education.map((edu, i) => (
-                <div key={edu.id} className="rounded-2xl border border-white/[0.07] bg-white/[0.02] p-4 space-y-3">
+                <div key={edu.id} className="rounded-2xl border border-gray-200 bg-white p-4 space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-violet-400">Degree {i + 1}</span>
-                    <button onClick={() => delEdu(edu.id)} className="rounded-lg p-1 text-muted-foreground/40 transition hover:bg-red-500/10 hover:text-red-400"><Trash2 size={13} /></button>
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-black">Degree {i + 1}</span>
+                    <button onClick={() => delEdu(edu.id)} className="rounded-lg p-1 text-gray-400 transition hover:bg-red-50 hover:text-red-600"><Trash2 size={13} /></button>
                   </div>
                   <Field label="Degree" value={edu.degree} onChange={v => setEdu(edu.id, "degree", v)} placeholder="B.Sc. Computer Science" />
                   <Field label="Institution" value={edu.school} onChange={v => setEdu(edu.id, "school", v)} placeholder="University Name" />
                   <Field label="Year" value={edu.year} onChange={v => setEdu(edu.id, "year", v)} placeholder="2018 – 2022" />
                 </div>
               ))}
-              <button onClick={addEdu} className="w-full flex items-center justify-center gap-1.5 rounded-xl border border-dashed border-violet-500/30 py-3 text-xs font-semibold text-violet-400 hover:bg-violet-500/8 transition">
+              <button onClick={addEdu} className="w-full flex items-center justify-center gap-1.5 rounded-xl border border-dashed border-gray-300 py-3 text-xs font-bold text-gray-600 hover:bg-gray-100 hover:text-black transition">
                 <Plus size={14} /> Add Education
               </button>
-              <button onClick={() => setActiveTab(3)} className="w-full flex items-center justify-center gap-2 rounded-xl bg-violet-600/80 py-2.5 text-sm font-semibold text-white backdrop-blur transition hover:bg-violet-500 active:scale-[0.98]">
+              <button onClick={() => setActiveTab(3)} className="w-full flex items-center justify-center gap-2 rounded-xl bg-black py-2.5 text-sm font-bold text-white transition hover:bg-gray-800 active:scale-[0.98]">
                 Next: Skills <ChevronRight size={14} />
               </button>
             </motion.div>
@@ -185,26 +185,26 @@ export function CVFormPanel({ cvData, setCvData }: CVFormPanelProps) {
           {activeTab === 3 && (
             <motion.div key="skills" initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 12 }} transition={{ duration: 0.2 }} className="space-y-4">
               <div className="space-y-1.5">
-                <label className="block text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground/70">Add Skill</label>
+                <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-gray-900">Add Skill</label>
                 <input
                   type="text"
                   value={skillInput}
                   onChange={e => setSkillInput(e.target.value)}
                   onKeyDown={addSkill}
                   placeholder="Type a skill and press Enter…"
-                  className="w-full rounded-xl border border-white/8 bg-white/4 px-3.5 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/30 outline-none transition focus:border-violet-500/40 focus:ring-1 focus:ring-violet-500/20"
+                  className="w-full rounded-xl border border-gray-300 bg-white px-3.5 py-2.5 text-sm font-medium text-black placeholder:text-gray-400 outline-none transition focus:border-black focus:ring-1 focus:ring-black"
                 />
               </div>
               <div className="flex flex-wrap gap-2">
                 {cvData.skills.map(s => (
-                  <motion.span key={s} initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="flex items-center gap-1 rounded-full border border-violet-500/25 bg-violet-500/10 px-3 py-1 text-xs font-medium text-violet-300">
+                  <motion.span key={s} initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="flex items-center gap-1 rounded-full border border-gray-300 bg-white px-3 py-1 text-xs font-bold text-black">
                     {s}
-                    <button onClick={() => delSkill(s)} className="ml-0.5 text-violet-400/60 hover:text-violet-200 transition"><X size={11} /></button>
+                    <button onClick={() => delSkill(s)} className="ml-0.5 text-gray-500 hover:text-black transition"><X size={11} /></button>
                   </motion.span>
                 ))}
               </div>
               
-              <div className="pt-4 border-t border-white/5">
+              <div className="pt-4 border-t border-gray-200">
                 <TextArea label="Additional Information (Languages, Certifications, etc.)" value={cvData.additionalInfo || ""} onChange={v => setCvData(p => ({ ...p, additionalInfo: v }))} rows={4} placeholder="Fluent in English and Spanish. AWS Certified Solutions Architect..." />
               </div>
             </motion.div>
@@ -213,13 +213,13 @@ export function CVFormPanel({ cvData, setCvData }: CVFormPanelProps) {
       </div>
 
       {/* ── Progress footer ── */}
-      <div className="border-t border-white/[0.06] px-5 py-4">
+      <div className="border-t border-gray-200 px-5 py-4 bg-white">
         <div className="mb-2 flex items-center justify-between text-xs">
-          <span className="text-muted-foreground/60">CV Completion</span>
-          <span className="font-bold" style={{ color: "oklch(0.85 0.2 275)" }}>{pct}%</span>
+          <span className="text-gray-500 font-bold">CV Completion</span>
+          <span className="font-bold text-black">{pct}%</span>
         </div>
-        <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/5">
-          <motion.div className="h-full rounded-full" animate={{ width: `${pct}%` }} transition={{ duration: 0.5 }} style={{ background: "linear-gradient(90deg, oklch(0.72 0.24 300), oklch(0.85 0.18 210))", boxShadow: "0 0 12px oklch(0.72 0.24 300 / 0.5)" }} />
+        <div className="h-1.5 w-full overflow-hidden rounded-full bg-gray-200">
+          <motion.div className="h-full rounded-full bg-black" animate={{ width: `${pct}%` }} transition={{ duration: 0.5 }} />
         </div>
       </div>
     </div>

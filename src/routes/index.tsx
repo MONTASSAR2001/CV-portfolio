@@ -27,158 +27,7 @@ function useLandingData() {
 
 
 /* ── CSS keyframes injected once — all infinite animations live here (GPU) ── */
-const PERF_STYLES = `
-  @keyframes spin-slow   { to { transform: rotate(360deg); } }
-  @keyframes shard-spin-0 { to { transform: translateX(-50%) translateY(-50%) rotate(360deg); } }
-  @keyframes shard-spin-1 { to { transform: translateX(-50%) translateY(-50%) rotate(360deg); } }
-  @keyframes shard-spin-2 { to { transform: translateX(-50%) translateY(-50%) rotate(360deg); } }
-  @keyframes shard-spin-3 { to { transform: translateX(-50%) translateY(-50%) rotate(360deg); } }
-  @keyframes shard-spin-4 { to { transform: translateX(-50%) translateY(-50%) rotate(360deg); } }
-  @keyframes float-blob-0 { 0%,100% { transform:translate(0,0);      } 50% { transform:translate(15px,-30px); } }
-  @keyframes float-blob-1 { 0%,100% { transform:translate(0,0);      } 50% { transform:translate(15px,-30px); } }
-  @keyframes float-blob-2 { 0%,100% { transform:translate(0,0);      } 50% { transform:translate(15px,-30px); } }
-  @keyframes float-blob-3 { 0%,100% { transform:translate(0,0);      } 50% { transform:translate(15px,-30px); } }
-  @keyframes float-glass-a { 0%,100% { transform:rotate(-12deg) translateY(0);  } 50% { transform:rotate(-8deg) translateY(-20px);  } }
-  @keyframes float-glass-b { 0%,100% { transform:rotate(9deg)  translateY(0);  } 50% { transform:rotate(14deg) translateY(18px);   } }
-  @keyframes rotate-border  { to { --angle: 360deg; } }
-  @keyframes pulse-dot      { 0%,100% { box-shadow: 0 0 0 0 currentColor; } 50% { box-shadow: 0 0 0 8px transparent; } }
-  @keyframes ping-once      { 0% { transform: scale(1); opacity: 0.7; } 75%,100% { transform: scale(2); opacity: 0; } }
-`;
-
-export const Route = createFileRoute("/")({
-  component: Landing,
-});
-
-/* ---------- Custom kinetic ornaments (no stock icons) ---------- */
-
-const OrbitNode = memo(function OrbitNode({ className = "" }: { className?: string }) {
-  return (
-    <div className={`relative ${className}`}>
-      <div className="absolute inset-0 rounded-full blur-2xl opacity-70"
-        style={{ background: "conic-gradient(from 0deg, oklch(0.72 0.24 300), oklch(0.68 0.24 275), oklch(0.85 0.18 210), oklch(0.72 0.24 300))" }} />
-      <div className="relative h-full w-full rounded-full border border-white/15"
-        style={{ background: "radial-gradient(circle at 30% 30%, oklch(0.95 0.05 300 / 0.9), oklch(0.3 0.1 280 / 0.6) 50%, oklch(0.12 0.03 280) 80%)" }} />
-      <div className="absolute inset-2 rounded-full border border-white/10" />
-      <div className="absolute inset-6 rounded-full border border-white/5" />
-    </div>
-  );
-});
-
-const DataExtractionGlyph = memo(function DataExtractionGlyph() {
-  const reduce = useReducedMotion();
-  return (
-    <div className="relative h-56 w-full">
-      {/* central node — CSS spin, no JS frame loop */}
-      <div
-        className="absolute left-1/2 top-1/2 h-24 w-24 -translate-x-1/2 -translate-y-1/2"
-        style={{ animation: reduce ? "none" : "spin-slow 24s linear infinite", willChange: "transform" }}
-      >
-        <OrbitNode className="h-full w-full" />
-      </div>
-      {/* orbiting shards — CSS, no JS */}
-      {[0, 1, 2, 3, 4].map((i) => (
-        <div
-          key={i}
-          className="absolute left-1/2 top-1/2 h-1.5 w-10 rounded-full"
-          style={{
-            background: "linear-gradient(90deg, transparent, oklch(0.85 0.18 210), transparent)",
-            transformOrigin: "0 50%",
-            transform: `translateX(-50%) translateY(-50%) rotate(${i * 72}deg)`,
-            animation: reduce ? "none" : `shard-spin-${i} ${10 + i}s linear infinite`,
-            willChange: "transform",
-          }}
-        />
-      ))}
-      {/* extracted lines */}
-      <div className="absolute inset-x-8 bottom-4 space-y-2">
-        {[85, 60, 72].map((w, i) => (
-          <motion.div
-            key={i}
-            initial={{ width: 0, opacity: 0 }}
-            whileInView={{ width: `${w}%`, opacity: 1 }}
-            viewport={{ once: true, margin: "0px" }}
-            transition={{ delay: 0.3 + i * 0.15, duration: 0.9 }}
-            className="h-1 rounded-full"
-            style={{ background: "linear-gradient(90deg, oklch(0.72 0.24 300), oklch(0.85 0.18 210))" }}
-          />
-        ))}
-      </div>
-    </div>
-  );
-});
-
-const WebMeshGlyph = memo(function WebMeshGlyph() {
-  const nodes = [
-    { x: 20, y: 30 }, { x: 78, y: 22 }, { x: 50, y: 55 },
-    { x: 25, y: 78 }, { x: 82, y: 70 }, { x: 60, y: 15 },
-  ];
-  const edges: [number, number][] = [[0,2],[1,2],[2,3],[2,4],[5,1],[0,3],[4,1]];
-  return (
-    <div className="relative h-56 w-full">
-      <svg viewBox="0 0 100 100" className="absolute inset-0 h-full w-full" preserveAspectRatio="none">
-        <defs>
-          <linearGradient id="ln" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="oklch(0.72 0.24 300)" />
-            <stop offset="100%" stopColor="oklch(0.85 0.18 210)" />
-          </linearGradient>
-        </defs>
-        {edges.map(([a, b], i) => (
-          <motion.line
-            key={i}
-            x1={nodes[a].x} y1={nodes[a].y} x2={nodes[b].x} y2={nodes[b].y}
-            stroke="url(#ln)" strokeWidth="0.35"
-            initial={{ pathLength: 0, opacity: 0 }}
-            whileInView={{ pathLength: 1, opacity: 0.9 }}
-            viewport={{ once: true }}
-            transition={{ delay: i * 0.12, duration: 1.1 }}
-          />
-        ))}
-      </svg>
-      {nodes.map((n, i) => (
-        <motion.div
-          key={i}
-          initial={{ scale: 0, opacity: 0 }}
-          whileInView={{ scale: 1, opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.4 + i * 0.08, type: "spring", stiffness: 200 }}
-          className="absolute h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full"
-          style={{
-            left: `${n.x}%`, top: `${n.y}%`,
-            background: "oklch(0.95 0.05 300)",
-            boxShadow: "0 0 18px oklch(0.72 0.24 300), 0 0 4px oklch(1 0 0)",
-          }}
-        />
-      ))}
-      {/* deploy pulse — CSS, no JS */}
-      <div
-        className="absolute left-1/2 top-1/2 h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full"
-        style={{
-          background: "oklch(0.85 0.18 210)",
-          boxShadow: "0 0 20px oklch(0.85 0.18 210)",
-          animation: "spin-slow 3s ease-in-out infinite",
-          willChange: "transform",
-        }}
-      />
-    </div>
-  );
-});
-
-const FloatingShapes = memo(function FloatingShapes() {
-  return null;
-});
-
-const KineticBorder = memo(function KineticBorder({ children, className = "" }: { children: React.ReactNode; className?: string }) {
-  return (
-    <div className={`kinetic-border relative ${className}`}>
-      {/* CSS animation — zero JS overhead */}
-      <div
-        className="kinetic-border-inner rounded-[inherit]"
-        style={{ animation: "rotate-border 8s linear infinite", willChange: "transform" }}
-      />
-      {children}
-    </div>
-  );
-});
+// Animation components removed
 
 /* ---------- Sections ---------- */
 
@@ -253,8 +102,7 @@ function Hero() {
           style={{ willChange: "opacity, transform" }}
         >
           <span className="relative flex h-2 w-2">
-            <span className="absolute inline-flex h-full w-full rounded-full opacity-70" style={{ background: "oklch(0.72 0.24 300)", animation: "ping-once 1.5s cubic-bezier(0,0,0.2,1) infinite" }} />
-            <span className="relative inline-flex h-2 w-2 rounded-full" style={{ background: "oklch(0.72 0.24 300)" }} />
+            <span className="relative inline-flex h-2 w-2 rounded-full bg-black" />
           </span>
           Agentic AI · v3.1 released
         </motion.div>
@@ -276,7 +124,7 @@ function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3, duration: 0.7 }}
-          className="mx-auto mt-6 max-w-2xl text-base text-muted-foreground sm:text-lg"
+          className="mx-auto mt-6 max-w-2xl text-base text-gray-900 font-medium sm:text-lg"
         >
           Powered by AI. No coding required. Stand out to recruiters instantly with a print-ready, ATS-optimized CV that renders perfectly in milliseconds.
         </motion.p>
@@ -305,38 +153,28 @@ function Hero() {
           className="relative mx-auto mt-20 max-w-4xl"
           style={{ perspective: 1200 }}
         >
-          <KineticBorder className="rounded-3xl">
-            <div className="glass-strong relative overflow-hidden rounded-3xl p-4 sm:p-6">
+            <div className="glass-strong relative overflow-hidden rounded-3xl p-4 sm:p-6 border border-gray-200">
               <div className="flex items-center gap-1.5 pb-4">
-                <span className="h-2.5 w-2.5 rounded-full bg-white/20" />
-                <span className="h-2.5 w-2.5 rounded-full bg-white/20" />
-                <span className="h-2.5 w-2.5 rounded-full bg-white/20" />
-          <span className="ml-3 text-xs text-muted-foreground">careeros.ai / studio</span>
+                <span className="h-2.5 w-2.5 rounded-full bg-gray-300" />
+                <span className="h-2.5 w-2.5 rounded-full bg-gray-300" />
+                <span className="h-2.5 w-2.5 rounded-full bg-gray-300" />
+                <span className="ml-3 text-xs text-gray-900 font-bold">careeros.ai / studio</span>
               </div>
-              <div className="grid gap-4 sm:grid-cols-[1.2fr_1fr]">
-                <div className="glass rounded-2xl p-5">
-                  <div className="mb-3 text-xs uppercase tracking-widest text-muted-foreground">Agent transcript</div>
-                  {[
-                    "Parsing 4-year work history…",
-                    "Rewriting achievements in impact voice…",
-                    "Generating design system: obsidian / violet…",
-                    "Deploying portfolio → live in 8s",
-                  ].map((t, i) => (
-                    <motion.div key={i}
-                      initial={{ opacity: 0, x: -10 }} whileInView={{ opacity: 1, x: 0 }}
-                      viewport={{ once: true }} transition={{ delay: 0.9 + i * 0.15 }}
-                      className="flex items-center gap-2 py-1.5 text-sm">
-                      <span className="h-1.5 w-1.5 rounded-full" style={{ background: "oklch(0.85 0.18 210)", boxShadow: "0 0 10px oklch(0.85 0.18 210)" }} />
-                      <span className="text-foreground/85">{t}</span>
-                    </motion.div>
-                  ))}
-                </div>
-                <div className="glass relative flex items-center justify-center overflow-hidden rounded-2xl p-6">
-                  <WebMeshGlyph />
-                </div>
+              <div className="glass rounded-2xl p-5 bg-white">
+                <div className="mb-3 text-xs uppercase tracking-widest text-gray-900 font-bold">Agent transcript</div>
+                {[
+                  "Parsing 4-year work history…",
+                  "Rewriting achievements in impact voice…",
+                  "Generating design system: minimalist / clean…",
+                  "Exporting PDF → ready in 2s",
+                ].map((t, i) => (
+                  <div key={i} className="flex items-center gap-2 py-1.5 text-sm">
+                    <span className="h-1.5 w-1.5 rounded-full bg-black" />
+                    <span className="text-black font-semibold">{t}</span>
+                  </div>
+                ))}
               </div>
             </div>
-          </KineticBorder>
           
         </motion.div>
       </motion.div>
@@ -380,11 +218,11 @@ function HowItWorks() {
           viewport={{ once: true }} transition={{ duration: 0.7 }}
           className="mx-auto max-w-2xl text-center"
         >
-          <div className="text-xs uppercase tracking-[0.3em] text-muted-foreground">How it works</div>
+          <div className="text-xs uppercase tracking-[0.3em] text-gray-900 font-bold">How it works</div>
           <h2 className="mt-4 font-display text-4xl font-bold tracking-tight sm:text-5xl">
             Three steps to <span className="text-gradient">go live.</span>
           </h2>
-          <p className="mt-4 text-sm text-muted-foreground">
+          <p className="mt-4 text-sm text-gray-900 font-medium">
             From raw text to a professional CV — no complex configuration or formatting struggles.
           </p>
         </motion.div>
@@ -415,8 +253,8 @@ function HowItWorks() {
                 >
                   <Icon size={22} style={{ color: `oklch(0.85 0.2 ${s.hue})` }} />
                 </div>
-                <h3 className="relative font-display text-xl font-semibold tracking-tight">{s.title}</h3>
-                <p className="relative mt-3 text-sm text-muted-foreground leading-relaxed">{s.body}</p>
+                <h3 className="relative font-display text-xl font-semibold tracking-tight text-black">{s.title}</h3>
+                <p className="relative mt-3 text-sm text-gray-900 font-medium leading-relaxed">{s.body}</p>
                 <div className="relative mt-6 h-px w-full" style={{ background: `linear-gradient(90deg, oklch(0.75 0.22 ${s.hue} / 0.4), transparent)` }} />
                 <div className="relative mt-4 flex items-center gap-2 text-xs font-semibold" style={{ color: `oklch(0.85 0.2 ${s.hue})` }}>
                   <CheckCircle2 size={13} /> Step {parseInt(s.n)} complete
@@ -462,11 +300,11 @@ function Pricing() {
           viewport={{ once: true }} transition={{ duration: 0.7 }}
           className="mx-auto max-w-2xl text-center"
         >
-          <div className="text-xs uppercase tracking-[0.3em] text-muted-foreground">Pricing</div>
-          <h2 className="mt-4 font-display text-4xl font-bold tracking-tight sm:text-6xl">
-            Preview free. <span className="text-gradient">Ship for $15.</span>
+          <div className="text-xs uppercase tracking-[0.3em] text-gray-900 font-bold">Pricing</div>
+          <h2 className="mt-4 font-display text-4xl font-bold tracking-tight sm:text-6xl text-black">
+            Preview free. Ship for $15.
           </h2>
-          <p className="mt-4 text-muted-foreground">Two tiers. No subscription theatre.</p>
+          <p className="mt-4 text-gray-900 font-medium">Two tiers. No subscription theatre.</p>
         </motion.div>
 
         <div className="mx-auto mt-16 grid max-w-4xl gap-6 md:grid-cols-2">
@@ -479,11 +317,11 @@ function Pricing() {
               className="group relative"
             >
               {t.highlight ? (
-                <KineticBorder className="h-full rounded-3xl">
+                <div className="h-full rounded-3xl border-2 border-black bg-white shadow-lg">
                   <TierBody t={t} />
-                </KineticBorder>
+                </div>
               ) : (
-                <div className="h-full rounded-3xl border border-white/10 transition group-hover:border-white/25">
+                <div className="h-full rounded-3xl border border-gray-200 transition group-hover:border-gray-400 bg-gray-50">
                   <TierBody t={t} />
                 </div>
               )}
@@ -514,14 +352,12 @@ const TierBody = memo(function TierBody({ t }: { t: { name: string; price: strin
         <div className={`font-display text-6xl font-bold tracking-tight ${t.highlight ? "text-gradient" : ""}`}>{t.price}</div>
         <div className="pb-2 text-sm text-muted-foreground">{t.cadence === "one-time" ? "/ export" : ""}</div>
       </div>
-      <p className="mt-2 text-sm text-muted-foreground">{t.pitch}</p>
+      <p className="mt-2 text-sm text-gray-900 font-medium">{t.pitch}</p>
       <ul className="mt-8 space-y-3 text-sm">
         {t.features.map((f) => (
           <li key={f} className="flex items-start gap-3">
-            <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full"
-              style={{ background: t.highlight ? "var(--gradient-kinetic)" : "oklch(1 0 0 / 0.5)",
-                       boxShadow: t.highlight ? "0 0 10px oklch(0.72 0.24 300)" : "none" }} />
-            <span className="text-foreground/85">{f}</span>
+            <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-black" />
+            <span className="text-black font-semibold">{f}</span>
           </li>
         ))}
       </ul>
@@ -556,9 +392,7 @@ const Footer = memo(function Footer() {
 
 function Landing() {
   return (
-    <main className="relative min-h-screen overflow-x-clip">
-      {/* Inject performance CSS keyframes once */}
-      <style dangerouslySetInnerHTML={{ __html: PERF_STYLES }} />
+    <main className="relative min-h-screen overflow-x-clip bg-white">
       <Nav />
       <Hero />
       <HowItWorks />

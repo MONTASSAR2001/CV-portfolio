@@ -244,7 +244,7 @@ function CvStudioPage() {
                 >
                   <ArrowLeft size={12} /> Dashboard
                 </Link>
-                <div className="h-4 w-px bg-white/10" />
+                <div className="h-4 w-px bg-gray-200" />
                 <div className="flex items-center gap-2">
                   <img src="/logo.png" alt="CareerOS Logo" className="h-7 w-auto object-contain" />
                   <span className="text-sm font-semibold text-black">CareerOS CV Studio</span>
@@ -339,7 +339,7 @@ function CvStudioPage() {
               </motion.aside>
 
               {/* ── Right: CV preview canvas ── */}
-              <div className="relative flex flex-1 items-start justify-center overflow-auto p-8 pt-10">
+              <div className="relative flex flex-1 items-start justify-center overflow-auto bg-white p-8 pt-10">
                 {/* Subtle background container */}
 
                 <motion.div
