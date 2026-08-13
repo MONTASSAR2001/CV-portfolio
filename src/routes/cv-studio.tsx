@@ -324,7 +324,7 @@ function CvStudioPage() {
                 initial={{ x: -32, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
                 transition={{ delay: 0.1, duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-                className="w-[360px] shrink-0 overflow-hidden p-4"
+                className="w-[460px] shrink-0 overflow-hidden p-4"
                 style={{ borderRight: "1px solid #e5e7eb", background: "#ffffff" }}
               >
                 <CVFormPanel cvData={cvData} setCvData={setCvData} />
