@@ -96,7 +96,6 @@ function Hero() {
 
   return (
     <section ref={ref} className="relative min-h-screen overflow-hidden pt-40 pb-24 sm:pt-48">
-      <FloatingShapes />
       <motion.div style={{ y: reduce ? 0 : y }} className="relative z-10 mx-auto max-w-6xl px-6 text-center">
         <motion.div
           initial={{ opacity: 0, y: 12 }}
