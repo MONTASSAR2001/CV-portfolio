@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { CheckCircle2, ChevronRight, Plus, Trash2, X, User, Briefcase, GraduationCap, Zap } from "lucide-react";
+import { CheckCircle2, ChevronRight, Plus, Trash2, X, User, Briefcase, GraduationCap, Zap, Rocket } from "lucide-react";
 import type { CvState, PersonalInfo, Experience, Education } from "./types";
 
 interface CVFormPanelProps {
@@ -45,10 +45,11 @@ function TextArea({ label, value, onChange, rows = 3, placeholder }: {
 
 /* ─── Section tab button ─────────────────────────────────────────────────── */
 const TABS = [
-  { id: 0, label: "Personal",   icon: User },
+  { id: 0, label: "Personal", icon: User },
   { id: 1, label: "Experience", icon: Briefcase },
-  { id: 2, label: "Education",  icon: GraduationCap },
-  { id: 3, label: "Skills",     icon: Zap },
+  { id: 2, label: "Education", icon: GraduationCap },
+  { id: 3, label: "Skills", icon: Zap },
+  { id: 4, label: "Projects", icon: Rocket },
 ] as const;
 
 /* ─── Main component ─────────────────────────────────────────────────────── */
@@ -82,9 +83,10 @@ export function CVFormPanel({ cvData, setCvData }: CVFormPanelProps) {
     cvData.experience.length > 0,
     cvData.education.length > 0,
     cvData.skills.length > 0,
+    (cvData.projects || []).length > 0,
   ];
   const totalDone = completedTabs.filter(Boolean).length;
-  const pct = Math.round((totalDone / 4) * 100);
+  const pct = Math.round((totalDone / 5) * 100);
 
   return (
     <div className="flex h-full flex-col overflow-hidden rounded-3xl border border-gray-200 bg-gray-50 backdrop-blur-xl">
@@ -203,12 +205,35 @@ export function CVFormPanel({ cvData, setCvData }: CVFormPanelProps) {
                   </motion.span>
                 ))}
               </div>
-              
+
               <div className="pt-4 border-t border-gray-200">
                 <TextArea label="Additional Information (Languages, Certifications, etc.)" value={cvData.additionalInfo || ""} onChange={v => setCvData(p => ({ ...p, additionalInfo: v }))} rows={4} placeholder="Fluent in English and Spanish. AWS Certified Solutions Architect..." />
               </div>
             </motion.div>
           )}
+        
+          {activeTab === 4 && (
+            <motion.div key="projects" initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 12 }} transition={{ duration: 0.2 }} className="space-y-4">
+              {(cvData.projects || []).map((proj, i) => (
+                <div key={i} className="rounded-2xl border border-gray-200 bg-white p-4 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-black">Project {i + 1}</span>
+                    <button onClick={() => setCvData(p => ({ ...p, projects: p.projects?.filter((_, idx) => idx !== i) }))} className="rounded-lg p-1 text-gray-400 transition hover:bg-red-50 hover:text-red-600"><Trash2 size={13} /></button>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <Field label="Project Name" value={proj.title || ""} onChange={v => setCvData(p => ({ ...p, projects: p.projects?.map((x, idx) => idx === i ? { ...x, title: v } : x) }))} placeholder="E.g., CareerOS" />
+                    <Field label="Project Label" value={proj.projectLabel || ""} onChange={v => setCvData(p => ({ ...p, projects: p.projects?.map((x, idx) => idx === i ? { ...x, projectLabel: v } : x) }))} placeholder="e.g., Client Project, Personal R&D" />
+                  </div>
+                  <Field label="Link" value={proj.link || ""} onChange={v => setCvData(p => ({ ...p, projects: p.projects?.map((x, idx) => idx === i ? { ...x, link: v } : x) }))} placeholder="https://..." />
+                  <TextArea label="Description / Bullet Points" value={proj.description || ""} onChange={v => setCvData(p => ({ ...p, projects: p.projects?.map((x, idx) => idx === i ? { ...x, description: v } : x) }))} rows={3} placeholder="Describe what you built AND the quantifiable results (e.g., Reduced latency by 20%, integrated LiDAR achieving 99% accuracy...)" />
+                </div>
+              ))}
+              <button onClick={() => setCvData(p => ({ ...p, projects: [...(p.projects || []), { title: "", projectLabel: "", description: "", link: "" }] }))} className="w-full flex items-center justify-center gap-1.5 rounded-xl border border-dashed border-gray-300 py-3 text-xs font-bold text-gray-600 hover:bg-gray-100 hover:text-black transition">
+                <Plus size={14} /> Add Project
+              </button>
+            </motion.div>
+          )}
+
         </AnimatePresence>
       </div>
 

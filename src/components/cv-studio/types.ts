@@ -13,7 +13,7 @@ export type PersonalInfo = {
   github?: string;
   portfolioUrl?: string;
   summary: string;
-  
+
   // PortfolioData mappings
   name?: string;
   role?: string;
@@ -33,7 +33,7 @@ export type Experience = {
   company: string;
   period: string;
   bullets: string;
-  
+
   // PortfolioData mappings
   duration?: string;
   description?: string;
@@ -44,7 +44,7 @@ export type Education = {
   degree: string;
   school: string;
   year: string;
-  
+
   // PortfolioData mappings
   institution?: string;
 };
@@ -56,6 +56,7 @@ export type CvState = {
   skills: string[];
   projects?: {
     title?: string;
+    projectLabel?: string;
     description?: string;
     techStack?: string[];
     tech?: string[];
@@ -122,20 +123,20 @@ export const DEMO_CV_STATE: CvState = {
 };
 
 export const TEMPLATE_LIST = [
-  { id: "minimalist",     label: "Minimalist",       emoji: "✦", isPremium: false },
-  { id: "corporate",      label: "Corporate",        emoji: "🏛", isPremium: false },
-  { id: "tech",           label: "Tech",             emoji: "⟨/⟩", isPremium: false },
-  { id: "creative",       label: "Creative",         emoji: "★", isPremium: true },
-  { id: "executive",      label: "Executive",        emoji: "◆", isPremium: true },
-  { id: "startup",        label: "Startup",          emoji: "⚡", isPremium: true },
-  { id: "academic",       label: "Academic",         emoji: "∑", isPremium: true },
-  { id: "editorial",      label: "Editorial",        emoji: "✦", isPremium: true },
-  { id: "darkbold",       label: "Dark Bold",        emoji: "◉", isPremium: true },
-  { id: "visual",         label: "Visual",           emoji: "◈", isPremium: true },
-  { id: "atsclassic",     label: "ATS Classic",      emoji: "▣", isPremium: false },
-  { id: "atsmodern",      label: "ATS Modern",       emoji: "▤", isPremium: false },
-  { id: "harvardstandard",label: "Harvard Standard", emoji: "⬛", isPremium: false },
-  { id: "atsexecutive",   label: "Executive ATS",    emoji: "📋", isPremium: false },
+  { id: "minimalist", label: "Minimalist", emoji: "✦", isPremium: false },
+  { id: "corporate", label: "Corporate", emoji: "🏛", isPremium: false },
+  { id: "tech", label: "Tech", emoji: "⟨/⟩", isPremium: false },
+  { id: "creative", label: "Creative", emoji: "★", isPremium: true },
+  { id: "executive", label: "Executive", emoji: "◆", isPremium: true },
+  { id: "startup", label: "Startup", emoji: "⚡", isPremium: true },
+  { id: "academic", label: "Academic", emoji: "∑", isPremium: true },
+  { id: "editorial", label: "Editorial", emoji: "✦", isPremium: true },
+  { id: "darkbold", label: "Dark Bold", emoji: "◉", isPremium: true },
+  { id: "visual", label: "Visual", emoji: "◈", isPremium: true },
+  { id: "atsclassic", label: "ATS Classic", emoji: "▣", isPremium: false },
+  { id: "atsmodern", label: "ATS Modern", emoji: "▤", isPremium: false },
+  { id: "harvardstandard", label: "Harvard Standard", emoji: "⬛", isPremium: false },
+  { id: "atsexecutive", label: "Executive ATS", emoji: "📋", isPremium: false },
 ] as const;
 
 export type TemplateId = (typeof TEMPLATE_LIST)[number]["id"];
