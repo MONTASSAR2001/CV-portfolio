@@ -65,9 +65,6 @@ const PRINT_STYLES = `
       transform: none !important;
       overflow: visible !important;
     }
-    .cv-root > div > div {
-      page-break-inside: avoid;
-    }
   }
 `;
 
