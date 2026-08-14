@@ -14,6 +14,11 @@ const openai = new OpenAI({
 });
 
 app.post('/api/extract-cv', async (req, res) => {
+  if (!process.env.NVIDIA_API_KEY) {
+    console.error("MISSING API KEY");
+    return res.status(500).json({ error: "NVIDIA_API_KEY is missing on the server." });
+  }
+
   try {
     const { cvText, prompt } = req.body;
     console.log("[AI ROUTE] Received text length:", cvText?.length, "| Prompt length:", prompt?.length);
@@ -87,7 +92,9 @@ STRICT MINIMUM REQUIREMENTS — failure to meet these means your output is inval
       response_format: { type: "json_object" },
       temperature: 0.3,
       max_tokens: 2048,
-    });
+    }, { timeout: 45000 });
+
+    console.log("[NVIDIA] Response received!");
 
     let raw = response.choices[0].message.content || "";
     
@@ -118,10 +125,10 @@ STRICT MINIMUM REQUIREMENTS — failure to meet these means your output is inval
     if (!Array.isArray(parsed.education))  parsed.education  = [];
     if (!Array.isArray(parsed.projects))   parsed.projects   = [];
 
-    res.json(parsed);
+    return res.status(200).json(parsed);
   } catch (error) {
     console.error("[BACKEND ERROR]", error);
-    res.status(500).json({ error: error.message || "An error occurred during AI extraction." });
+    return res.status(500).json({ error: error.message || "Internal Server Error during AI extraction" });
   }
 });
 
