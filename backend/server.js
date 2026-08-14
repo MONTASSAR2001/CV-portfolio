@@ -5,6 +5,7 @@ const OpenAI = require('openai');
 
 const app = express();
 app.use(cors());
+app.use((req, res, next) => { console.log(`[INCOMING] ${req.method} ${req.url}`); next(); });
 app.use(express.json({ limit: '10mb' }));
 
 const openai = new OpenAI({
@@ -15,6 +16,7 @@ const openai = new OpenAI({
 app.post('/api/extract-cv', async (req, res) => {
   try {
     const { cvText, prompt } = req.body;
+    console.log("[AI ROUTE] Received text length:", cvText?.length, "| Prompt length:", prompt?.length);
     if (!cvText && !prompt) {
       return res.status(400).json({ error: "Either a CV or a prompt must be provided." });
     }
@@ -75,6 +77,7 @@ STRICT MINIMUM REQUIREMENTS — failure to meet these means your output is inval
 - If processing a CV: only use data present in the CV; do not invent employers or dates.
 - Return ONLY the raw JSON — no markdown, no explanation, no commentary.`;
 
+    console.log("[NVIDIA] Calling API...");
     const response = await openai.chat.completions.create({
       model: "meta/llama-3.1-70b-instruct",
       messages: [
@@ -117,7 +120,7 @@ STRICT MINIMUM REQUIREMENTS — failure to meet these means your output is inval
 
     res.json(parsed);
   } catch (error) {
-    console.error("AI Extraction Error:", error);
+    console.error("[BACKEND ERROR]", error);
     res.status(500).json({ error: error.message || "An error occurred during AI extraction." });
   }
 });

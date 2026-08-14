@@ -52,12 +52,14 @@ export function AIImportModal({ onStart, accessToken, onDismiss }: AIImportModal
       let reqData: any = {};
       if (input.file) {
         const text = await extractTextFromPDF(input.file);
+        console.log("2. PDF Text Length:", text.length);
         if (!text || text.trim().length < 80) throw new Error("Could not extract enough text. Use a text-based (non-scanned) PDF.");
         reqData.cvText = text.slice(0, 12000);
       } else {
         reqData.prompt = input.prompt!.trim();
       }
       
+      console.log("1. Target Backend URL:", import.meta.env.VITE_AI_BACKEND_URL);
       const backendUrl = import.meta.env.VITE_AI_BACKEND_URL || "http://localhost:8080";
       const response = await fetch(`${backendUrl}/api/extract-cv`, {
         method: "POST",
@@ -123,8 +125,9 @@ export function AIImportModal({ onStart, accessToken, onDismiss }: AIImportModal
       toast.success(input.file ? "CV imported! Review and tweak any details below." : "CV generated! Review and tweak any details below.");
       onStart(mappedCvData);
     } catch (err: any) {
-      const errorMessage = err instanceof Error ? err.message : String(err);
-      toast.error(`AI process failed: ${errorMessage}`);
+      const safeErrorMsg = err instanceof Error ? err.message : JSON.stringify(err, Object.getOwnPropertyNames(err));
+      console.error("3. FULL FETCH ERROR:", safeErrorMsg);
+      toast.error(typeof safeErrorMsg === 'string' ? safeErrorMsg.substring(0, 100) : "Unknown Error");
       setPhase("select"); 
       setStageIdx(0);
     } finally {
