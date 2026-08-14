@@ -41,16 +41,16 @@ export function AIImportModal({ onStart, accessToken, onDismiss }: AIImportModal
       return;
     }
     
+    const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+    if (sessionError || !session?.access_token) {
+      toast.error("Session expired. Please log in again.");
+      return;
+    }
+
     setPhase("loading");
     const timer = setInterval(() => setStageIdx(i => Math.min(i + 1, AI_STAGES.length - 1)), 900);
     try {
-      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-      if (sessionError) throw new Error("Authentication failed: " + sessionError.message);
-      
-      const realToken = session?.access_token || accessToken;
-      if (!realToken) throw new Error("Unauthorized: No valid session token found.");
-
-      let reqData: any = { accessToken: realToken };
+      let reqData: any = { accessToken: session.access_token };
       if (input.file) {
         const text = await extractTextFromPDF(input.file);
         if (!text || text.trim().length < 80) throw new Error("Could not extract enough text. Use a text-based (non-scanned) PDF.");
@@ -103,18 +103,18 @@ export function AIImportModal({ onStart, accessToken, onDismiss }: AIImportModal
         projects: safeProjects,
       };
 
-      clearInterval(timer);
       setStageIdx(AI_STAGES.length - 1);
       setPhase("done");
       await new Promise(r => setTimeout(r, 900));
       toast.success(input.file ? "CV imported! Review and tweak any details below." : "CV generated! Review and tweak any details below.");
       onStart(mappedCvData);
     } catch (err: any) {
-      clearInterval(timer);
       const errorMessage = err instanceof Error ? err.message : String(err);
       toast.error(`AI process failed: ${errorMessage}`);
       setPhase("select"); 
       setStageIdx(0);
+    } finally {
+      clearInterval(timer);
     }
   }
 
