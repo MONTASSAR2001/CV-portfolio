@@ -4,7 +4,6 @@ import { toast } from "sonner";
 import { Sparkles, FileText, Upload, Loader2, CheckCircle2, Wand2, ArrowRight, FileUp } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { extractTextFromPDF } from "@/lib/pdf-extractor";
-import { parseResumeWithAI } from "@/lib/server-fns";
 import type { CvState } from "./types";
 import { EMPTY_CV_STATE } from "./types";
 
@@ -50,7 +49,7 @@ export function AIImportModal({ onStart, accessToken, onDismiss }: AIImportModal
     setPhase("loading");
     const timer = setInterval(() => setStageIdx(i => Math.min(i + 1, AI_STAGES.length - 1)), 900);
     try {
-      let reqData: any = { accessToken: session.access_token };
+      let reqData: any = {};
       if (input.file) {
         const text = await extractTextFromPDF(input.file);
         if (!text || text.trim().length < 80) throw new Error("Could not extract enough text. Use a text-based (non-scanned) PDF.");
@@ -59,7 +58,22 @@ export function AIImportModal({ onStart, accessToken, onDismiss }: AIImportModal
         reqData.prompt = input.prompt!.trim();
       }
       
-      const parsed = await parseResumeWithAI({ data: reqData });
+      const backendUrl = import.meta.env.VITE_AI_BACKEND_URL || "http://localhost:8080";
+      const response = await fetch(`${backendUrl}/api/extract-cv`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${session.access_token}`
+        },
+        body: JSON.stringify(reqData)
+      });
+
+      if (!response.ok) {
+        const errData = await response.json().catch(() => ({}));
+        throw new Error(errData.error || `Server error: ${response.status}`);
+      }
+
+      const parsed = await response.json();
       
       // Null-safety: guarantee arrays exist before mapping (AI may omit empty sections)
       const safeExperience = Array.isArray(parsed.experience) ? parsed.experience : [];
