@@ -111,7 +111,7 @@ export function AIImportModal({ onStart, accessToken, onDismiss }: AIImportModal
       onStart(mappedCvData);
     } catch (err: any) {
       clearInterval(timer);
-      const errorMessage = err?.message || (typeof err === "string" ? err : JSON.stringify(err)) || "Unknown error";
+      const errorMessage = err instanceof Error ? err.message : String(err);
       toast.error(`AI process failed: ${errorMessage}`);
       setPhase("select"); 
       setStageIdx(0);

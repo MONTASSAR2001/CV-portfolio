@@ -209,7 +209,7 @@ STRICT MINIMUM REQUIREMENTS — you MUST meet all of these or the output will be
         Authorization: `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        model: "deepseek-ai/deepseek-v4-pro",
+        model: "meta/llama-3.1-70b-instruct",
         response_format: { type: "json_object" },
         temperature: 0.65,
         max_tokens: 2048,
@@ -386,7 +386,7 @@ STRICT MINIMUM REQUIREMENTS — failure to meet these means your output is inval
         Authorization: `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        model: "deepseek-ai/deepseek-v4-pro",
+        model: "meta/llama-3.1-70b-instruct",
         response_format: { type: "json_object" },
         temperature: 0.3,
         max_tokens: 2048,

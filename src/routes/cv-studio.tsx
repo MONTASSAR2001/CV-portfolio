@@ -154,7 +154,7 @@ function CvStudioPage() {
     if (user) {
       const fetchData = async () => {
         try {
-          const { data } = await supabase.from("profiles").select("subscription_tier").eq("id", user.id).single();
+          const { data } = await supabase.from("profiles").select("subscription_tier").eq("id", user.id).maybeSingle();
           if (data) setSubscriptionTier(data.subscription_tier || "free");
         } catch (error) {
           console.error("Error fetching profile:", error);
