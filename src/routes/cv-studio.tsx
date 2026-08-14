@@ -143,6 +143,9 @@ function CvStudioPage() {
   const [subscriptionTier, setSubscriptionTier] = useState<string>("free");
   const [aiModalOpen, setAiModalOpen] = useState(false);
 
+  const [savedCvData, setSavedCvData] = useState<CvState | null>(null);
+  const [showLoadPrompt, setShowLoadPrompt] = useState(false);
+
   const printRef = useRef<HTMLDivElement>(null);
 
   /* ── Auth guard & Data Fetch ── */
@@ -160,8 +163,8 @@ function CvStudioPage() {
         try {
           const { data } = await supabase.from("cvs").select("cv_data_json").eq("user_id", user.id).maybeSingle();
           if (data && data.cv_data_json) {
-            setCvData(data.cv_data_json as unknown as CvState);
-            setPhase("editor"); // Skip import modal if CV exists
+            setSavedCvData(data.cv_data_json as unknown as CvState);
+            setShowLoadPrompt(true);
           }
         } catch (error) {
           console.error("Error fetching CV:", error);
@@ -221,12 +224,55 @@ function CvStudioPage() {
 
       {/* ── AI Import modal (initial phase OR re-opened via button) ── */}
       <AnimatePresence>
-        {(phase === "import" || aiModalOpen) && (
+        {(phase === "import" || aiModalOpen) && !showLoadPrompt && (
           <AIImportModal
             onStart={handleStart}
             onDismiss={phase === "editor" ? () => setAiModalOpen(false) : undefined}
             accessToken={user?.id ?? ""}
           />
+        )}
+      </AnimatePresence>
+
+      {/* ── Load Prompt Modal ── */}
+      <AnimatePresence>
+        {showLoadPrompt && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="w-full max-w-md overflow-hidden rounded-2xl bg-white p-8 shadow-2xl"
+              style={{ border: "1px solid #e5e7eb" }}
+            >
+              <h2 className="mb-3 text-2xl font-bold tracking-tight text-black">Welcome back!</h2>
+              <p className="mb-8 text-sm leading-relaxed text-gray-500">
+                We found a previously saved CV. Would you like to continue editing it, or start a new one?
+              </p>
+              <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
+                <button
+                  onClick={() => {
+                    setShowLoadPrompt(false);
+                    // Remains in import phase with DEMO_CV_STATE
+                  }}
+                  className="rounded-xl border-2 border-black bg-white px-5 py-2.5 text-sm font-semibold text-black transition-all hover:bg-gray-50 active:scale-95"
+                >
+                  Start Fresh
+                </button>
+                <button
+                  onClick={() => {
+                    if (savedCvData) {
+                      setCvData(savedCvData);
+                      setPhase("editor");
+                    }
+                    setShowLoadPrompt(false);
+                  }}
+                  className="rounded-xl border-2 border-black bg-black px-5 py-2.5 text-sm font-semibold text-white shadow-md transition-all hover:bg-gray-900 active:scale-95"
+                >
+                  Continue Saved CV
+                </button>
+              </div>
+            </motion.div>
+          </div>
         )}
       </AnimatePresence>
 
