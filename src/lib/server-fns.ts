@@ -167,7 +167,7 @@ export const generatePortfolioContent = createServerFn({ method: "POST" })
       throw new Error("Either a CV or a prompt must be provided.");
     }
 
-    const apiKey = process.env.GROQ_API_KEY;
+    const apiKey = process.env.NVIDIA_API_KEY;
     if (!apiKey) {
       throw new Error("AI service is not configured on the server. Contact support.");
     }
@@ -202,14 +202,14 @@ STRICT MINIMUM REQUIREMENTS — you MUST meet all of these or the output will be
 - ${data.prompt ? "Make every project impressive, specific, and plausible given the domain described in the prompt." : "Never invent employers, dates, or metrics not present in the CV text."}
 - Output ONLY the raw JSON — absolutely no markdown fences, no commentary, no explanation.`;
 
-    const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+    const response = await fetch("https://integrate.api.nvidia.com/v1/chat/completions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        model: "llama-3.3-70b-versatile",
+        model: "deepseek-ai/deepseek-v4-pro",
         response_format: { type: "json_object" },
         temperature: 0.65,
         max_tokens: 2048,
@@ -320,7 +320,7 @@ export const parseResumeWithAI = createServerFn({ method: "POST" })
       throw new Error("Either a CV or a prompt must be provided.");
     }
 
-    const apiKey = process.env.GROQ_API_KEY;
+    const apiKey = process.env.NVIDIA_API_KEY;
     if (!apiKey) throw new Error("AI service is not configured on the server.");
 
     const systemPrompt = `You are an expert career strategist and professional copywriter. You will receive EITHER raw CV text OR a short user prompt describing their career.
@@ -379,14 +379,14 @@ STRICT MINIMUM REQUIREMENTS — failure to meet these means your output is inval
 - If processing a CV: only use data present in the CV; do not invent employers or dates.
 - Return ONLY the raw JSON — no markdown, no explanation, no commentary.`;
 
-    const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+    const response = await fetch("https://integrate.api.nvidia.com/v1/chat/completions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        model: "llama-3.3-70b-versatile",
+        model: "deepseek-ai/deepseek-v4-pro",
         response_format: { type: "json_object" },
         temperature: 0.3,
         max_tokens: 2048,
