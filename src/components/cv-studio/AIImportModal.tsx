@@ -2,6 +2,7 @@ import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import { Sparkles, FileText, Upload, Loader2, CheckCircle2, Wand2, ArrowRight, FileUp } from "lucide-react";
+import { supabase } from "@/lib/supabase";
 import { extractTextFromPDF } from "@/lib/pdf-extractor";
 import { parseResumeWithAI } from "@/lib/server-fns";
 import type { CvState } from "./types";
@@ -43,7 +44,13 @@ export function AIImportModal({ onStart, accessToken, onDismiss }: AIImportModal
     setPhase("loading");
     const timer = setInterval(() => setStageIdx(i => Math.min(i + 1, AI_STAGES.length - 1)), 900);
     try {
-      let reqData: any = { accessToken };
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      if (sessionError) throw new Error("Authentication failed: " + sessionError.message);
+      
+      const realToken = session?.access_token || accessToken;
+      if (!realToken) throw new Error("Unauthorized: No valid session token found.");
+
+      let reqData: any = { accessToken: realToken };
       if (input.file) {
         const text = await extractTextFromPDF(input.file);
         if (!text || text.trim().length < 80) throw new Error("Could not extract enough text. Use a text-based (non-scanned) PDF.");
@@ -102,10 +109,12 @@ export function AIImportModal({ onStart, accessToken, onDismiss }: AIImportModal
       await new Promise(r => setTimeout(r, 900));
       toast.success(input.file ? "CV imported! Review and tweak any details below." : "CV generated! Review and tweak any details below.");
       onStart(mappedCvData);
-    } catch (err) {
+    } catch (err: any) {
       clearInterval(timer);
-      toast.error(`AI process failed: ${err instanceof Error ? err.message : "Unknown error"}`);
-      setPhase("select"); setStageIdx(0);
+      const errorMessage = err?.message || (typeof err === "string" ? err : JSON.stringify(err)) || "Unknown error";
+      toast.error(`AI process failed: ${errorMessage}`);
+      setPhase("select"); 
+      setStageIdx(0);
     }
   }
 
