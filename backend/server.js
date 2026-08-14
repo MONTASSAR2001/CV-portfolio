@@ -79,7 +79,7 @@ STRICT MINIMUM REQUIREMENTS — failure to meet these means your output is inval
       model: "meta/llama-3.1-70b-instruct",
       messages: [
         { role: "system", content: systemPrompt },
-        { role: "user", content: prompt ? \`Generate a full professional CV based on this prompt:\\n\\n---\\n\${prompt}\\n---\` : \`Parse this CV:\\n\\n---\\n\${cvText}\\n---\` },
+        { role: "user", content: prompt ? `Generate a full professional CV based on this prompt:\n\n---\n${prompt}\n---` : `Parse this CV:\n\n---\n${cvText}\n---` },
       ],
       response_format: { type: "json_object" },
       temperature: 0.3,
@@ -89,10 +89,10 @@ STRICT MINIMUM REQUIREMENTS — failure to meet these means your output is inval
     let raw = response.choices[0].message.content || "";
     
     // Sanitize in case LLM returns markdown blocks
-    if (raw.startsWith("\`\`\`json")) {
-      raw = raw.replace(/^\`\`\`json\\n?/, "").replace(/\\n?\`\`\`$/, "");
-    } else if (raw.startsWith("\`\`\`")) {
-      raw = raw.replace(/^\`\`\`\\n?/, "").replace(/\\n?\`\`\`$/, "");
+    if (raw.startsWith("```json")) {
+      raw = raw.replace(/^```json\n?/, "").replace(/\n?```$/, "");
+    } else if (raw.startsWith("```")) {
+      raw = raw.replace(/^```\n?/, "").replace(/\n?```$/, "");
     }
     raw = raw.trim();
 
@@ -124,5 +124,5 @@ STRICT MINIMUM REQUIREMENTS — failure to meet these means your output is inval
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
-  console.log(\`Backend server running on port \${PORT}\`);
+  console.log(`Backend server running on port ${PORT}`);
 });
