@@ -270,6 +270,81 @@ STRICT MINIMUM REQUIREMENTS — you MUST meet all of these or the output will be
     return parsed;
   });
 
+/* ─── Shared deploy helper ───────────────────────────────────────────────── */
+
+/**
+ * Builds a URL-safe deployment slug from a person's name.
+ * e.g. "Montassar Zaraï" → "montassar-zarai-4f9a"
+ */
+function buildSlug(name: string): string {
+  const base = name
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9\s]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "") || "portfolio";
+  const hash = Math.random().toString(36).substring(2, 6);
+  return `${base}-${hash}`;
+}
+
+/**
+ * Uploads one HTML file as a static Vercel deployment.
+ * Uses the Vercel REST API v13 — inline file content, no pre-upload step needed.
+ * Requires VERCEL_ACCESS_TOKEN in the server environment.
+ *
+ * @returns The live HTTPS URL of the deployed site.
+ */
+async function deployHtmlToVercel(slug: string, html: string): Promise<string> {
+  const token = process.env.VERCEL_ACCESS_TOKEN;
+  if (!token) {
+    throw new Error(
+      "Portfolio deployment is not configured on the server. " +
+      "Please set VERCEL_ACCESS_TOKEN in your environment variables."
+    );
+  }
+
+  const res = await fetch("https://api.vercel.com/v13/deployments", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      // Deployment name shown in Vercel dashboard
+      name: `careeros-${slug}`,
+      // Inline files — no separate file-upload step required for small static sites
+      files: [
+        {
+          file: "index.html",
+          data: html,
+          encoding: "utf-8",
+        },
+      ],
+      projectSettings: {
+        // Explicitly mark as a plain static site (no framework detection)
+        framework: null,
+      },
+      target: "production",
+    }),
+  });
+
+  if (!res.ok) {
+    const body = (await res.json().catch(() => ({}))) as {
+      error?: { message?: string };
+    };
+    throw new Error(
+      body?.error?.message ??
+        `Vercel deployment failed (HTTP ${res.status}). Check VERCEL_ACCESS_TOKEN permissions.`
+    );
+  }
+
+  const result = (await res.json()) as { url?: string; id?: string };
+
+  // Vercel returns the URL without scheme; prepend https://
+  return result.url ? `https://${result.url}` : `/p/${slug}`;
+}
+
 /* ─── Server Function: deployPortfolioToVercel ───────────────────────────── */
 
 export const deployPortfolioToVercel = createServerFn({ method: "POST" })
@@ -277,27 +352,21 @@ export const deployPortfolioToVercel = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     await validateSessionToken(data.accessToken);
 
-    // Mock delay to simulate processing
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-
-    // Generate a clean full-name slug (e.g. "montassar-zarai-4f9a")
+    // Build URL slug from the candidate's name
     const fullName =
-      data.content?.name ||
-      data.content?.personalInfo?.name ||
-      data.content?.personalInfo?.fullName ||
-      data.content?.headline ||
+      (data.content as any)?.name ||
+      (data.content as any)?.personalInfo?.fullName ||
+      (data.content as any)?.headline ||
       "portfolio";
-    const baseSlug = fullName
-      .toLowerCase()
-      .trim()
-      .replace(/[^a-z0-9\s]/g, "")
-      .replace(/\s+/g, "-")
-      .replace(/-+/g, "-")
-      .replace(/^-|-$/g, "");
-    const randomHash = Math.random().toString(36).substring(2, 6);
-    const slug = `${baseSlug}-${randomHash}`;
+    const slug = buildSlug(fullName);
 
-    return { url: `/p/${slug}`, slug };
+    // Generate themed HTML from the portfolio content
+    const html = buildHtml(data.content as PortfolioContent, data.templateId);
+
+    // Deploy to Vercel and get back the live URL
+    const url = await deployHtmlToVercel(slug, html);
+
+    return { url, slug };
   });
 
 
@@ -312,32 +381,36 @@ const PublishPremiumInput = z.object({
 export const publishPremiumPortfolio = createServerFn({ method: "POST" })
   .validator((data: unknown) => PublishPremiumInput.parse(data))
   .handler(async ({ data }) => {
-    // ── [SECURITY] Validate caller session BEFORE touching any API key ──────
     await validateSessionToken(data.accessToken);
 
-    // Simulate a brief processing delay
-    await new Promise((resolve) => setTimeout(resolve, 2500));
-
-    // Generate a full-name slug (e.g. "montassar-zarai-4f9a")
-    // Fall back to role/headline ONLY if name is completely missing.
-    const fullName =
-      data.data?.personalInfo?.name ||
-      data.data?.personalInfo?.fullName ||
-      data.data?.personalInfo?.role ||
+    // Map CvState → PortfolioContent for the HTML builder
+    const cvData = data.data as any;
+    const fullName: string =
+      cvData?.personalInfo?.fullName ||
+      cvData?.personalInfo?.name ||
+      cvData?.personalInfo?.role ||
       "portfolio";
-      
-    const baseSlug = fullName
-      .toLowerCase()
-      .trim()
-      .replace(/[^a-z0-9\s]/g, "")
-      .replace(/\s+/g, "-")
-      .replace(/-+/g, "-")
-      .replace(/^-|-$/g, "");
-      
-    const randomHash = Math.random().toString(36).substring(2, 6);
-    const slug = `${baseSlug}-${randomHash}`;
 
-    return { url: `/p/${slug}`, slug };
+    const portfolioContent: PortfolioContent = {
+      name: fullName,
+      bio: cvData?.personalInfo?.summary || cvData?.personalInfo?.bio || "",
+      headline: cvData?.personalInfo?.jobTitle || cvData?.personalInfo?.role || fullName,
+      skills: Array.isArray(cvData?.skills) ? cvData.skills : [],
+      projects: (Array.isArray(cvData?.projects) ? cvData.projects : []).map(
+        (p: any) => ({
+          title: p.title ?? "Project",
+          description: p.description ?? "",
+          tech: p.techStack ?? p.tech ?? [],
+          highlight: p.highlight ?? "",
+        })
+      ),
+    };
+
+    const slug = buildSlug(fullName);
+    const html = buildHtml(portfolioContent, data.templateId);
+    const url = await deployHtmlToVercel(slug, html);
+
+    return { url, slug };
   });
 
 /* ─── Server Function: createCheckoutSession ─────────────────────────────── */

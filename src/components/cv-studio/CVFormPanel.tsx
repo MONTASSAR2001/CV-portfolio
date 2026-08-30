@@ -258,10 +258,6 @@ export function CVFormPanel({ cvData, setCvData }: CVFormPanelProps) {
             </motion.div>
           )}
 
-        </AnimatePresence>
-      </div>
-
-      
           {activeTab === 5 && (
             <motion.div key="highlights" initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 12 }} transition={{ duration: 0.2 }} className="space-y-4">
               <div className="space-y-1.5">
@@ -287,6 +283,9 @@ export function CVFormPanel({ cvData, setCvData }: CVFormPanelProps) {
               </button>
             </motion.div>
           )}
+
+        </AnimatePresence>
+      </div>
 
       {/* ── Progress footer ── */}
       <div className="border-t border-gray-200 px-5 py-4 bg-white">

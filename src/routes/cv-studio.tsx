@@ -131,7 +131,7 @@ function TemplateSwitcher({
 ═══════════════════════════════════════════════════════════════ */
 function CvStudioPage() {
   const navigate  = useNavigate();
-  const { user, loading } = useAuth();
+  const { user, session, loading } = useAuth();
 
   /* ── Phase: "import" shows AIImportModal; "editor" shows the studio ── */
   const [phase, setPhase]           = useState<"import" | "editor">("import");
@@ -228,7 +228,7 @@ function CvStudioPage() {
           <AIImportModal
             onStart={handleStart}
             onDismiss={phase === "editor" ? () => setAiModalOpen(false) : undefined}
-            accessToken={user?.id ?? ""}
+            accessToken={session?.access_token ?? ""}
           />
         )}
       </AnimatePresence>
