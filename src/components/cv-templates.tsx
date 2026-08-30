@@ -65,6 +65,9 @@ const PRINT_STYLES = `
       transform: none !important;
       overflow: visible !important;
     }
+    /* Legacy page-break aliases for cross-browser PDF support */
+    .cv-root .print\\:break-inside-avoid { page-break-inside: avoid; break-inside: avoid; }
+    .cv-root .print\\:break-after-avoid  { page-break-after: avoid;  break-after: avoid;  }
   }
 `;
 
@@ -113,14 +116,14 @@ export const MinimalistTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
           </div>
 
           {/* Summary */}
-          
+
           {/* ── KEY HIGHLIGHTS ── */}
           {keyHighlights.length > 0 && (
             <p className="text-[11px] font-semibold text-zinc-900 mt-2 mb-3 tracking-wide">
               {keyHighlights.join(" • ")}
             </p>
           )}
-{p.summary && (
+          {p.summary && (
             <div className="mb-8">
               <p className="text-[11px] leading-relaxed text-zinc-900 max-w-2xl">
                 {p.summary}
@@ -197,21 +200,21 @@ export const MinimalistTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
               </h2>
               <div className="space-y-4">
                 {projects.map((proj, i) => (
-                <div key={i} className="mb-3 print:break-inside-avoid">
-                  <div className="mb-1">
-                    <strong className="font-bold text-zinc-900">{proj.title}</strong>
-                    {proj.projectLabel && <span className="italic text-sm font-normal text-zinc-700 ml-2">[{proj.projectLabel}]</span>}
-                    {proj.link && (
-                      <a href={proj.link.startsWith('http') ? proj.link : `https://${proj.link}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-[10px] text-zinc-600 hover:underline break-all">
-                        {proj.link}
-                      </a>
+                  <div key={i} className="mb-3 print:break-inside-avoid">
+                    <div className="mb-1">
+                      <strong className="font-bold text-zinc-900">{proj.title}</strong>
+                      {proj.projectLabel && <span className="italic text-sm font-normal text-zinc-700 ml-2">[{proj.projectLabel}]</span>}
+                      {proj.link && (
+                        <a href={proj.link.startsWith('http') ? proj.link : `https://${proj.link}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-[10px] text-zinc-600 hover:underline break-all">
+                          {proj.link}
+                        </a>
+                      )}
+                    </div>
+                    {proj.description && (
+                      <div className="text-[11px] leading-relaxed text-zinc-900 whitespace-pre-wrap">{proj.description}</div>
                     )}
                   </div>
-                  {proj.description && (
-                    <div className="text-[11px] leading-relaxed text-zinc-900 whitespace-pre-wrap">{proj.description}</div>
-                  )}
-                </div>
-              ))}
+                ))}
               </div>
             </div>
           )}
@@ -310,14 +313,14 @@ export const CorporateTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
         <div className="px-10 py-7 flex gap-8 flex-1">
           {/* Main Column */}
           <div className="flex-1 space-y-7">
-            
-          {/* ── KEY HIGHLIGHTS ── */}
-          {keyHighlights.length > 0 && (
-            <p className="text-[11px] font-semibold text-zinc-900 mt-2 mb-3 tracking-wide">
-              {keyHighlights.join(" • ")}
-            </p>
-          )}
-{p.summary && (
+
+            {/* ── KEY HIGHLIGHTS ── */}
+            {keyHighlights.length > 0 && (
+              <p className="text-[11px] font-semibold text-zinc-900 mt-2 mb-3 tracking-wide">
+                {keyHighlights.join(" • ")}
+              </p>
+            )}
+            {p.summary && (
               <div>
                 <SectionHeader label="Professional Summary" color={NAVY} />
                 <p className="text-[11px] leading-relaxed text-zinc-900 mt-3">
@@ -350,7 +353,7 @@ export const CorporateTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
                 <SectionHeader label="Work Experience" color={NAVY} />
                 <div className="mt-3 space-y-5">
                   {experience.map((exp) => (
-                    <div key={exp.id}>
+                    <div key={exp.id} className="print:break-inside-avoid" style={{ pageBreakInside: 'avoid' }}>
                       <div className="flex items-start justify-between">
                         <div>
                           <p className="text-sm font-bold text-slate-900">{exp.role}</p>
@@ -385,27 +388,27 @@ export const CorporateTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
                 <SectionHeader label="Projects" color={NAVY} />
                 <div className="mt-3 space-y-3">
                   {projects.map((proj, i) => (
-                <div key={i} className="mb-3 print:break-inside-avoid">
-                  <div className="mb-1">
-                    <strong className="font-bold text-zinc-900">{proj.title}</strong>
-                    {proj.projectLabel && <span className="italic text-sm font-normal text-zinc-700 ml-2">[{proj.projectLabel}]</span>}
-                    {proj.link && (
-                      <a href={proj.link.startsWith('http') ? proj.link : `https://${proj.link}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-[10px] text-zinc-600 hover:underline break-all">
-                        {proj.link}
-                      </a>
-                    )}
-                  </div>
-                  {proj.description && (
-                    <div className="text-[11px] leading-relaxed text-zinc-900 whitespace-pre-wrap">{proj.description}</div>
-                  )}
-                </div>
-              ))}
+                    <div key={i} className="mb-3 print:break-inside-avoid">
+                      <div className="mb-1">
+                        <strong className="font-bold text-zinc-900">{proj.title}</strong>
+                        {proj.projectLabel && <span className="italic text-sm font-normal text-zinc-700 ml-2">[{proj.projectLabel}]</span>}
+                        {proj.link && (
+                          <a href={proj.link.startsWith('http') ? proj.link : `https://${proj.link}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-[10px] text-zinc-600 hover:underline break-all">
+                            {proj.link}
+                          </a>
+                        )}
+                      </div>
+                      {proj.description && (
+                        <div className="text-[11px] leading-relaxed text-zinc-900 whitespace-pre-wrap">{proj.description}</div>
+                      )}
+                    </div>
+                  ))}
                 </div>
               </div>
             )}
 
-          {/* ── PROJECTS ── */}
-          {education.length > 0 && (
+            {/* ── PROJECTS ── */}
+            {education.length > 0 && (
               <div>
                 <SectionHeader label="Education" color={NAVY} />
                 <div className="mt-3 space-y-3">
@@ -422,30 +425,30 @@ export const CorporateTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
               </div>
             )}
 
-            
-          {/* ── CERTIFICATIONS ── */}
-          {certifications.length > 0 && (
-            <div className="mb-4">
-              <h3 className="text-[12px] font-bold uppercase mt-4 mb-2 print:break-after-avoid">Certifications</h3>
-              <ul className="flex flex-wrap gap-2 text-[11px] leading-relaxed text-zinc-900">
-                {certifications.map((c, i) => (
-                  <li key={i} className="border border-slate-300 rounded px-2 py-0.5 print:break-inside-avoid">{c}</li>
-                ))}
-              </ul>
-            </div>
-          )}
 
-          {/* ── LANGUAGES ── */}
-          {languages.length > 0 && (
-            <div className="mb-4">
-              <h3 className="text-[12px] font-bold uppercase mt-4 mb-2 print:break-after-avoid">Languages</h3>
-              <ul className="flex flex-wrap gap-x-4 gap-y-1 text-[11px] leading-relaxed text-zinc-900 list-disc pl-4">
-                {languages.map((l, i) => (
-                  <li key={i}>{l}</li>
-                ))}
-              </ul>
-            </div>
-          )}
+            {/* ── CERTIFICATIONS ── */}
+            {certifications.length > 0 && (
+              <div className="mb-4">
+                <h3 className="text-[12px] font-bold uppercase mt-4 mb-2 print:break-after-avoid">Certifications</h3>
+                <ul className="flex flex-wrap gap-2 text-[11px] leading-relaxed text-zinc-900">
+                  {certifications.map((c, i) => (
+                    <li key={i} className="border border-slate-300 rounded px-2 py-0.5 print:break-inside-avoid">{c}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {/* ── LANGUAGES ── */}
+            {languages.length > 0 && (
+              <div className="mb-4">
+                <h3 className="text-[12px] font-bold uppercase mt-4 mb-2 print:break-after-avoid">Languages</h3>
+                <ul className="flex flex-wrap gap-x-4 gap-y-1 text-[11px] leading-relaxed text-zinc-900 list-disc pl-4">
+                  {languages.map((l, i) => (
+                    <li key={i}>{l}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
 
           </div>
 
@@ -558,14 +561,14 @@ export const TechTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
           </div>
 
           <div className="px-8 py-6 space-y-6 flex-1 overflow-hidden">
-            
-          {/* ── KEY HIGHLIGHTS ── */}
-          {keyHighlights.length > 0 && (
-            <p className="text-[11px] font-semibold text-zinc-900 mt-2 mb-3 tracking-wide">
-              {keyHighlights.join(" • ")}
-            </p>
-          )}
-{p.summary && (
+
+            {/* ── KEY HIGHLIGHTS ── */}
+            {keyHighlights.length > 0 && (
+              <p className="text-[11px] font-semibold text-zinc-900 mt-2 mb-3 tracking-wide">
+                {keyHighlights.join(" • ")}
+              </p>
+            )}
+            {p.summary && (
               <div>
                 <TechSectionTitle label="About" accent={ACCENT} />
                 <p className="mt-2 text-[11px] leading-relaxed text-zinc-900">{p.summary}</p>
@@ -612,27 +615,27 @@ export const TechTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
                 <TechSectionTitle label="Projects" accent={ACCENT} />
                 <div className="mt-3 space-y-3">
                   {projects.map((proj, i) => (
-                <div key={i} className="mb-3 print:break-inside-avoid">
-                  <div className="mb-1">
-                    <strong className="font-bold text-zinc-900">{proj.title}</strong>
-                    {proj.projectLabel && <span className="italic text-sm font-normal text-zinc-700 ml-2">[{proj.projectLabel}]</span>}
-                    {proj.link && (
-                      <a href={proj.link.startsWith('http') ? proj.link : `https://${proj.link}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-[10px] text-zinc-600 hover:underline break-all">
-                        {proj.link}
-                      </a>
-                    )}
-                  </div>
-                  {proj.description && (
-                    <div className="text-[11px] leading-relaxed text-zinc-900 whitespace-pre-wrap">{proj.description}</div>
-                  )}
-                </div>
-              ))}
+                    <div key={i} className="mb-3 print:break-inside-avoid">
+                      <div className="mb-1">
+                        <strong className="font-bold text-zinc-900">{proj.title}</strong>
+                        {proj.projectLabel && <span className="italic text-sm font-normal text-zinc-700 ml-2">[{proj.projectLabel}]</span>}
+                        {proj.link && (
+                          <a href={proj.link.startsWith('http') ? proj.link : `https://${proj.link}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-[10px] text-zinc-600 hover:underline break-all">
+                            {proj.link}
+                          </a>
+                        )}
+                      </div>
+                      {proj.description && (
+                        <div className="text-[11px] leading-relaxed text-zinc-900 whitespace-pre-wrap">{proj.description}</div>
+                      )}
+                    </div>
+                  ))}
                 </div>
               </div>
             )}
 
-          {/* ── PROJECTS ── */}
-          {education.length > 0 && (
+            {/* ── PROJECTS ── */}
+            {education.length > 0 && (
               <div>
                 <TechSectionTitle label="Education" accent={ACCENT} />
                 <div className="mt-3 space-y-3">
@@ -649,30 +652,30 @@ export const TechTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
               </div>
             )}
 
-            
-          {/* ── CERTIFICATIONS ── */}
-          {certifications.length > 0 && (
-            <div className="mb-4">
-              <h3 className="text-[12px] font-bold uppercase mt-4 mb-2 print:break-after-avoid">Certifications</h3>
-              <ul className="flex flex-wrap gap-2 text-[11px] leading-relaxed text-zinc-900">
-                {certifications.map((c, i) => (
-                  <li key={i} className="border border-slate-300 rounded px-2 py-0.5 print:break-inside-avoid">{c}</li>
-                ))}
-              </ul>
-            </div>
-          )}
 
-          {/* ── LANGUAGES ── */}
-          {languages.length > 0 && (
-            <div className="mb-4">
-              <h3 className="text-[12px] font-bold uppercase mt-4 mb-2 print:break-after-avoid">Languages</h3>
-              <ul className="flex flex-wrap gap-x-4 gap-y-1 text-[11px] leading-relaxed text-zinc-900 list-disc pl-4">
-                {languages.map((l, i) => (
-                  <li key={i}>{l}</li>
-                ))}
-              </ul>
-            </div>
-          )}
+            {/* ── CERTIFICATIONS ── */}
+            {certifications.length > 0 && (
+              <div className="mb-4">
+                <h3 className="text-[12px] font-bold uppercase mt-4 mb-2 print:break-after-avoid">Certifications</h3>
+                <ul className="flex flex-wrap gap-2 text-[11px] leading-relaxed text-zinc-900">
+                  {certifications.map((c, i) => (
+                    <li key={i} className="border border-slate-300 rounded px-2 py-0.5 print:break-inside-avoid">{c}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {/* ── LANGUAGES ── */}
+            {languages.length > 0 && (
+              <div className="mb-4">
+                <h3 className="text-[12px] font-bold uppercase mt-4 mb-2 print:break-after-avoid">Languages</h3>
+                <ul className="flex flex-wrap gap-x-4 gap-y-1 text-[11px] leading-relaxed text-zinc-900 list-disc pl-4">
+                  {languages.map((l, i) => (
+                    <li key={i}>{l}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
 
           </div>
 
@@ -735,14 +738,14 @@ export const CreativeTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
         <div className="flex gap-0 flex-1" style={{ minHeight: 0 }}>
           {/* Main */}
           <div className="flex-1 px-10 py-7 space-y-6">
-            
-          {/* ── KEY HIGHLIGHTS ── */}
-          {keyHighlights.length > 0 && (
-            <p className="text-[11px] font-semibold text-zinc-900 mt-2 mb-3 tracking-wide">
-              {keyHighlights.join(" • ")}
-            </p>
-          )}
-{p.summary && (
+
+            {/* ── KEY HIGHLIGHTS ── */}
+            {keyHighlights.length > 0 && (
+              <p className="text-[11px] font-semibold text-zinc-900 mt-2 mb-3 tracking-wide">
+                {keyHighlights.join(" • ")}
+              </p>
+            )}
+            {p.summary && (
               <div>
                 <CreativeSectionTitle label="About Me" rose={ROSE} />
                 <p className="text-[11px] leading-relaxed text-zinc-900 mt-3">{p.summary}</p>
@@ -753,7 +756,7 @@ export const CreativeTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
                 <CreativeSectionTitle label="Experience" rose={ROSE} />
                 <div className="mt-3 space-y-5">
                   {experience.map((exp) => (
-                    <div key={exp.id}>
+                    <div key={exp.id} className="print:break-inside-avoid" style={{ pageBreakInside: 'avoid' }}>
                       <div className="flex items-start justify-between">
                         <div>
                           <p className="text-sm font-extrabold text-slate-900">{exp.role}</p>
@@ -781,27 +784,27 @@ export const CreativeTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
                 <CreativeSectionTitle label="Projects" rose={ROSE} />
                 <div className="mt-3 space-y-3">
                   {projects.map((proj, i) => (
-                <div key={i} className="mb-3 print:break-inside-avoid">
-                  <div className="mb-1">
-                    <strong className="font-bold text-zinc-900">{proj.title}</strong>
-                    {proj.projectLabel && <span className="italic text-sm font-normal text-zinc-700 ml-2">[{proj.projectLabel}]</span>}
-                    {proj.link && (
-                      <a href={proj.link.startsWith('http') ? proj.link : `https://${proj.link}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-[10px] text-zinc-600 hover:underline break-all">
-                        {proj.link}
-                      </a>
-                    )}
-                  </div>
-                  {proj.description && (
-                    <div className="text-[11px] leading-relaxed text-zinc-900 whitespace-pre-wrap">{proj.description}</div>
-                  )}
-                </div>
-              ))}
+                    <div key={i} className="mb-3 print:break-inside-avoid">
+                      <div className="mb-1">
+                        <strong className="font-bold text-zinc-900">{proj.title}</strong>
+                        {proj.projectLabel && <span className="italic text-sm font-normal text-zinc-700 ml-2">[{proj.projectLabel}]</span>}
+                        {proj.link && (
+                          <a href={proj.link.startsWith('http') ? proj.link : `https://${proj.link}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-[10px] text-zinc-600 hover:underline break-all">
+                            {proj.link}
+                          </a>
+                        )}
+                      </div>
+                      {proj.description && (
+                        <div className="text-[11px] leading-relaxed text-zinc-900 whitespace-pre-wrap">{proj.description}</div>
+                      )}
+                    </div>
+                  ))}
                 </div>
               </div>
             )}
 
-          {/* ── PROJECTS ── */}
-          {education.length > 0 && (
+            {/* ── PROJECTS ── */}
+            {education.length > 0 && (
               <div>
                 <CreativeSectionTitle label="Education" rose={ROSE} />
                 <div className="mt-3 space-y-3">
@@ -894,14 +897,14 @@ export const ExecutiveTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
 
         <div className="px-16 py-8 space-y-7">
           {/* Executive summary — featured */}
-          
+
           {/* ── KEY HIGHLIGHTS ── */}
           {keyHighlights.length > 0 && (
             <p className="text-[11px] font-semibold text-zinc-900 mt-2 mb-3 tracking-wide">
               {keyHighlights.join(" • ")}
             </p>
           )}
-{p.summary && (
+          {p.summary && (
             <div className="border-l-2 pl-6" style={{ borderColor: GOLD }}>
               <p className="text-[9px] font-bold uppercase tracking-[0.3em] mb-2" style={{ color: GOLD }}>
                 Executive Summary
@@ -915,7 +918,7 @@ export const ExecutiveTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
               <ExecSectionTitle label="Career History" gold={GOLD} />
               <div className="mt-4 space-y-6">
                 {experience.map((exp) => (
-                  <div key={exp.id}>
+                  <div key={exp.id} className="print:break-inside-avoid" style={{ pageBreakInside: 'avoid' }}>
                     <div className="flex justify-between items-baseline">
                       <p className="text-base font-bold text-slate-900">{exp.role}</p>
                       <span className="text-[10px] text-zinc-800 italic shrink-0">{exp.period}</span>
@@ -942,32 +945,32 @@ export const ExecutiveTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
                 <ExecSectionTitle label="Projects" gold={GOLD} />
                 <div className="mt-4 space-y-3">
                   {projects.map((proj, i) => (
-                <div key={i} className="mb-3 print:break-inside-avoid">
-                  <div className="mb-1">
-                    <strong className="font-bold text-zinc-900">{proj.title}</strong>
-                    {proj.projectLabel && <span className="italic text-sm font-normal text-zinc-700 ml-2">[{proj.projectLabel}]</span>}
-                    {proj.link && (
-                      <a href={proj.link.startsWith('http') ? proj.link : `https://${proj.link}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-[10px] text-zinc-600 hover:underline break-all">
-                        {proj.link}
-                      </a>
-                    )}
-                  </div>
-                  {proj.description && (
-                    <div className="text-[11px] leading-relaxed text-zinc-900 whitespace-pre-wrap">{proj.description}</div>
-                  )}
-                </div>
-              ))}
+                    <div key={i} className="mb-3 print:break-inside-avoid">
+                      <div className="mb-1">
+                        <strong className="font-bold text-zinc-900">{proj.title}</strong>
+                        {proj.projectLabel && <span className="italic text-sm font-normal text-zinc-700 ml-2">[{proj.projectLabel}]</span>}
+                        {proj.link && (
+                          <a href={proj.link.startsWith('http') ? proj.link : `https://${proj.link}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-[10px] text-zinc-600 hover:underline break-all">
+                            {proj.link}
+                          </a>
+                        )}
+                      </div>
+                      {proj.description && (
+                        <div className="text-[11px] leading-relaxed text-zinc-900 whitespace-pre-wrap">{proj.description}</div>
+                      )}
+                    </div>
+                  ))}
                 </div>
               </div>
             )}
 
-          {/* ── PROJECTS ── */}
-          {education.length > 0 && (
+            {/* ── PROJECTS ── */}
+            {education.length > 0 && (
               <div className="flex-1">
                 <ExecSectionTitle label="Education" gold={GOLD} />
                 <div className="mt-4 space-y-3">
                   {education.map((edu) => (
-                    <div key={edu.id}>
+                    <div key={edu.id} className="print:break-inside-avoid" style={{ pageBreakInside: 'avoid' }}>
                       <p className="text-sm font-bold text-slate-900">{edu.degree}</p>
                       <p className="text-[11px] text-zinc-800">{edu.school} · {edu.year}</p>
                     </div>
@@ -1061,14 +1064,14 @@ export const StartupTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
         <div className="flex gap-6 px-8 py-6">
           {/* Main */}
           <div className="flex-1 space-y-6">
-            
-          {/* ── KEY HIGHLIGHTS ── */}
-          {keyHighlights.length > 0 && (
-            <p className="text-[11px] font-semibold text-zinc-900 mt-2 mb-3 tracking-wide">
-              {keyHighlights.join(" • ")}
-            </p>
-          )}
-{p.summary && (
+
+            {/* ── KEY HIGHLIGHTS ── */}
+            {keyHighlights.length > 0 && (
+              <p className="text-[11px] font-semibold text-zinc-900 mt-2 mb-3 tracking-wide">
+                {keyHighlights.join(" • ")}
+              </p>
+            )}
+            {p.summary && (
               <div className="rounded-2xl bg-white p-5 shadow-sm border border-indigo-50">
                 <p className="text-[9px] font-bold tracking-[0.25em] uppercase text-indigo-400 mb-2">About</p>
                 <p className="text-[11px] leading-relaxed text-zinc-900">{p.summary}</p>
@@ -1108,27 +1111,27 @@ export const StartupTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
                 <p className="text-[9px] font-bold tracking-[0.25em] uppercase text-indigo-400 mb-3">Projects</p>
                 <div className="space-y-3">
                   {projects.map((proj, i) => (
-                <div key={i} className="mb-3 print:break-inside-avoid">
-                  <div className="mb-1">
-                    <strong className="font-bold text-zinc-900">{proj.title}</strong>
-                    {proj.projectLabel && <span className="italic text-sm font-normal text-zinc-700 ml-2">[{proj.projectLabel}]</span>}
-                    {proj.link && (
-                      <a href={proj.link.startsWith('http') ? proj.link : `https://${proj.link}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-[10px] text-zinc-600 hover:underline break-all">
-                        {proj.link}
-                      </a>
-                    )}
-                  </div>
-                  {proj.description && (
-                    <div className="text-[11px] leading-relaxed text-zinc-900 whitespace-pre-wrap">{proj.description}</div>
-                  )}
-                </div>
-              ))}
+                    <div key={i} className="mb-3 print:break-inside-avoid">
+                      <div className="mb-1">
+                        <strong className="font-bold text-zinc-900">{proj.title}</strong>
+                        {proj.projectLabel && <span className="italic text-sm font-normal text-zinc-700 ml-2">[{proj.projectLabel}]</span>}
+                        {proj.link && (
+                          <a href={proj.link.startsWith('http') ? proj.link : `https://${proj.link}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-[10px] text-zinc-600 hover:underline break-all">
+                            {proj.link}
+                          </a>
+                        )}
+                      </div>
+                      {proj.description && (
+                        <div className="text-[11px] leading-relaxed text-zinc-900 whitespace-pre-wrap">{proj.description}</div>
+                      )}
+                    </div>
+                  ))}
                 </div>
               </div>
             )}
 
-          {/* ── PROJECTS ── */}
-          {education.length > 0 && (
+            {/* ── PROJECTS ── */}
+            {education.length > 0 && (
               <div>
                 <p className="text-[9px] font-bold tracking-[0.25em] uppercase text-indigo-400 mb-3">Education</p>
                 <div className="space-y-3">
@@ -1203,14 +1206,14 @@ export const AcademicTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
 
           {/* Dense single-column body */}
           <div className="space-y-5 flex-1">
-            
-          {/* ── KEY HIGHLIGHTS ── */}
-          {keyHighlights.length > 0 && (
-            <p className="text-[11px] font-semibold text-zinc-900 mt-2 mb-3 tracking-wide">
-              {keyHighlights.join(" • ")}
-            </p>
-          )}
-{p.summary && (
+
+            {/* ── KEY HIGHLIGHTS ── */}
+            {keyHighlights.length > 0 && (
+              <p className="text-[11px] font-semibold text-zinc-900 mt-2 mb-3 tracking-wide">
+                {keyHighlights.join(" • ")}
+              </p>
+            )}
+            {p.summary && (
               <div>
                 <AcadSectionTitle label="Research Statement / Summary" />
                 <p className="mt-2 text-[11px] leading-loose text-zinc-900 text-justify">{p.summary}</p>
@@ -1222,7 +1225,7 @@ export const AcademicTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
                 <AcadSectionTitle label="Academic & Professional Experience" />
                 <div className="mt-2 space-y-4">
                   {experience.map((exp) => (
-                    <div key={exp.id}>
+                    <div key={exp.id} className="print:break-inside-avoid" style={{ pageBreakInside: 'avoid' }}>
                       <div className="flex justify-between items-baseline">
                         <p className="text-[12px] font-bold text-slate-900">{exp.role}</p>
                         <span className="text-[10px] text-zinc-900 shrink-0 italic">{exp.period}</span>
@@ -1246,27 +1249,27 @@ export const AcademicTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
                 <AcadSectionTitle label="Projects" />
                 <div className="mt-2 space-y-3">
                   {projects.map((proj, i) => (
-                <div key={i} className="mb-3 print:break-inside-avoid">
-                  <div className="mb-1">
-                    <strong className="font-bold text-zinc-900">{proj.title}</strong>
-                    {proj.projectLabel && <span className="italic text-sm font-normal text-zinc-700 ml-2">[{proj.projectLabel}]</span>}
-                    {proj.link && (
-                      <a href={proj.link.startsWith('http') ? proj.link : `https://${proj.link}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-[10px] text-zinc-600 hover:underline break-all">
-                        {proj.link}
-                      </a>
-                    )}
-                  </div>
-                  {proj.description && (
-                    <div className="text-[11px] leading-relaxed text-zinc-900 whitespace-pre-wrap">{proj.description}</div>
-                  )}
-                </div>
-              ))}
+                    <div key={i} className="mb-3 print:break-inside-avoid">
+                      <div className="mb-1">
+                        <strong className="font-bold text-zinc-900">{proj.title}</strong>
+                        {proj.projectLabel && <span className="italic text-sm font-normal text-zinc-700 ml-2">[{proj.projectLabel}]</span>}
+                        {proj.link && (
+                          <a href={proj.link.startsWith('http') ? proj.link : `https://${proj.link}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-[10px] text-zinc-600 hover:underline break-all">
+                            {proj.link}
+                          </a>
+                        )}
+                      </div>
+                      {proj.description && (
+                        <div className="text-[11px] leading-relaxed text-zinc-900 whitespace-pre-wrap">{proj.description}</div>
+                      )}
+                    </div>
+                  ))}
                 </div>
               </div>
             )}
 
-          {/* ── PROJECTS ── */}
-          {education.length > 0 && (
+            {/* ── PROJECTS ── */}
+            {education.length > 0 && (
               <div>
                 <AcadSectionTitle label="Education" />
                 <div className="mt-2 space-y-3">
@@ -1353,14 +1356,14 @@ export const EditorialTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
         <div className="flex gap-0 px-12 pt-7" style={{ fontFamily: "'Georgia', serif" }}>
           {/* Wide main col */}
           <div className="flex-1 pr-10 space-y-6">
-            
-          {/* ── KEY HIGHLIGHTS ── */}
-          {keyHighlights.length > 0 && (
-            <p className="text-[11px] font-semibold text-zinc-900 mt-2 mb-3 tracking-wide">
-              {keyHighlights.join(" • ")}
-            </p>
-          )}
-{p.summary && (
+
+            {/* ── KEY HIGHLIGHTS ── */}
+            {keyHighlights.length > 0 && (
+              <p className="text-[11px] font-semibold text-zinc-900 mt-2 mb-3 tracking-wide">
+                {keyHighlights.join(" • ")}
+              </p>
+            )}
+            {p.summary && (
               <div>
                 <p className="text-[8px] tracking-[0.4em] uppercase font-sans text-stone-400 mb-3">Profile</p>
                 <p className="text-[12px] leading-loose text-stone-700 italic border-l-2 border-stone-300 pl-4">
@@ -1374,8 +1377,8 @@ export const EditorialTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
                 <p className="text-[8px] tracking-[0.4em] uppercase font-sans text-stone-400 mb-3">Experience</p>
                 <div className="space-y-5">
                   {experience.map((exp, i) => (
-                    <div key={exp.id}>
-                      {i > 0 && <div className="h-px bg-stone-200 mb-5" />}
+                    <div key={exp.id} className="print:break-inside-avoid" style={{ pageBreakInside: 'avoid' }}>
+                      {i > 0 && <div className="h-px bg-stone-200 mb-5" />
                       <div className="flex justify-between items-baseline">
                         <p className="text-[13px] font-bold text-stone-900">{exp.role}</p>
                         <span className="text-[9px] font-sans text-stone-400 italic shrink-0">{exp.period}</span>
@@ -1404,32 +1407,32 @@ export const EditorialTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
                 <p className="text-[8px] tracking-[0.4em] uppercase font-sans text-stone-400 mb-3">Projects</p>
                 <div className="space-y-4">
                   {projects.map((proj, i) => (
-                <div key={i} className="mb-3 print:break-inside-avoid">
-                  <div className="mb-1">
-                    <strong className="font-bold text-zinc-900">{proj.title}</strong>
-                    {proj.projectLabel && <span className="italic text-sm font-normal text-zinc-700 ml-2">[{proj.projectLabel}]</span>}
-                    {proj.link && (
-                      <a href={proj.link.startsWith('http') ? proj.link : `https://${proj.link}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-[10px] text-zinc-600 hover:underline break-all">
-                        {proj.link}
-                      </a>
-                    )}
-                  </div>
-                  {proj.description && (
-                    <div className="text-[11px] leading-relaxed text-zinc-900 whitespace-pre-wrap">{proj.description}</div>
-                  )}
-                </div>
-              ))}
+                    <div key={i} className="mb-3 print:break-inside-avoid">
+                      <div className="mb-1">
+                        <strong className="font-bold text-zinc-900">{proj.title}</strong>
+                        {proj.projectLabel && <span className="italic text-sm font-normal text-zinc-700 ml-2">[{proj.projectLabel}]</span>}
+                        {proj.link && (
+                          <a href={proj.link.startsWith('http') ? proj.link : `https://${proj.link}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-[10px] text-zinc-600 hover:underline break-all">
+                            {proj.link}
+                          </a>
+                        )}
+                      </div>
+                      {proj.description && (
+                        <div className="text-[11px] leading-relaxed text-zinc-900 whitespace-pre-wrap">{proj.description}</div>
+                      )}
+                    </div>
+                  ))}
                 </div>
               </div>
             )}
 
-          {/* ── PROJECTS ── */}
-          {education.length > 0 && (
+            {/* ── PROJECTS ── */}
+            {education.length > 0 && (
               <div>
                 <p className="text-[8px] tracking-[0.4em] uppercase font-sans text-stone-400 mb-3">Education</p>
                 <div className="space-y-4">
                   {education.map((edu) => (
-                    <div key={edu.id}>
+                    <div key={edu.id} className="print:break-inside-avoid" style={{ pageBreakInside: 'avoid' }}>
                       <p className="text-[11px] font-bold text-stone-900 leading-tight">{edu.degree}</p>
                       <p className="text-[10px] font-sans text-stone-500 mt-0.5">{edu.school}</p>
                       <p className="text-[10px] font-sans text-stone-400 mt-0.5 italic">{edu.year}</p>
@@ -1526,14 +1529,14 @@ export const DarkBoldTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
         <div className="flex gap-6 px-10 py-8 flex-1 dark-panel">
           {/* Main */}
           <div className="flex-1 space-y-6">
-            
-          {/* ── KEY HIGHLIGHTS ── */}
-          {keyHighlights.length > 0 && (
-            <p className="text-[11px] font-semibold text-zinc-900 mt-2 mb-3 tracking-wide">
-              {keyHighlights.join(" • ")}
-            </p>
-          )}
-{p.summary && (
+
+            {/* ── KEY HIGHLIGHTS ── */}
+            {keyHighlights.length > 0 && (
+              <p className="text-[11px] font-semibold text-zinc-900 mt-2 mb-3 tracking-wide">
+                {keyHighlights.join(" • ")}
+              </p>
+            )}
+            {p.summary && (
               <div>
                 <DarkSectionTitle label="About" neon={NEON} />
                 <p className="mt-3 text-[11px] leading-relaxed text-zinc-700">{p.summary}</p>
@@ -1571,27 +1574,27 @@ export const DarkBoldTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
                 <DarkSectionTitle label="Projects" neon={NEON} />
                 <div className="mt-3 space-y-3">
                   {projects.map((proj, i) => (
-                <div key={i} className="mb-3 print:break-inside-avoid">
-                  <div className="mb-1">
-                    <strong className="font-bold text-zinc-900">{proj.title}</strong>
-                    {proj.projectLabel && <span className="italic text-sm font-normal text-zinc-700 ml-2">[{proj.projectLabel}]</span>}
-                    {proj.link && (
-                      <a href={proj.link.startsWith('http') ? proj.link : `https://${proj.link}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-[10px] text-zinc-600 hover:underline break-all">
-                        {proj.link}
-                      </a>
-                    )}
-                  </div>
-                  {proj.description && (
-                    <div className="text-[11px] leading-relaxed text-zinc-900 whitespace-pre-wrap">{proj.description}</div>
-                  )}
-                </div>
-              ))}
+                    <div key={i} className="mb-3 print:break-inside-avoid">
+                      <div className="mb-1">
+                        <strong className="font-bold text-zinc-900">{proj.title}</strong>
+                        {proj.projectLabel && <span className="italic text-sm font-normal text-zinc-700 ml-2">[{proj.projectLabel}]</span>}
+                        {proj.link && (
+                          <a href={proj.link.startsWith('http') ? proj.link : `https://${proj.link}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-[10px] text-zinc-600 hover:underline break-all">
+                            {proj.link}
+                          </a>
+                        )}
+                      </div>
+                      {proj.description && (
+                        <div className="text-[11px] leading-relaxed text-zinc-900 whitespace-pre-wrap">{proj.description}</div>
+                      )}
+                    </div>
+                  ))}
                 </div>
               </div>
             )}
 
-          {/* ── PROJECTS ── */}
-          {education.length > 0 && (
+            {/* ── PROJECTS ── */}
+            {education.length > 0 && (
               <div>
                 <DarkSectionTitle label="Education" neon={NEON} />
                 <div className="mt-3 space-y-3">
@@ -1779,29 +1782,29 @@ export const VisualTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
               </div>
             )}
 
-          {/* ── PROJECTS ── */}
-          {projects.length > 0 && (
+            {/* ── PROJECTS ── */}
+            {projects.length > 0 && (
               <div>
                 <p className="text-[8px] font-black tracking-[0.3em] uppercase mb-5" style={{ color: TEAL }}>Projects</p>
                 <div className="relative pl-8">
                   <div className="absolute left-3 top-0 bottom-0 w-0.5 rounded-full" style={{ background: `${TEAL}30` }} />
                   <div className="space-y-5">
                     {projects.map((proj, i) => (
-                <div key={i} className="mb-3 print:break-inside-avoid">
-                  <div className="mb-1">
-                    <strong className="font-bold text-zinc-900">{proj.title}</strong>
-                    {proj.projectLabel && <span className="italic text-sm font-normal text-zinc-700 ml-2">[{proj.projectLabel}]</span>}
-                    {proj.link && (
-                      <a href={proj.link.startsWith('http') ? proj.link : `https://${proj.link}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-[10px] text-zinc-600 hover:underline break-all">
-                        {proj.link}
-                      </a>
-                    )}
-                  </div>
-                  {proj.description && (
-                    <div className="text-[11px] leading-relaxed text-zinc-900 whitespace-pre-wrap">{proj.description}</div>
-                  )}
-                </div>
-              ))}
+                      <div key={i} className="mb-3 print:break-inside-avoid">
+                        <div className="mb-1">
+                          <strong className="font-bold text-zinc-900">{proj.title}</strong>
+                          {proj.projectLabel && <span className="italic text-sm font-normal text-zinc-700 ml-2">[{proj.projectLabel}]</span>}
+                          {proj.link && (
+                            <a href={proj.link.startsWith('http') ? proj.link : `https://${proj.link}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-[10px] text-zinc-600 hover:underline break-all">
+                              {proj.link}
+                            </a>
+                          )}
+                        </div>
+                        {proj.description && (
+                          <div className="text-[11px] leading-relaxed text-zinc-900 whitespace-pre-wrap">{proj.description}</div>
+                        )}
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
@@ -1940,14 +1943,14 @@ export const ATSClassicTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
           </div>
 
           {/* ── Summary ── */}
-          
+
           {/* ── KEY HIGHLIGHTS ── */}
           {keyHighlights.length > 0 && (
             <p className="text-[11px] font-semibold text-zinc-900 mt-2 mb-3 tracking-wide">
               {keyHighlights.join(" • ")}
             </p>
           )}
-{p.summary && (
+          {p.summary && (
             <div className="mb-4">
               <ATSSectionRule label="Professional Summary" />
               <p className="mt-2 text-[11px] leading-relaxed text-zinc-900">{p.summary}</p>
@@ -1960,7 +1963,7 @@ export const ATSClassicTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
               <ATSSectionRule label="Work Experience" />
               <div className="mt-2 space-y-4">
                 {experience.map((exp) => (
-                  <div key={exp.id}>
+                  <div key={exp.id} className="print:break-inside-avoid" style={{ pageBreakInside: 'avoid' }}>
                     <div className="flex justify-between items-baseline">
                       <p className="text-[12px] font-bold text-slate-900">{exp.role}</p>
                       <span className="text-[10px] text-zinc-900 shrink-0">{exp.period}</span>
@@ -1985,21 +1988,21 @@ export const ATSClassicTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
               <ATSSectionRule label="Projects" />
               <div className="mt-2 space-y-3">
                 {projects.map((proj, i) => (
-                <div key={i} className="mb-3 print:break-inside-avoid">
-                  <div className="mb-1">
-                    <strong className="font-bold text-zinc-900">{proj.title}</strong>
-                    {proj.projectLabel && <span className="italic text-sm font-normal text-zinc-700 ml-2">[{proj.projectLabel}]</span>}
-                    {proj.link && (
-                      <a href={proj.link.startsWith('http') ? proj.link : `https://${proj.link}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-[10px] text-zinc-600 hover:underline break-all">
-                        {proj.link}
-                      </a>
+                  <div key={i} className="mb-3 print:break-inside-avoid">
+                    <div className="mb-1">
+                      <strong className="font-bold text-zinc-900">{proj.title}</strong>
+                      {proj.projectLabel && <span className="italic text-sm font-normal text-zinc-700 ml-2">[{proj.projectLabel}]</span>}
+                      {proj.link && (
+                        <a href={proj.link.startsWith('http') ? proj.link : `https://${proj.link}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-[10px] text-zinc-600 hover:underline break-all">
+                          {proj.link}
+                        </a>
+                      )}
+                    </div>
+                    {proj.description && (
+                      <div className="text-[11px] leading-relaxed text-zinc-900 whitespace-pre-wrap">{proj.description}</div>
                     )}
                   </div>
-                  {proj.description && (
-                    <div className="text-[11px] leading-relaxed text-zinc-900 whitespace-pre-wrap">{proj.description}</div>
-                  )}
-                </div>
-              ))}
+                ))}
               </div>
             </div>
           )}
@@ -2033,7 +2036,7 @@ export const ATSClassicTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
           )}
 
           {/* ── Additional Info ── */}
-          
+
           {/* ── CERTIFICATIONS ── */}
           {certifications.length > 0 && (
             <div className="mb-4">
@@ -2092,8 +2095,8 @@ export const ATSModernTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
               <p className="text-[12px] font-semibold mt-0.5" style={{ color: ACCENT }}>{p.jobTitle}</p>
             )}
             <div className="mt-2 flex flex-wrap items-center gap-x-5 gap-y-0.5">
-              {p.email    && <span className="text-[10px] text-zinc-800">{p.email}</span>}
-              {p.phone    && <span className="text-[10px] text-zinc-800">{p.phone}</span>}
+              {p.email && <span className="text-[10px] text-zinc-800">{p.email}</span>}
+              {p.phone && <span className="text-[10px] text-zinc-800">{p.phone}</span>}
               {p.location && <span className="text-[10px] text-zinc-800">{p.location}</span>}
               {p.linkedin && (
                 <a href={p.linkedin.startsWith('http') ? p.linkedin : `https://${p.linkedin}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-zinc-900 hover:opacity-70 transition-opacity"><Linkedin size={12} /> <span className="ml-1">{p.linkedin.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "")}</span></a>
@@ -2108,14 +2111,14 @@ export const ATSModernTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
           </div>
 
           {/* ── Summary ── */}
-          
+
           {/* ── KEY HIGHLIGHTS ── */}
           {keyHighlights.length > 0 && (
             <p className="text-[11px] font-semibold text-zinc-900 mt-2 mb-3 tracking-wide">
               {keyHighlights.join(" • ")}
             </p>
           )}
-{p.summary && (
+          {p.summary && (
             <div className="mb-5">
               <ATSModernSectionTitle label="Summary" accent={ACCENT} />
               <p className="mt-2 text-[11px] leading-relaxed text-zinc-900">{p.summary}</p>
@@ -2128,7 +2131,7 @@ export const ATSModernTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
               <ATSModernSectionTitle label="Experience" accent={ACCENT} />
               <div className="mt-3 space-y-4">
                 {experience.map((exp) => (
-                  <div key={exp.id}>
+                  <div key={exp.id} className="print:break-inside-avoid" style={{ pageBreakInside: 'avoid' }}>
                     <div className="flex justify-between items-baseline">
                       <p className="text-[12px] font-bold text-slate-900">{exp.role}</p>
                       <span className="text-[10px] text-zinc-800 shrink-0">{exp.period}</span>
@@ -2155,21 +2158,21 @@ export const ATSModernTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
               <ATSModernSectionTitle label="Projects" accent={ACCENT} />
               <div className="mt-3 space-y-3">
                 {projects.map((proj, i) => (
-                <div key={i} className="mb-3 print:break-inside-avoid">
-                  <div className="mb-1">
-                    <strong className="font-bold text-zinc-900">{proj.title}</strong>
-                    {proj.projectLabel && <span className="italic text-sm font-normal text-zinc-700 ml-2">[{proj.projectLabel}]</span>}
-                    {proj.link && (
-                      <a href={proj.link.startsWith('http') ? proj.link : `https://${proj.link}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-[10px] text-zinc-600 hover:underline break-all">
-                        {proj.link}
-                      </a>
+                  <div key={i} className="mb-3 print:break-inside-avoid">
+                    <div className="mb-1">
+                      <strong className="font-bold text-zinc-900">{proj.title}</strong>
+                      {proj.projectLabel && <span className="italic text-sm font-normal text-zinc-700 ml-2">[{proj.projectLabel}]</span>}
+                      {proj.link && (
+                        <a href={proj.link.startsWith('http') ? proj.link : `https://${proj.link}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-[10px] text-zinc-600 hover:underline break-all">
+                          {proj.link}
+                        </a>
+                      )}
+                    </div>
+                    {proj.description && (
+                      <div className="text-[11px] leading-relaxed text-zinc-900 whitespace-pre-wrap">{proj.description}</div>
                     )}
                   </div>
-                  {proj.description && (
-                    <div className="text-[11px] leading-relaxed text-zinc-900 whitespace-pre-wrap">{proj.description}</div>
-                  )}
-                </div>
-              ))}
+                ))}
               </div>
             </div>
           )}
@@ -2205,7 +2208,7 @@ export const ATSModernTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
           )}
 
           {/* ── Additional Info ── */}
-          
+
           {/* ── CERTIFICATIONS ── */}
           {certifications.length > 0 && (
             <div className="mb-4">
@@ -2273,10 +2276,10 @@ export const HarvardStandardTemplate = forwardRef<HTMLDivElement, { data: CvStat
                   <a key="ln" href={p.linkedin.startsWith('http') ? p.linkedin : `https://${p.linkedin}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-zinc-900 hover:opacity-70 transition-opacity"><Linkedin size={12} /> <span className="ml-1">{p.linkedin.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "")}</span></a>
                 ),
                 p.github && (
-                  <a key="gh" href={p.github.startsWith('http') ? p.github : `https://${p.github}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-zinc-900 hover:opacity-70 transition-opacity"><Github className="w-3.5 h-3.5 mr-1"/> <span className="ml-1">{p.github.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "")}</span></a>
+                  <a key="gh" href={p.github.startsWith('http') ? p.github : `https://${p.github}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-zinc-900 hover:opacity-70 transition-opacity"><Github className="w-3.5 h-3.5 mr-1" /> <span className="ml-1">{p.github.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "")}</span></a>
                 ),
                 p.portfolioUrl && (
-                  <a key="portfolio" href={p.portfolioUrl.startsWith('http') ? p.portfolioUrl : `https://${p.portfolioUrl}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-zinc-900 hover:opacity-70 transition-opacity"><Globe className="w-3.5 h-3.5 mr-1"/> <span className="ml-1">{p.portfolioUrl.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "")}</span></a>
+                  <a key="portfolio" href={p.portfolioUrl.startsWith('http') ? p.portfolioUrl : `https://${p.portfolioUrl}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-zinc-900 hover:opacity-70 transition-opacity"><Globe className="w-3.5 h-3.5 mr-1" /> <span className="ml-1">{p.portfolioUrl.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "")}</span></a>
                 )
               ].filter(Boolean).map((el, i, arr) => (
                 <span key={i} className="flex items-center gap-2">
@@ -2288,14 +2291,14 @@ export const HarvardStandardTemplate = forwardRef<HTMLDivElement, { data: CvStat
           </div>
 
           {/* ── Summary / Profile ── */}
-          
+
           {/* ── KEY HIGHLIGHTS ── */}
           {keyHighlights.length > 0 && (
             <p className="text-[11px] font-semibold text-zinc-900 mt-2 mb-3 tracking-wide">
               {keyHighlights.join(" • ")}
             </p>
           )}
-{p.summary && (
+          {p.summary && (
             <div className="mb-4">
               <HarvardSectionTitle label="Profile" />
               <p className="mt-2 text-[11px] leading-relaxed text-zinc-900">{p.summary}</p>
@@ -2308,7 +2311,7 @@ export const HarvardStandardTemplate = forwardRef<HTMLDivElement, { data: CvStat
               <HarvardSectionTitle label="Experience" />
               <div className="mt-2 space-y-4">
                 {experience.map((exp) => (
-                  <div key={exp.id}>
+                  <div key={exp.id} className="print:break-inside-avoid" style={{ pageBreakInside: 'avoid' }}>
                     <div className="flex justify-between items-baseline">
                       <p className="text-[12px] font-bold text-slate-900">{exp.company}</p>
                       <span className="text-[10px] text-zinc-900 shrink-0">{exp.period}</span>
@@ -2333,21 +2336,21 @@ export const HarvardStandardTemplate = forwardRef<HTMLDivElement, { data: CvStat
               <HarvardSectionTitle label="Projects" />
               <div className="mt-2 space-y-3">
                 {projects.map((proj, i) => (
-                <div key={i} className="mb-3 print:break-inside-avoid">
-                  <div className="mb-1">
-                    <strong className="font-bold text-zinc-900">{proj.title}</strong>
-                    {proj.projectLabel && <span className="italic text-sm font-normal text-zinc-700 ml-2">[{proj.projectLabel}]</span>}
-                    {proj.link && (
-                      <a href={proj.link.startsWith('http') ? proj.link : `https://${proj.link}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-[10px] text-zinc-600 hover:underline break-all">
-                        {proj.link}
-                      </a>
+                  <div key={i} className="mb-3 print:break-inside-avoid">
+                    <div className="mb-1">
+                      <strong className="font-bold text-zinc-900">{proj.title}</strong>
+                      {proj.projectLabel && <span className="italic text-sm font-normal text-zinc-700 ml-2">[{proj.projectLabel}]</span>}
+                      {proj.link && (
+                        <a href={proj.link.startsWith('http') ? proj.link : `https://${proj.link}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-[10px] text-zinc-600 hover:underline break-all">
+                          {proj.link}
+                        </a>
+                      )}
+                    </div>
+                    {proj.description && (
+                      <div className="text-[11px] leading-relaxed text-zinc-900 whitespace-pre-wrap">{proj.description}</div>
                     )}
                   </div>
-                  {proj.description && (
-                    <div className="text-[11px] leading-relaxed text-zinc-900 whitespace-pre-wrap">{proj.description}</div>
-                  )}
-                </div>
-              ))}
+                ))}
               </div>
             </div>
           )}
@@ -2377,8 +2380,8 @@ export const HarvardStandardTemplate = forwardRef<HTMLDivElement, { data: CvStat
               <p className="mt-2 text-[11px] leading-relaxed text-zinc-900">{skills.join(", ")}</p>
             </div>
           )}
-          
-          
+
+
           {/* ── CERTIFICATIONS ── */}
           {certifications.length > 0 && (
             <div className="mb-4">
@@ -2434,7 +2437,7 @@ function HarvardSectionTitle({ label }: { label: string }) {
   return (
     <div>
       <p className="text-[11px] font-bold uppercase tracking-[0.15em] text-slate-900"
-         style={{ fontVariant: "small-caps" }}>{label}</p>
+        style={{ fontVariant: "small-caps" }}>{label}</p>
       <div className="mt-0.5 h-[1.5px] bg-slate-900" />
     </div>
   );
@@ -2503,14 +2506,14 @@ export const ATSExecutiveTemplate = forwardRef<HTMLDivElement, { data: CvState }
           </div>
 
           {/* ── PROFESSIONAL SUMMARY ── */}
-          
+
           {/* ── KEY HIGHLIGHTS ── */}
           {keyHighlights.length > 0 && (
             <p className="text-[11px] font-semibold text-zinc-900 mt-2 mb-3 tracking-wide">
               {keyHighlights.join(" • ")}
             </p>
           )}
-{p.summary && (
+          {p.summary && (
             <>
               <ATSExecSection label="Professional Summary" />
               <p className="text-[11px] leading-relaxed text-black">
@@ -2525,7 +2528,7 @@ export const ATSExecutiveTemplate = forwardRef<HTMLDivElement, { data: CvState }
               <ATSExecSection label="Professional Experience" />
               <div className="space-y-4">
                 {experience.map((exp) => (
-                  <div key={exp.id}>
+                  <div key={exp.id} className="print:break-inside-avoid" style={{ pageBreakInside: 'avoid' }}>
                     <div className="flex justify-between items-baseline">
                       <div>
                         <span className="text-[12px] font-bold uppercase">{exp.role}</span>
@@ -2560,21 +2563,21 @@ export const ATSExecutiveTemplate = forwardRef<HTMLDivElement, { data: CvState }
               <ATSExecSection label="Projects" />
               <div className="space-y-3">
                 {projects.map((proj, i) => (
-                <div key={i} className="mb-3 print:break-inside-avoid">
-                  <div className="mb-1">
-                    <strong className="font-bold text-zinc-900">{proj.title}</strong>
-                    {proj.projectLabel && <span className="italic text-sm font-normal text-zinc-700 ml-2">[{proj.projectLabel}]</span>}
-                    {proj.link && (
-                      <a href={proj.link.startsWith('http') ? proj.link : `https://${proj.link}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-[10px] text-zinc-600 hover:underline break-all">
-                        {proj.link}
-                      </a>
+                  <div key={i} className="mb-3 print:break-inside-avoid">
+                    <div className="mb-1">
+                      <strong className="font-bold text-zinc-900">{proj.title}</strong>
+                      {proj.projectLabel && <span className="italic text-sm font-normal text-zinc-700 ml-2">[{proj.projectLabel}]</span>}
+                      {proj.link && (
+                        <a href={proj.link.startsWith('http') ? proj.link : `https://${proj.link}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-[10px] text-zinc-600 hover:underline break-all">
+                          {proj.link}
+                        </a>
+                      )}
+                    </div>
+                    {proj.description && (
+                      <div className="text-[11px] leading-relaxed text-zinc-900 whitespace-pre-wrap">{proj.description}</div>
                     )}
                   </div>
-                  {proj.description && (
-                    <div className="text-[11px] leading-relaxed text-zinc-900 whitespace-pre-wrap">{proj.description}</div>
-                  )}
-                </div>
-              ))}
+                ))}
               </div>
             </>
           )}
@@ -2616,7 +2619,7 @@ export const ATSExecutiveTemplate = forwardRef<HTMLDivElement, { data: CvState }
           )}
 
           {/* ── ADDITIONAL INFO ── */}
-          
+
           {/* ── CERTIFICATIONS ── */}
           {certifications.length > 0 && (
             <div className="mb-4">
