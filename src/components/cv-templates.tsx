@@ -54,41 +54,32 @@ export type CvState = {
 /* ─── Shared print styles injected into every template ───── */
 const PRINT_STYLES = `
   @media print {
-    @page { size: A4; margin: 0; }
+    @page { size: A4; margin: 15mm 12mm; }
     body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     .cv-root {
       width: 210mm !important;
-      min-height: 297mm !important;
+      /* min-height: 0 — do NOT set a mm value here; it forces a one-page box */
+      min-height: 0 !important;
       height: auto !important;
+      max-height: none !important;
       box-shadow: none !important;
       border-radius: 0 !important;
       transform: none !important;
       overflow: visible !important;
+      /* NOTE: do NOT add display:block here — it breaks two-column templates */
     }
-    /* Override flex/grid so page breaks flow naturally */
-    .cv-root,
-    .cv-root .print-block-col {
-      display: block !important;
-    }
-    /* Sidebar columns become full-width blocks when printing */
-    .cv-root .cv-sidebar {
-      display: block !important;
-      width: 100% !important;
-      border: none !important;
-    }
-    .cv-root .cv-main {
-      display: block !important;
-      width: 100% !important;
-    }
-    /* Legacy page-break aliases for cross-browser PDF support */
+    /* Opt-in: templates that explicitly use these classes get block overrides */
+    .cv-root .print-block-col { display: block !important; }
+    .cv-root .cv-sidebar { display: block !important; width: 100% !important; border: none !important; }
+    .cv-root .cv-main   { display: block !important; width: 100% !important; }
+    /* Legacy page-break aliases */
     .cv-root .print\\:break-inside-avoid { page-break-inside: avoid; break-inside: avoid; }
     .cv-root .print\\:break-after-avoid  { page-break-after: avoid;  break-after: avoid;  }
-    /* Section wrappers must not break */
-    .cv-section { page-break-inside: avoid; break-inside: avoid; }
-    /* Section titles stay with their first content item */
-    .cv-section-title { page-break-after: avoid; break-after: avoid; }
+    .cv-section       { page-break-inside: avoid; break-inside: avoid; }
+    .cv-section-title { page-break-after: avoid;  break-after: avoid;  }
   }
 `;
+
 
 /* ══════════════════════════════════════════════════════════
    TEMPLATE 1 — MINIMALIST

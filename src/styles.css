@@ -158,111 +158,113 @@
 
 /* ═══════════════════════════════════════════════════════════════════
    GLOBAL PRINT RULES — CareerOS CV Export
-   These rules must live in the global stylesheet so they are present
-   in the react-to-print iframe clone (copyStyles: true picks this up).
-   They neutralise every ancestor that silently blocks CSS fragmentation.
+   ─────────────────────────────────────────────────────────────────
+   IMPORTANT: These rules are cloned into the react-to-print iframe
+   via copyStyles. They must NEVER use:
+     • `body > *:not(...)` — #cv-print-root does not exist in the iframe
+     • Universal `body > *` selectors — they override the CV's own internal
+       layout and collapse flex/grid to nothing inside the iframe.
+   Only named class / data-attribute selectors are used here.
 ═══════════════════════════════════════════════════════════════════ */
 @media print {
-  /* 1. Declare page geometry once, globally */
+  /* 1. Page geometry — defined once globally */
   @page {
     size: A4;
     margin: 15mm 12mm;
   }
 
-  /* 2. Strip all height/overflow/transform constraints from every ancestor
-        between <body> and the cv-root so the print engine sees a clean
-        block-flow document. This is the actual fix for break-inside-avoid
-        failures — those utilities only work if no ancestor above them has
-        overflow:hidden, a fixed height, or a transform. */
+  /* 2. html/body/#root: unconstrain height and overflow only.
+        Safe — does NOT force display:block on unknown descendants. */
   html,
   body,
-  #root,
-  /* TanStack Router outlet and layout wrappers */
-  [data-router-outlet],
-  .tanstack-router-outlet,
-  /* The cv-studio top-level motion.div and its children */
-  [data-cv-studio-shell],
-  /* Catch-all: any element between body and .cv-root */
-  body > *,
-  body > * > *,
-  body > * > * > * {
+  #root {
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  /* 3. cv-studio shell: strip flex-column + h-screen */
+  [data-cv-studio-shell] {
+    display: block !important;
     height: auto !important;
     max-height: none !important;
     min-height: 0 !important;
     overflow: visible !important;
-    position: static !important;
-    transform: none !important;
-    will-change: auto !important;
-    display: block !important;
-    flex: none !important;
-    grid: none !important;
-    animation: none !important;
   }
 
-  /* 3. Hide everything except the CV preview column */
-  body > *:not(#cv-print-root) {
-    display: none !important;
-  }
-
-  /* 4. The CV preview area: full width, no wrapper chrome */
+  /* 4. CV preview column: become the full print canvas */
   .cv-studio-preview-col {
     display: block !important;
     width: 100% !important;
     height: auto !important;
+    max-height: none !important;
     overflow: visible !important;
     padding: 0 !important;
     margin: 0 !important;
-    position: static !important;
-    transform: none !important;
     background: white !important;
   }
 
-  /* 5. The motion.div wrapper Framer Motion adds — kill its transform/style */
+  /* 5. Framer Motion preview wrapper: neutralise animated width + padding */
   .cv-preview-motion-wrapper {
     display: block !important;
     width: 100% !important;
     height: auto !important;
-    transform: none !important;
     min-height: 0 !important;
-    padding: 0 !important;
+    max-height: none !important;
+    transform: none !important;
+    padding-bottom: 0 !important;
     margin: 0 !important;
+    overflow: visible !important;
   }
 
-  /* 6. The inner scale-wrapper (used for mobile preview scaling on-screen) */
+  /* 6. Inner scale-wrapper: remove mobile scale(0.85) transform */
   .cv-preview-inner {
     transform: none !important;
     overflow: visible !important;
     border-radius: 0 !important;
     height: auto !important;
+    min-height: 0 !important;
     width: 100% !important;
   }
 
-  /* 7. The glass/decorative frame element — hide it */
+  /* 7. Glass/decorative frame: not needed on paper */
   .cv-preview-frame {
     display: none !important;
   }
 
-  /* 8. Core fragmentation rules — these only work because rules 1-7 exist */
+  /* 8. CV root: unconstrain for multi-page flow */
+  .cv-root,
+  .stanford-cv-root {
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow: visible !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    transform: none !important;
+  }
+
+  /* 9. Reinforce fragmentation utilities */
   .break-inside-avoid,
-  .print\:break-inside-avoid {
+  .print\:break-inside-avoid,
+  .stanford-entry,
+  .stanford-section-glue {
     break-inside: avoid !important;
     page-break-inside: avoid !important;
   }
 
   .break-after-avoid,
-  .print\:break-after-avoid {
+  .print\:break-after-avoid,
+  .stanford-section-head {
     break-after: avoid !important;
     page-break-after: avoid !important;
   }
 
-  /* 9. Hide non-CV UI chrome */
+  /* 10. Hide UI chrome */
   header,
-  nav,
-  aside,
-  .print\:hidden,
-  [data-cv-toolbar],
-  [data-cv-form-panel] {
+  [data-cv-form-panel],
+  .print\:hidden {
     display: none !important;
   }
 }
-
