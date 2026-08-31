@@ -65,9 +65,28 @@ const PRINT_STYLES = `
       transform: none !important;
       overflow: visible !important;
     }
+    /* Override flex/grid so page breaks flow naturally */
+    .cv-root,
+    .cv-root .print-block-col {
+      display: block !important;
+    }
+    /* Sidebar columns become full-width blocks when printing */
+    .cv-root .cv-sidebar {
+      display: block !important;
+      width: 100% !important;
+      border: none !important;
+    }
+    .cv-root .cv-main {
+      display: block !important;
+      width: 100% !important;
+    }
     /* Legacy page-break aliases for cross-browser PDF support */
     .cv-root .print\\:break-inside-avoid { page-break-inside: avoid; break-inside: avoid; }
     .cv-root .print\\:break-after-avoid  { page-break-after: avoid;  break-after: avoid;  }
+    /* Section wrappers must not break */
+    .cv-section { page-break-inside: avoid; break-inside: avoid; }
+    /* Section titles stay with their first content item */
+    .cv-section-title { page-break-after: avoid; break-after: avoid; }
   }
 `;
 
@@ -86,7 +105,7 @@ export const MinimalistTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
       >
         <style>{PRINT_STYLES}</style>
 
-        <div className="flex flex-col h-full px-16 py-14">
+        <div className="flex flex-col h-full px-16 py-14 print:block">
           {/* Header */}
           <div className="border-b border-slate-200 pb-8 mb-8">
             <h1 className="text-4xl font-extralight tracking-[0.08em] text-slate-900 uppercase">
@@ -310,7 +329,7 @@ export const CorporateTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
           {p.github && (<a href={p.github.startsWith('http') ? p.github : `https://${p.github}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-[10px] text-zinc-900 hover:opacity-70 transition-opacity"><Github size={10} style={{ color: NAVY }} /> <span className="ml-1">{p.github.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "")}</span></a>)}
         </div>
 
-        <div className="px-10 py-7 flex gap-8 flex-1">
+        <div className="px-10 py-7 flex gap-8 flex-1 print:block">
           {/* Main Column */}
           <div className="flex-1 space-y-7">
 
@@ -488,7 +507,7 @@ export const TechTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
     return (
       <div
         ref={ref}
-        className="cv-root w-full h-full bg-white overflow-hidden flex"
+        className="cv-root w-full h-full bg-white overflow-hidden flex print:block"
         style={{ fontFamily: "'Inter', monospace" }}
       >
         <style>{PRINT_STYLES}</style>
@@ -545,7 +564,7 @@ export const TechTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
         </div>
 
         {/* Main content */}
-        <div className="flex-1 flex flex-col h-full overflow-hidden">
+        <div className="flex-1 flex flex-col h-full overflow-hidden print:block">
           {/* Top accent bar */}
           <div className="px-8 py-6" style={{ borderBottom: `3px solid ${ACCENT}` }}>
             <span
@@ -703,7 +722,7 @@ export const CreativeTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
     return (
       <div
         ref={ref}
-        className="cv-root w-full h-full bg-white overflow-hidden"
+        className="cv-root w-full h-full bg-white overflow-hidden print:block"
         style={{ fontFamily: "'Inter', sans-serif" }}
       >
         <style>{PRINT_STYLES}</style>
@@ -735,7 +754,7 @@ export const CreativeTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
         </div>
 
         {/* Body: two columns */}
-        <div className="flex gap-0 flex-1" style={{ minHeight: 0 }}>
+        <div className="flex gap-0 flex-1 print:block" style={{ minHeight: 0 }}>
           {/* Main */}
           <div className="flex-1 px-10 py-7 space-y-6">
 
@@ -1061,7 +1080,7 @@ export const StartupTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
         </div>
 
         {/* Body */}
-        <div className="flex gap-6 px-8 py-6">
+        <div className="flex gap-6 px-8 py-6 print:block">
           {/* Main */}
           <div className="flex-1 space-y-6">
 
@@ -1187,7 +1206,7 @@ export const AcademicTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
         style={{ fontFamily: "'Times New Roman', 'Georgia', serif" }}
       >
         <style>{PRINT_STYLES}</style>
-        <div className="px-14 py-10 flex flex-col h-full">
+        <div className="px-14 py-10 flex flex-col h-full print:block">
           {/* Centered formal header */}
           <div className="text-center mb-6 pb-4 border-b-2 border-slate-800">
             <h1 className="text-2xl font-bold tracking-wide text-slate-900 uppercase">
@@ -1353,7 +1372,7 @@ export const EditorialTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
         </div>
 
         {/* Body — magazine two-col */}
-        <div className="flex gap-0 px-12 pt-7" style={{ fontFamily: "'Georgia', serif" }}>
+        <div className="flex gap-0 px-12 pt-7 print:block" style={{ fontFamily: "'Georgia', serif" }}>
           {/* Wide main col */}
           <div className="flex-1 pr-10 space-y-6">
 
@@ -1476,7 +1495,7 @@ export const DarkBoldTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
     return (
       <div
         ref={ref}
-        className="cv-root w-full h-full overflow-hidden flex flex-col"
+        className="cv-root w-full h-full overflow-hidden flex flex-col print:block"
         style={{ fontFamily: "'Inter', sans-serif", background: "#0a0a0f" }}
       >
         <style>{PRINT_STYLES + `
@@ -1528,7 +1547,7 @@ export const DarkBoldTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
         </div>
 
         {/* Body */}
-        <div className="flex gap-6 px-10 py-8 flex-1 dark-panel">
+        <div className="flex gap-6 px-10 py-8 flex-1 dark-panel print:block">
           {/* Main */}
           <div className="flex-1 space-y-6">
 
@@ -1651,13 +1670,13 @@ export const VisualTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
     return (
       <div
         ref={ref}
-        className="cv-root w-full h-full bg-white overflow-hidden flex"
+        className="cv-root w-full h-full bg-white overflow-hidden flex print:block"
         style={{ fontFamily: "'Inter', sans-serif" }}
       >
         <style>{PRINT_STYLES}</style>
 
         {/* Left sidebar */}
-        <div className="w-60 shrink-0 flex flex-col h-full" style={{ backgroundColor: TEAL_LIGHT, borderRight: `4px solid ${TEAL}` }}>
+        <div className="w-60 shrink-0 flex flex-col h-full print:block print:w-full" style={{ backgroundColor: TEAL_LIGHT, borderRight: `4px solid ${TEAL}` }}>
           {/* Header block */}
           <div className="px-6 pt-8 pb-6" style={{ background: TEAL }}>
             <div
@@ -1704,7 +1723,7 @@ export const VisualTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
         </div>
 
         {/* Main content */}
-        <div className="flex-1 flex flex-col h-full overflow-hidden">
+        <div className="flex-1 flex flex-col h-full overflow-hidden print:block">
           {/* Summary strip */}
           {p.summary && (
             <div className="px-8 py-6 border-b-2" style={{ borderColor: `${TEAL}30` }}>
@@ -1713,7 +1732,7 @@ export const VisualTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
             </div>
           )}
 
-          <div className="px-8 py-6 flex-1 space-y-6 overflow-hidden">
+          <div className="px-8 py-6 flex-1 space-y-6 overflow-hidden print:block">
             {/* Timeline experience */}
             {experience.length > 0 && (
               <div>
@@ -1863,7 +1882,7 @@ function CreativeSectionTitle({ label, rose }: { label: string; rose: string }) 
 
 function ExecSectionTitle({ label, gold }: { label: string; gold: string }) {
   return (
-    <div>
+    <div className="print:break-after-avoid">
       <p className="text-[10px] font-bold tracking-[0.25em] uppercase" style={{ color: gold }}>{label}</p>
       <div className="mt-1 h-px" style={{ backgroundColor: gold + "44" }} />
     </div>
@@ -1912,7 +1931,7 @@ export const ATSClassicTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
         style={{ fontFamily: "'Arial', 'Helvetica Neue', sans-serif" }}
       >
         <style>{PRINT_STYLES}</style>
-        <div className="px-12 py-10 flex flex-col h-full gap-0">
+        <div className="px-12 py-10 flex flex-col h-full gap-0 print:block">
           {/* ── Header ── */}
           <div className="text-center mb-4">
             <h1 className="text-2xl font-bold tracking-wide text-slate-900 uppercase">
@@ -2087,7 +2106,7 @@ export const ATSModernTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
         style={{ fontFamily: "'Inter', 'Arial', sans-serif" }}
       >
         <style>{PRINT_STYLES}</style>
-        <div className="px-12 py-10 flex flex-col h-full">
+        <div className="px-12 py-10 flex flex-col h-full print:block">
           {/* ── Header ── */}
           <div className="mb-6">
             <h1 className="text-[28px] font-extrabold tracking-tight text-slate-900">
@@ -2258,7 +2277,7 @@ export const HarvardStandardTemplate = forwardRef<HTMLDivElement, { data: CvStat
         style={{ fontFamily: "'Times New Roman', 'Georgia', serif" }}
       >
         <style>{PRINT_STYLES}</style>
-        <div className="px-14 py-10 flex flex-col h-full">
+        <div className="px-14 py-10 flex flex-col h-full print:block">
           {/* ── Centred header ── */}
           <div className="text-center mb-5">
             <h1 className="text-[22px] font-bold tracking-widest text-slate-900 uppercase">
@@ -2418,7 +2437,7 @@ HarvardStandardTemplate.displayName = "HarvardStandardTemplate";
 /* ─── ATS template small helpers ─────────────────────────── */
 function ATSSectionRule({ label }: { label: string }) {
   return (
-    <div>
+    <div className="print:break-after-avoid">
       <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-800">{label}</p>
       <div className="mt-1 h-px bg-slate-800" />
     </div>
@@ -2437,7 +2456,7 @@ function ATSModernSectionTitle({ label, accent }: { label: string; accent: strin
 
 function HarvardSectionTitle({ label }: { label: string }) {
   return (
-    <div>
+    <div className="print:break-after-avoid">
       <p className="text-[11px] font-bold uppercase tracking-[0.15em] text-slate-900"
         style={{ fontVariant: "small-caps" }}>{label}</p>
       <div className="mt-0.5 h-[1.5px] bg-slate-900" />
