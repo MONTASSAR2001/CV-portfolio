@@ -66,13 +66,21 @@
 
   --gradient-kinetic: linear-gradient(120deg, #111111, #333333 40%, #111111);
   --gradient-aurora: none;
-  --shadow-glow: 0 0 40px -10px rgba(0,0,0,0.15);
-  --shadow-glow-lg: 0 20px 60px -20px rgba(0,0,0,0.2), 0 0 30px rgba(0,0,0,0.1);
+  --shadow-glow: 0 0 40px -10px rgba(0, 0, 0, 0.15);
+  --shadow-glow-lg: 0 20px 60px -20px rgba(0, 0, 0, 0.2), 0 0 30px rgba(0, 0, 0, 0.1);
 }
 
 @layer base {
-  * { border-color: var(--color-border); }
-  html, body { background: var(--color-background); color: var(--color-foreground); font-family: var(--font-sans); }
+  * {
+    border-color: var(--color-border);
+  }
+
+  html,
+  body {
+    background: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+  }
 }
 
 @utility text-gradient {
@@ -99,6 +107,7 @@
   position: relative;
   isolation: isolate;
 }
+
 @utility kinetic-border-inner {
   position: absolute;
   inset: 0;
@@ -107,7 +116,7 @@
   background: conic-gradient(from var(--angle, 0deg), oklch(0.72 0.24 300), oklch(0.68 0.24 275), oklch(0.85 0.18 210), oklch(0.72 0.28 340), oklch(0.72 0.24 300));
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   -webkit-mask-composite: xor;
-          mask-composite: exclude;
+  mask-composite: exclude;
   pointer-events: none;
 }
 
@@ -124,8 +133,10 @@
   box-shadow: var(--shadow-glow);
   transition: transform .3s ease, box-shadow .3s ease;
 }
+
 @utility btn-kinetic-sweep {
-  position: absolute; inset: 0;
+  position: absolute;
+  inset: 0;
   background: linear-gradient(120deg, transparent 20%, oklch(1 0 0 / 0.5) 50%, transparent 80%);
   transform: translateX(-120%);
   animation: sweep 2.8s ease-in-out infinite;
@@ -133,21 +144,49 @@
 }
 
 @keyframes sweep {
-  0%   { transform: translateX(-120%); }
-  60%  { transform: translateX(120%); }
-  100% { transform: translateX(120%); }
+  0% {
+    transform: translateX(-120%);
+  }
+
+  60% {
+    transform: translateX(120%);
+  }
+
+  100% {
+    transform: translateX(120%);
+  }
 }
+
 @keyframes glow-pulse {
-  0%   { box-shadow: 0 0 0 0 oklch(0.72 0.24 300 / 0.55); }
-  70%  { box-shadow: 0 0 0 22px oklch(0.72 0.24 300 / 0); }
-  100% { box-shadow: 0 0 0 0 oklch(0.72 0.24 300 / 0); }
+  0% {
+    box-shadow: 0 0 0 0 oklch(0.72 0.24 300 / 0.55);
+  }
+
+  70% {
+    box-shadow: 0 0 0 22px oklch(0.72 0.24 300 / 0);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 oklch(0.72 0.24 300 / 0);
+  }
 }
+
 @keyframes spin-slow {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
+
 @keyframes float-y {
-  0%,100% { transform: translateY(0) rotate(0deg); }
-  50%     { transform: translateY(-24px) rotate(6deg); }
+
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+
+  50% {
+    transform: translateY(-24px) rotate(6deg);
+  }
 }
 
 @property --angle {
@@ -167,6 +206,7 @@
    Only named class / data-attribute selectors are used here.
 ═══════════════════════════════════════════════════════════════════ */
 @media print {
+
   /* 1. Page geometry — defined once globally */
   @page {
     size: A4;

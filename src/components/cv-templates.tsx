@@ -1384,17 +1384,33 @@ export const EditorialTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
 
             {experience.length > 0 && (
               <div>
-                <p className="text-[8px] tracking-[0.4em] uppercase font-sans text-stone-400 mb-3">Experience</p>
-                <div className="space-y-5">
-                  {experience.map((exp, i) => (
+                <div className="break-inside-avoid">
+                  <p className="text-[8px] tracking-[0.4em] uppercase font-sans text-stone-400 mb-3">Experience</p>
+                  <div className="print:break-inside-avoid" style={{ pageBreakInside: 'avoid' }}>
+                    <div className="flex justify-between items-baseline">
+                      <p className="text-[13px] font-bold text-stone-900">{experience[0].role}</p>
+                      <span className="text-[9px] font-sans text-stone-400 italic shrink-0">{experience[0].period}</span>
+                    </div>
+                    <p className="text-[11px] text-stone-500 font-sans mt-0.5">{experience[0].company}</p>
+                    {experience[0].bullets && (
+                      <ul className="mt-2 space-y-1">
+                        {experience[0].bullets.split("\n").map((b, j) => b.trim() && (
+                          <li key={j} className="text-[11px] leading-relaxed text-stone-600 pl-4 relative before:content-['—'] before:absolute before:left-0 before:text-stone-400">
+                            {b.trim()}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                </div>
+                <div className="mt-5 space-y-5">
+                  {experience.slice(1).map((exp, i) => (
                     <div key={exp.id} className="print:break-inside-avoid" style={{ pageBreakInside: 'avoid' }}>
-                      <>
-                        {i > 0 && <div className="h-px bg-stone-200 mb-5" />}
-                        <div className="flex justify-between items-baseline">
-                          <p className="text-[13px] font-bold text-stone-900">{exp.role}</p>
-                          <span className="text-[9px] font-sans text-stone-400 italic shrink-0">{exp.period}</span>
-                        </div>
-                      </>
+                      <div className="h-px bg-stone-200 mb-5" />
+                      <div className="flex justify-between items-baseline">
+                        <p className="text-[13px] font-bold text-stone-900">{exp.role}</p>
+                        <span className="text-[9px] font-sans text-stone-400 italic shrink-0">{exp.period}</span>
+                      </div>
                       <p className="text-[11px] text-stone-500 font-sans mt-0.5">{exp.company}</p>
                       {exp.bullets && (
                         <ul className="mt-2 space-y-1">
@@ -1416,34 +1432,45 @@ export const EditorialTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
           <div className="w-48 shrink-0 border-l border-stone-200 pl-8 space-y-6">
             {projects.length > 0 && (
               <div>
-                <p className="text-[8px] tracking-[0.4em] uppercase font-sans text-stone-400 mb-3">Projects</p>
+                <div className="break-inside-avoid">
+                  <p className="text-[8px] tracking-[0.4em] uppercase font-sans text-stone-400 mb-3">Projects</p>
+                  <div className="mb-3 print:break-inside-avoid">
+                    <div className="mb-1">
+                      <strong className="font-bold text-zinc-900">{projects[0].title}</strong>
+                      {projects[0].projectLabel && <span className="italic text-sm font-normal text-zinc-700 ml-2">[{projects[0].projectLabel}]</span>}
+                      {projects[0].link && <a href={projects[0].link.startsWith('http') ? projects[0].link : `https://${projects[0].link}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-[10px] text-zinc-600 hover:underline break-all">{projects[0].link}</a>}
+                    </div>
+                    {projects[0].description && <div className="text-[11px] leading-relaxed text-zinc-900 whitespace-pre-wrap">{projects[0].description}</div>}
+                  </div>
+                </div>
                 <div className="space-y-4">
-                  {projects.map((proj, i) => (
+                  {projects.slice(1).map((proj, i) => (
                     <div key={i} className="mb-3 print:break-inside-avoid">
                       <div className="mb-1">
                         <strong className="font-bold text-zinc-900">{proj.title}</strong>
                         {proj.projectLabel && <span className="italic text-sm font-normal text-zinc-700 ml-2">[{proj.projectLabel}]</span>}
-                        {proj.link && (
-                          <a href={proj.link.startsWith('http') ? proj.link : `https://${proj.link}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-[10px] text-zinc-600 hover:underline break-all">
-                            {proj.link}
-                          </a>
-                        )}
+                        {proj.link && <a href={proj.link.startsWith('http') ? proj.link : `https://${proj.link}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-[10px] text-zinc-600 hover:underline break-all">{proj.link}</a>}
                       </div>
-                      {proj.description && (
-                        <div className="text-[11px] leading-relaxed text-zinc-900 whitespace-pre-wrap">{proj.description}</div>
-                      )}
+                      {proj.description && <div className="text-[11px] leading-relaxed text-zinc-900 whitespace-pre-wrap">{proj.description}</div>}
                     </div>
                   ))}
                 </div>
               </div>
             )}
 
-            {/* ── PROJECTS ── */}
+            {/* Education */}
             {education.length > 0 && (
               <div>
-                <p className="text-[8px] tracking-[0.4em] uppercase font-sans text-stone-400 mb-3">Education</p>
-                <div className="space-y-4">
-                  {education.map((edu) => (
+                <div className="break-inside-avoid">
+                  <p className="text-[8px] tracking-[0.4em] uppercase font-sans text-stone-400 mb-3">Education</p>
+                  <div className="print:break-inside-avoid" style={{ pageBreakInside: 'avoid' }}>
+                    <p className="text-[11px] font-bold text-stone-900 leading-tight">{education[0].degree}</p>
+                    <p className="text-[10px] font-sans text-stone-500 mt-0.5">{education[0].school}</p>
+                    <p className="text-[10px] font-sans text-stone-400 mt-0.5 italic">{education[0].year}</p>
+                  </div>
+                </div>
+                <div className="mt-4 space-y-4">
+                  {education.slice(1).map((edu) => (
                     <div key={edu.id} className="print:break-inside-avoid" style={{ pageBreakInside: 'avoid' }}>
                       <p className="text-[11px] font-bold text-stone-900 leading-tight">{edu.degree}</p>
                       <p className="text-[10px] font-sans text-stone-500 mt-0.5">{edu.school}</p>
@@ -1454,14 +1481,13 @@ export const EditorialTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
               </div>
             )}
             {skills.length > 0 && (
-              <div>
+              <div className="break-inside-avoid">
                 <p className="text-[8px] tracking-[0.4em] uppercase font-sans text-stone-400 mb-3">Expertise</p>
-                <div className="space-y-2">
+                <div className="flex flex-wrap gap-1.5">
                   {skills.map((s) => (
-                    <div key={s} className="flex items-center gap-2">
-                      <div className="h-px flex-1 bg-stone-200" />
-                      <span className="text-[10px] font-sans text-stone-600 whitespace-nowrap">{s}</span>
-                    </div>
+                    <span key={s} className="px-2 py-1 text-[9px] uppercase tracking-wider font-sans border border-stone-200 text-stone-600 bg-white">
+                      {s}
+                    </span>
                   ))}
                 </div>
               </div>
@@ -1556,9 +1582,29 @@ export const DarkBoldTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
             )}
             {experience.length > 0 && (
               <div>
-                <DarkSectionTitle label="Experience" neon={NEON} />
-                <div className="mt-3 space-y-5">
-                  {experience.map((exp) => (
+                <div className="break-inside-avoid">
+                  <DarkSectionTitle label="Experience" neon={NEON} />
+                  <div className="mt-3 pl-3 print:break-inside-avoid" style={{ borderLeft: `2px solid ${NEON}33` }}>
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <p className="text-sm font-bold text-white">{experience[0].role}</p>
+                        <p className="text-[11px] font-semibold mt-0.5" style={{ color: NEON }}>{experience[0].company}</p>
+                      </div>
+                      <span className="text-[10px] text-zinc-800 shrink-0">{experience[0].period}</span>
+                    </div>
+                    {experience[0].bullets && (
+                      <ul className="mt-2 space-y-1">
+                        {experience[0].bullets.split("\n").map((b, i) => b.trim() && (
+                          <li key={i} className="text-[11px] text-zinc-700 flex gap-2">
+                            <span style={{ color: NEON }} className="shrink-0">›</span> {b.trim()}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                </div>
+                <div className="mt-5 space-y-5">
+                  {experience.slice(1).map((exp) => (
                     <div key={exp.id} className="pl-3 print:break-inside-avoid" style={{ borderLeft: `2px solid ${NEON}33` }}>
                       <div className="flex justify-between items-start">
                         <div>
@@ -1583,34 +1629,47 @@ export const DarkBoldTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
             )}
             {projects.length > 0 && (
               <div>
-                <DarkSectionTitle label="Projects" neon={NEON} />
-                <div className="mt-3 space-y-3">
-                  {projects.map((proj, i) => (
+                <div className="break-inside-avoid">
+                  <DarkSectionTitle label="Projects" neon={NEON} />
+                  <div className="mt-3 mb-3 print:break-inside-avoid">
+                    <div className="mb-1">
+                      <strong className="font-bold text-zinc-900">{projects[0].title}</strong>
+                      {projects[0].projectLabel && <span className="italic text-sm font-normal text-zinc-700 ml-2">[{projects[0].projectLabel}]</span>}
+                      {projects[0].link && <a href={projects[0].link.startsWith('http') ? projects[0].link : `https://${projects[0].link}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-[10px] text-zinc-600 hover:underline break-all">{projects[0].link}</a>}
+                    </div>
+                    {projects[0].description && <div className="text-[11px] leading-relaxed text-zinc-900 whitespace-pre-wrap">{projects[0].description}</div>}
+                  </div>
+                </div>
+                <div className="space-y-3">
+                  {projects.slice(1).map((proj, i) => (
                     <div key={i} className="mb-3 print:break-inside-avoid">
                       <div className="mb-1">
                         <strong className="font-bold text-zinc-900">{proj.title}</strong>
                         {proj.projectLabel && <span className="italic text-sm font-normal text-zinc-700 ml-2">[{proj.projectLabel}]</span>}
-                        {proj.link && (
-                          <a href={proj.link.startsWith('http') ? proj.link : `https://${proj.link}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-[10px] text-zinc-600 hover:underline break-all">
-                            {proj.link}
-                          </a>
-                        )}
+                        {proj.link && <a href={proj.link.startsWith('http') ? proj.link : `https://${proj.link}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-[10px] text-zinc-600 hover:underline break-all">{proj.link}</a>}
                       </div>
-                      {proj.description && (
-                        <div className="text-[11px] leading-relaxed text-zinc-900 whitespace-pre-wrap">{proj.description}</div>
-                      )}
+                      {proj.description && <div className="text-[11px] leading-relaxed text-zinc-900 whitespace-pre-wrap">{proj.description}</div>}
                     </div>
                   ))}
                 </div>
               </div>
             )}
 
-            {/* ── PROJECTS ── */}
+            {/* Education */}
             {education.length > 0 && (
               <div>
-                <DarkSectionTitle label="Education" neon={NEON} />
+                <div className="break-inside-avoid">
+                  <DarkSectionTitle label="Education" neon={NEON} />
+                  <div className="mt-3 flex justify-between print:break-inside-avoid">
+                    <div>
+                      <p className="text-sm font-bold text-white">{education[0].degree}</p>
+                      <p className="text-[11px] text-zinc-700">{education[0].school}</p>
+                    </div>
+                    <span className="text-[10px] text-zinc-800 shrink-0">{education[0].year}</span>
+                  </div>
+                </div>
                 <div className="mt-3 space-y-3">
-                  {education.map((edu) => (
+                  {education.slice(1).map((edu) => (
                     <div key={edu.id} className="flex justify-between print:break-inside-avoid">
                       <div>
                         <p className="text-sm font-bold text-white">{edu.degree}</p>
@@ -1727,98 +1786,163 @@ export const VisualTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
             {/* Timeline experience */}
             {experience.length > 0 && (
               <div>
-                <p className="text-[8px] font-black tracking-[0.3em] uppercase mb-5" style={{ color: TEAL }}>Experience</p>
-                <div className="relative pl-8">
-                  {/* Vertical timeline rail */}
-                  <div className="absolute left-3 top-0 bottom-0 w-0.5 rounded-full" style={{ background: `${TEAL}30` }} />
-                  <div className="space-y-6">
-                    {experience.map((exp) => (
-                      <div key={exp.id} className="relative print:break-inside-avoid">
-                        {/* Timeline dot */}
-                        <div
-                          className="absolute -left-8 top-1 h-4 w-4 rounded-full border-2 border-white"
-                          style={{ background: TEAL, marginLeft: "4px" }}
-                        />
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <p className="text-sm font-extrabold text-slate-900">{exp.role}</p>
-                            <p className="text-[11px] font-bold mt-0.5" style={{ color: TEAL }}>{exp.company}</p>
-                          </div>
-                          <span
-                            className="text-[9px] rounded-full px-2 py-0.5 font-bold shrink-0"
-                            style={{ background: `${TEAL}15`, color: TEAL }}
-                          >
-                            {exp.period}
-                          </span>
+                <div className="break-inside-avoid">
+                  <p className="text-[8px] font-black tracking-[0.3em] uppercase mb-5" style={{ color: TEAL }}>Experience</p>
+                  <div className="relative pl-8 print:break-inside-avoid">
+                    {/* Vertical timeline rail */}
+                    <div className="absolute left-3 top-0 bottom-0 w-0.5 rounded-full" style={{ background: `${TEAL}30` }} />
+                    <div className="relative">
+                      {/* Timeline dot */}
+                      <div
+                        className="absolute -left-8 top-1 h-4 w-4 rounded-full border-2 border-white"
+                        style={{ background: TEAL, marginLeft: "4px" }}
+                      />
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <p className="text-sm font-extrabold text-slate-900">{experience[0].role}</p>
+                          <p className="text-[11px] font-bold mt-0.5" style={{ color: TEAL }}>{experience[0].company}</p>
                         </div>
-                        {exp.bullets && (
-                          <ul className="mt-2 space-y-1">
-                            {exp.bullets.split("\n").map((b, i) => b.trim() && (
-                              <li key={i} className="text-[11px] text-zinc-900 flex gap-2">
-                                <span style={{ color: TEAL }} className="shrink-0 font-bold">•</span> {b.trim()}
-                              </li>
-                            ))}
-                          </ul>
-                        )}
+                        <span
+                          className="text-[9px] rounded-full px-2 py-0.5 font-bold shrink-0"
+                          style={{ background: `${TEAL}15`, color: TEAL }}
+                        >
+                          {experience[0].period}
+                        </span>
                       </div>
-                    ))}
+                      {experience[0].bullets && (
+                        <ul className="mt-2 space-y-1">
+                          {experience[0].bullets.split("\n").map((b, i) => b.trim() && (
+                            <li key={i} className="text-[11px] text-zinc-900 flex gap-2">
+                              <span style={{ color: TEAL }} className="shrink-0 font-bold">•</span> {b.trim()}
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
                   </div>
                 </div>
+                {experience.length > 1 && (
+                  <div className="relative pl-8 mt-6">
+                    {/* Vertical timeline rail */}
+                    <div className="absolute left-3 top-0 bottom-0 w-0.5 rounded-full" style={{ background: `${TEAL}30` }} />
+                    <div className="space-y-6">
+                      {experience.slice(1).map((exp) => (
+                        <div key={exp.id} className="relative print:break-inside-avoid">
+                          {/* Timeline dot */}
+                          <div
+                            className="absolute -left-8 top-1 h-4 w-4 rounded-full border-2 border-white"
+                            style={{ background: TEAL, marginLeft: "4px" }}
+                          />
+                          <div className="flex justify-between items-start">
+                            <div>
+                              <p className="text-sm font-extrabold text-slate-900">{exp.role}</p>
+                              <p className="text-[11px] font-bold mt-0.5" style={{ color: TEAL }}>{exp.company}</p>
+                            </div>
+                            <span
+                              className="text-[9px] rounded-full px-2 py-0.5 font-bold shrink-0"
+                              style={{ background: `${TEAL}15`, color: TEAL }}
+                            >
+                              {exp.period}
+                            </span>
+                          </div>
+                          {exp.bullets && (
+                            <ul className="mt-2 space-y-1">
+                              {exp.bullets.split("\n").map((b, i) => b.trim() && (
+                                <li key={i} className="text-[11px] text-zinc-900 flex gap-2">
+                                  <span style={{ color: TEAL }} className="shrink-0 font-bold">•</span> {b.trim()}
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 
             {/* Education timeline */}
             {education.length > 0 && (
               <div>
-                <p className="text-[8px] font-black tracking-[0.3em] uppercase mb-5" style={{ color: TEAL }}>Education</p>
-                <div className="relative pl-8">
-                  <div className="absolute left-3 top-0 bottom-0 w-0.5 rounded-full" style={{ background: `${TEAL}30` }} />
-                  <div className="space-y-5">
-                    {education.map((edu) => (
-                      <div key={edu.id} className="relative print:break-inside-avoid">
-                        <div
-                          className="absolute -left-8 top-1 h-4 w-4 rounded-full border-2 border-white"
-                          style={{ background: `${TEAL}88`, marginLeft: "4px" }}
-                        />
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <p className="text-sm font-bold text-slate-900">{edu.degree}</p>
-                            <p className="text-[11px] text-zinc-800">{edu.school}</p>
-                          </div>
-                          <span className="text-[9px] text-zinc-700 shrink-0">{edu.year}</span>
+                <div className="break-inside-avoid">
+                  <p className="text-[8px] font-black tracking-[0.3em] uppercase mb-5" style={{ color: TEAL }}>Education</p>
+                  <div className="relative pl-8 print:break-inside-avoid">
+                    <div className="absolute left-3 top-0 bottom-0 w-0.5 rounded-full" style={{ background: `${TEAL}30` }} />
+                    <div className="relative">
+                      <div
+                        className="absolute -left-8 top-1 h-4 w-4 rounded-full border-2 border-white"
+                        style={{ background: `${TEAL}88`, marginLeft: "4px" }}
+                      />
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <p className="text-sm font-bold text-slate-900">{education[0].degree}</p>
+                          <p className="text-[11px] text-zinc-800">{education[0].school}</p>
                         </div>
+                        <span className="text-[9px] text-zinc-700 shrink-0">{education[0].year}</span>
                       </div>
-                    ))}
+                    </div>
                   </div>
                 </div>
+                {education.length > 1 && (
+                  <div className="relative pl-8 mt-5">
+                    <div className="absolute left-3 top-0 bottom-0 w-0.5 rounded-full" style={{ background: `${TEAL}30` }} />
+                    <div className="space-y-5">
+                      {education.slice(1).map((edu) => (
+                        <div key={edu.id} className="relative print:break-inside-avoid">
+                          <div
+                            className="absolute -left-8 top-1 h-4 w-4 rounded-full border-2 border-white"
+                            style={{ background: `${TEAL}88`, marginLeft: "4px" }}
+                          />
+                          <div className="flex justify-between items-start">
+                            <div>
+                              <p className="text-sm font-bold text-slate-900">{edu.degree}</p>
+                              <p className="text-[11px] text-zinc-800">{edu.school}</p>
+                            </div>
+                            <span className="text-[9px] text-zinc-700 shrink-0">{edu.year}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 
             {/* ── PROJECTS ── */}
             {projects.length > 0 && (
               <div>
-                <p className="text-[8px] font-black tracking-[0.3em] uppercase mb-5" style={{ color: TEAL }}>Projects</p>
-                <div className="relative pl-8">
-                  <div className="absolute left-3 top-0 bottom-0 w-0.5 rounded-full" style={{ background: `${TEAL}30` }} />
-                  <div className="space-y-5">
-                    {projects.map((proj, i) => (
-                      <div key={i} className="mb-3 print:break-inside-avoid">
-                        <div className="mb-1">
-                          <strong className="font-bold text-zinc-900">{proj.title}</strong>
-                          {proj.projectLabel && <span className="italic text-sm font-normal text-zinc-700 ml-2">[{proj.projectLabel}]</span>}
-                          {proj.link && (
-                            <a href={proj.link.startsWith('http') ? proj.link : `https://${proj.link}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-[10px] text-zinc-600 hover:underline break-all">
-                              {proj.link}
-                            </a>
-                          )}
-                        </div>
-                        {proj.description && (
-                          <div className="text-[11px] leading-relaxed text-zinc-900 whitespace-pre-wrap">{proj.description}</div>
-                        )}
+                <div className="break-inside-avoid">
+                  <p className="text-[8px] font-black tracking-[0.3em] uppercase mb-5" style={{ color: TEAL }}>Projects</p>
+                  <div className="relative pl-8 print:break-inside-avoid mb-5">
+                    <div className="absolute left-3 top-0 bottom-0 w-0.5 rounded-full" style={{ background: `${TEAL}30` }} />
+                    <div className="relative">
+                      <div className="mb-1">
+                        <strong className="font-bold text-zinc-900">{projects[0].title}</strong>
+                        {projects[0].projectLabel && <span className="italic text-sm font-normal text-zinc-700 ml-2">[{projects[0].projectLabel}]</span>}
+                        {projects[0].link && <a href={projects[0].link.startsWith('http') ? projects[0].link : `https://${projects[0].link}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-[10px] text-zinc-600 hover:underline break-all">{projects[0].link}</a>}
                       </div>
-                    ))}
+                      {projects[0].description && <div className="text-[11px] leading-relaxed text-zinc-900 whitespace-pre-wrap">{projects[0].description}</div>}
+                    </div>
                   </div>
                 </div>
+                {projects.length > 1 && (
+                  <div className="relative pl-8">
+                    <div className="absolute left-3 top-0 bottom-0 w-0.5 rounded-full" style={{ background: `${TEAL}30` }} />
+                    <div className="space-y-5">
+                      {projects.slice(1).map((proj, i) => (
+                        <div key={i} className="mb-3 print:break-inside-avoid relative">
+                          <div className="mb-1">
+                            <strong className="font-bold text-zinc-900">{proj.title}</strong>
+                            {proj.projectLabel && <span className="italic text-sm font-normal text-zinc-700 ml-2">[{proj.projectLabel}]</span>}
+                            {proj.link && <a href={proj.link.startsWith('http') ? proj.link : `https://${proj.link}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-[10px] text-zinc-600 hover:underline break-all">{proj.link}</a>}
+                          </div>
+                          {proj.description && <div className="text-[11px] leading-relaxed text-zinc-900 whitespace-pre-wrap">{proj.description}</div>}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -1972,9 +2096,25 @@ export const ATSClassicTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
           {/* ── Experience ── */}
           {experience.length > 0 && (
             <div className="mb-4">
-              <ATSSectionRule label="Work Experience" />
-              <div className="mt-2 space-y-4">
-                {experience.map((exp) => (
+              <div className="break-inside-avoid">
+                <ATSSectionRule label="Work Experience" />
+                <div className="mt-2 print:break-inside-avoid" style={{ pageBreakInside: 'avoid' }}>
+                  <div className="flex justify-between items-baseline">
+                    <p className="text-[12px] font-bold text-slate-900">{experience[0].role}</p>
+                    <span className="text-[10px] text-zinc-900 shrink-0">{experience[0].period}</span>
+                  </div>
+                  <p className="text-[11px] font-semibold text-zinc-900">{experience[0].company}</p>
+                  {experience[0].bullets && (
+                    <ul className="mt-1.5 space-y-1 pl-5 list-disc">
+                      {experience[0].bullets.split("\n").map((b, i) => b.trim() && (
+                        <li key={i} className="text-[11px] text-zinc-900 leading-relaxed">{b.trim()}</li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              </div>
+              <div className="mt-4 space-y-4">
+                {experience.slice(1).map((exp) => (
                   <div key={exp.id} className="print:break-inside-avoid" style={{ pageBreakInside: 'avoid' }}>
                     <div className="flex justify-between items-baseline">
                       <p className="text-[12px] font-bold text-slate-900">{exp.role}</p>
@@ -1997,22 +2137,26 @@ export const ATSClassicTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
           {/* ── Education ── */}
           {projects.length > 0 && (
             <div className="mb-4">
-              <ATSSectionRule label="Projects" />
-              <div className="mt-2 space-y-3">
-                {projects.map((proj, i) => (
+              <div className="break-inside-avoid">
+                <ATSSectionRule label="Projects" />
+                <div className="mt-2 mb-3 print:break-inside-avoid">
+                  <div className="mb-1">
+                    <strong className="font-bold text-zinc-900">{projects[0].title}</strong>
+                    {projects[0].projectLabel && <span className="italic text-sm font-normal text-zinc-700 ml-2">[{projects[0].projectLabel}]</span>}
+                    {projects[0].link && <a href={projects[0].link.startsWith('http') ? projects[0].link : `https://${projects[0].link}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-[10px] text-zinc-600 hover:underline break-all">{projects[0].link}</a>}
+                  </div>
+                  {projects[0].description && <div className="text-[11px] leading-relaxed text-zinc-900 whitespace-pre-wrap">{projects[0].description}</div>}
+                </div>
+              </div>
+              <div className="space-y-3">
+                {projects.slice(1).map((proj, i) => (
                   <div key={i} className="mb-3 print:break-inside-avoid">
                     <div className="mb-1">
                       <strong className="font-bold text-zinc-900">{proj.title}</strong>
                       {proj.projectLabel && <span className="italic text-sm font-normal text-zinc-700 ml-2">[{proj.projectLabel}]</span>}
-                      {proj.link && (
-                        <a href={proj.link.startsWith('http') ? proj.link : `https://${proj.link}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-[10px] text-zinc-600 hover:underline break-all">
-                          {proj.link}
-                        </a>
-                      )}
+                      {proj.link && <a href={proj.link.startsWith('http') ? proj.link : `https://${proj.link}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-[10px] text-zinc-600 hover:underline break-all">{proj.link}</a>}
                     </div>
-                    {proj.description && (
-                      <div className="text-[11px] leading-relaxed text-zinc-900 whitespace-pre-wrap">{proj.description}</div>
-                    )}
+                    {proj.description && <div className="text-[11px] leading-relaxed text-zinc-900 whitespace-pre-wrap">{proj.description}</div>}
                   </div>
                 ))}
               </div>
@@ -2022,9 +2166,18 @@ export const ATSClassicTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
           {/* ── PROJECTS ── */}
           {education.length > 0 && (
             <div className="mb-4">
-              <ATSSectionRule label="Education" />
-              <div className="mt-2 space-y-3">
-                {education.map((edu) => (
+              <div className="break-inside-avoid">
+                <ATSSectionRule label="Education" />
+                <div className="mt-2 flex justify-between items-baseline print:break-inside-avoid">
+                  <div>
+                    <p className="text-[12px] font-bold text-slate-900">{education[0].degree}</p>
+                    <p className="text-[11px] text-zinc-900">{education[0].school}</p>
+                  </div>
+                  <span className="text-[10px] text-zinc-900 shrink-0">{education[0].year}</span>
+                </div>
+              </div>
+              <div className="mt-3 space-y-3">
+                {education.slice(1).map((edu) => (
                   <div key={edu.id} className="flex justify-between items-baseline print:break-inside-avoid">
                     <div>
                       <p className="text-[12px] font-bold text-slate-900">{edu.degree}</p>
@@ -2039,11 +2192,13 @@ export const ATSClassicTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
 
           {/* ── Skills ── */}
           {skills.length > 0 && (
-            <div className="mb-4">
+            <div className="mb-4 break-inside-avoid">
               <ATSSectionRule label="Technical Skills" />
-              <p className="mt-2 text-[11px] text-zinc-900 leading-relaxed">
-                {skills.join(" · ")}
-              </p>
+              <div className="mt-2 flex flex-wrap gap-2">
+                {skills.map((s) => (
+                  <span key={s} className="px-2 py-0.5 border border-slate-300 rounded text-[11px] text-zinc-900 bg-slate-50">{s}</span>
+                ))}
+              </div>
             </div>
           )}
 
@@ -2140,9 +2295,27 @@ export const ATSModernTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
           {/* ── Experience ── */}
           {experience.length > 0 && (
             <div className="mb-5">
-              <ATSModernSectionTitle label="Experience" accent={ACCENT} />
-              <div className="mt-3 space-y-4">
-                {experience.map((exp) => (
+              <div className="break-inside-avoid">
+                <ATSModernSectionTitle label="Experience" accent={ACCENT} />
+                <div className="mt-3 print:break-inside-avoid" style={{ pageBreakInside: 'avoid' }}>
+                  <div className="flex justify-between items-baseline">
+                    <p className="text-[12px] font-bold text-slate-900">{experience[0].role}</p>
+                    <span className="text-[10px] text-zinc-800 shrink-0">{experience[0].period}</span>
+                  </div>
+                  <p className="text-[11px] font-semibold mt-0.5" style={{ color: ACCENT }}>{experience[0].company}</p>
+                  {experience[0].bullets && (
+                    <ul className="mt-2 space-y-1 pl-4">
+                      {experience[0].bullets.split("\n").map((b, i) => b.trim() && (
+                        <li key={i} className="text-[11px] text-zinc-900 leading-relaxed relative pl-3 before:content-['▸'] before:absolute before:left-0 before:text-[9px]" style={{ "--tw-before-color": ACCENT } as React.CSSProperties}>
+                          {b.trim()}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              </div>
+              <div className="mt-4 space-y-4">
+                {experience.slice(1).map((exp) => (
                   <div key={exp.id} className="print:break-inside-avoid" style={{ pageBreakInside: 'avoid' }}>
                     <div className="flex justify-between items-baseline">
                       <p className="text-[12px] font-bold text-slate-900">{exp.role}</p>
@@ -2167,22 +2340,26 @@ export const ATSModernTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
           {/* ── Education ── */}
           {projects.length > 0 && (
             <div className="mb-5">
-              <ATSModernSectionTitle label="Projects" accent={ACCENT} />
-              <div className="mt-3 space-y-3">
-                {projects.map((proj, i) => (
+              <div className="break-inside-avoid">
+                <ATSModernSectionTitle label="Projects" accent={ACCENT} />
+                <div className="mt-3 mb-3 print:break-inside-avoid">
+                  <div className="mb-1">
+                    <strong className="font-bold text-zinc-900">{projects[0].title}</strong>
+                    {projects[0].projectLabel && <span className="italic text-sm font-normal text-zinc-700 ml-2">[{projects[0].projectLabel}]</span>}
+                    {projects[0].link && <a href={projects[0].link.startsWith('http') ? projects[0].link : `https://${projects[0].link}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-[10px] text-zinc-600 hover:underline break-all">{projects[0].link}</a>}
+                  </div>
+                  {projects[0].description && <div className="text-[11px] leading-relaxed text-zinc-900 whitespace-pre-wrap">{projects[0].description}</div>}
+                </div>
+              </div>
+              <div className="space-y-3">
+                {projects.slice(1).map((proj, i) => (
                   <div key={i} className="mb-3 print:break-inside-avoid">
                     <div className="mb-1">
                       <strong className="font-bold text-zinc-900">{proj.title}</strong>
                       {proj.projectLabel && <span className="italic text-sm font-normal text-zinc-700 ml-2">[{proj.projectLabel}]</span>}
-                      {proj.link && (
-                        <a href={proj.link.startsWith('http') ? proj.link : `https://${proj.link}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-[10px] text-zinc-600 hover:underline break-all">
-                          {proj.link}
-                        </a>
-                      )}
+                      {proj.link && <a href={proj.link.startsWith('http') ? proj.link : `https://${proj.link}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-[10px] text-zinc-600 hover:underline break-all">{proj.link}</a>}
                     </div>
-                    {proj.description && (
-                      <div className="text-[11px] leading-relaxed text-zinc-900 whitespace-pre-wrap">{proj.description}</div>
-                    )}
+                    {proj.description && <div className="text-[11px] leading-relaxed text-zinc-900 whitespace-pre-wrap">{proj.description}</div>}
                   </div>
                 ))}
               </div>
@@ -2192,9 +2369,18 @@ export const ATSModernTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
           {/* ── PROJECTS ── */}
           {education.length > 0 && (
             <div className="mb-5">
-              <ATSModernSectionTitle label="Education" accent={ACCENT} />
+              <div className="break-inside-avoid">
+                <ATSModernSectionTitle label="Education" accent={ACCENT} />
+                <div className="mt-3 flex justify-between print:break-inside-avoid">
+                  <div>
+                    <p className="text-[12px] font-bold text-slate-900">{education[0].degree}</p>
+                    <p className="text-[11px] text-zinc-800">{education[0].school}</p>
+                  </div>
+                  <span className="text-[10px] text-zinc-800 shrink-0">{education[0].year}</span>
+                </div>
+              </div>
               <div className="mt-3 space-y-3">
-                {education.map((edu) => (
+                {education.slice(1).map((edu) => (
                   <div key={edu.id} className="flex justify-between print:break-inside-avoid">
                     <div>
                       <p className="text-[12px] font-bold text-slate-900">{edu.degree}</p>
@@ -2209,11 +2395,11 @@ export const ATSModernTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
 
           {/* ── Skills ── */}
           {skills.length > 0 && (
-            <div className="mb-5">
+            <div className="mb-5 break-inside-avoid">
               <ATSModernSectionTitle label="Skills" accent={ACCENT} />
-              <div className="mt-3 flex flex-wrap gap-x-3 gap-y-1">
+              <div className="mt-3 flex flex-wrap gap-2">
                 {skills.map((s) => (
-                  <span key={s} className="text-[11px] text-zinc-900 font-medium before:content-['·'] before:mr-1.5 before:text-zinc-700">{s}</span>
+                  <span key={s} className="text-[11px] text-zinc-900 font-medium px-2.5 py-1 rounded-full border border-zinc-200">{s}</span>
                 ))}
               </div>
             </div>
@@ -2320,9 +2506,25 @@ export const HarvardStandardTemplate = forwardRef<HTMLDivElement, { data: CvStat
           {/* ── Experience ── */}
           {experience.length > 0 && (
             <div className="mb-4">
-              <HarvardSectionTitle label="Experience" />
-              <div className="mt-2 space-y-4">
-                {experience.map((exp) => (
+              <div className="break-inside-avoid">
+                <HarvardSectionTitle label="Experience" />
+                <div className="mt-2 print:break-inside-avoid" style={{ pageBreakInside: 'avoid' }}>
+                  <div className="flex justify-between items-baseline">
+                    <p className="text-[12px] font-bold text-slate-900">{experience[0].company}</p>
+                    <span className="text-[10px] text-zinc-900 shrink-0">{experience[0].period}</span>
+                  </div>
+                  <p className="text-[11px] italic text-zinc-900">{experience[0].role}</p>
+                  {experience[0].bullets && (
+                    <ul className="mt-1.5 space-y-0.5 pl-5 list-disc">
+                      {experience[0].bullets.split("\n").map((b, i) => b.trim() && (
+                        <li key={i} className="text-[11px] leading-relaxed text-zinc-900">{b.trim()}</li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              </div>
+              <div className="mt-4 space-y-4">
+                {experience.slice(1).map((exp) => (
                   <div key={exp.id} className="print:break-inside-avoid" style={{ pageBreakInside: 'avoid' }}>
                     <div className="flex justify-between items-baseline">
                       <p className="text-[12px] font-bold text-slate-900">{exp.company}</p>
@@ -2345,22 +2547,26 @@ export const HarvardStandardTemplate = forwardRef<HTMLDivElement, { data: CvStat
           {/* ── Education ── */}
           {projects.length > 0 && (
             <div className="mb-4">
-              <HarvardSectionTitle label="Projects" />
-              <div className="mt-2 space-y-3">
-                {projects.map((proj, i) => (
+              <div className="break-inside-avoid">
+                <HarvardSectionTitle label="Projects" />
+                <div className="mt-2 mb-3 print:break-inside-avoid">
+                  <div className="mb-1">
+                    <strong className="font-bold text-zinc-900">{projects[0].title}</strong>
+                    {projects[0].projectLabel && <span className="italic text-sm font-normal text-zinc-700 ml-2">[{projects[0].projectLabel}]</span>}
+                    {projects[0].link && <a href={projects[0].link.startsWith('http') ? projects[0].link : `https://${projects[0].link}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-[10px] text-zinc-600 hover:underline break-all">{projects[0].link}</a>}
+                  </div>
+                  {projects[0].description && <div className="text-[11px] leading-relaxed text-zinc-900 whitespace-pre-wrap">{projects[0].description}</div>}
+                </div>
+              </div>
+              <div className="space-y-3">
+                {projects.slice(1).map((proj, i) => (
                   <div key={i} className="mb-3 print:break-inside-avoid">
                     <div className="mb-1">
                       <strong className="font-bold text-zinc-900">{proj.title}</strong>
                       {proj.projectLabel && <span className="italic text-sm font-normal text-zinc-700 ml-2">[{proj.projectLabel}]</span>}
-                      {proj.link && (
-                        <a href={proj.link.startsWith('http') ? proj.link : `https://${proj.link}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-[10px] text-zinc-600 hover:underline break-all">
-                          {proj.link}
-                        </a>
-                      )}
+                      {proj.link && <a href={proj.link.startsWith('http') ? proj.link : `https://${proj.link}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-[10px] text-zinc-600 hover:underline break-all">{proj.link}</a>}
                     </div>
-                    {proj.description && (
-                      <div className="text-[11px] leading-relaxed text-zinc-900 whitespace-pre-wrap">{proj.description}</div>
-                    )}
+                    {proj.description && <div className="text-[11px] leading-relaxed text-zinc-900 whitespace-pre-wrap">{proj.description}</div>}
                   </div>
                 ))}
               </div>
@@ -2370,9 +2576,18 @@ export const HarvardStandardTemplate = forwardRef<HTMLDivElement, { data: CvStat
           {/* ── PROJECTS ── */}
           {education.length > 0 && (
             <div className="mb-4">
-              <HarvardSectionTitle label="Education" />
-              <div className="mt-2 space-y-3">
-                {education.map((edu) => (
+              <div className="break-inside-avoid">
+                <HarvardSectionTitle label="Education" />
+                <div className="mt-2 flex justify-between items-baseline print:break-inside-avoid">
+                  <div>
+                    <p className="text-[12px] font-bold text-slate-900">{education[0].school}</p>
+                    <p className="text-[11px] italic text-zinc-900">{education[0].degree}</p>
+                  </div>
+                  <span className="text-[10px] text-zinc-900 shrink-0">{education[0].year}</span>
+                </div>
+              </div>
+              <div className="mt-3 space-y-3">
+                {education.slice(1).map((edu) => (
                   <div key={edu.id} className="flex justify-between items-baseline print:break-inside-avoid">
                     <div>
                       <p className="text-[12px] font-bold text-slate-900">{edu.school}</p>
@@ -2387,9 +2602,13 @@ export const HarvardStandardTemplate = forwardRef<HTMLDivElement, { data: CvStat
 
           {/* ── Skills ── */}
           {skills.length > 0 && (
-            <div className="mb-4">
+            <div className="mb-4 break-inside-avoid">
               <HarvardSectionTitle label="Skills" />
-              <p className="mt-2 text-[11px] leading-relaxed text-zinc-900">{skills.join(", ")}</p>
+              <div className="mt-2 flex flex-wrap gap-2">
+                {skills.map((s) => (
+                  <span key={s} className="px-2 py-0.5 border border-slate-300 rounded text-[11px] text-zinc-900 bg-slate-50">{s}</span>
+                ))}
+              </div>
             </div>
           )}
 
@@ -2537,9 +2756,27 @@ export const ATSExecutiveTemplate = forwardRef<HTMLDivElement, { data: CvState }
           {/* ── EXPERIENCE ── */}
           {experience.length > 0 && (
             <>
-              <ATSExecSection label="Professional Experience" />
-              <div className="space-y-4">
-                {experience.map((exp) => (
+              <div className="break-inside-avoid">
+                <ATSExecSection label="Professional Experience" />
+                <div className="print:break-inside-avoid" style={{ pageBreakInside: 'avoid' }}>
+                  <div className="flex justify-between items-baseline">
+                    <div>
+                      <span className="text-[12px] font-bold uppercase">{experience[0].role}</span>
+                      {experience[0].company && <span className="text-[12px] font-bold"> — {experience[0].company}</span>}
+                    </div>
+                    {experience[0].period && <span className="text-[11px] shrink-0 ml-4">{experience[0].period}</span>}
+                  </div>
+                  {experience[0].bullets && (
+                    <ul className="mt-1.5 space-y-1 pl-5">
+                      {experience[0].bullets.split("\n").map((b, i) => b.trim() ? (
+                        <li key={i} className="text-[11px] leading-relaxed list-disc">{b.trim()}</li>
+                      ) : null)}
+                    </ul>
+                  )}
+                </div>
+              </div>
+              <div className="space-y-4 mt-4">
+                {experience.slice(1).map((exp) => (
                   <div key={exp.id} className="print:break-inside-avoid" style={{ pageBreakInside: 'avoid' }}>
                     <div className="flex justify-between items-baseline">
                       <div>
@@ -2572,22 +2809,26 @@ export const ATSExecutiveTemplate = forwardRef<HTMLDivElement, { data: CvState }
           {/* ── EDUCATION ── */}
           {projects.length > 0 && (
             <>
-              <ATSExecSection label="Projects" />
+              <div className="break-inside-avoid">
+                <ATSExecSection label="Projects" />
+                <div className="mb-3 print:break-inside-avoid">
+                  <div className="mb-1">
+                    <strong className="font-bold text-zinc-900">{projects[0].title}</strong>
+                    {projects[0].projectLabel && <span className="italic text-sm font-normal text-zinc-700 ml-2">[{projects[0].projectLabel}]</span>}
+                    {projects[0].link && <a href={projects[0].link.startsWith('http') ? projects[0].link : `https://${projects[0].link}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-[10px] text-zinc-600 hover:underline break-all">{projects[0].link}</a>}
+                  </div>
+                  {projects[0].description && <div className="text-[11px] leading-relaxed text-zinc-900 whitespace-pre-wrap">{projects[0].description}</div>}
+                </div>
+              </div>
               <div className="space-y-3">
-                {projects.map((proj, i) => (
+                {projects.slice(1).map((proj, i) => (
                   <div key={i} className="mb-3 print:break-inside-avoid">
                     <div className="mb-1">
                       <strong className="font-bold text-zinc-900">{proj.title}</strong>
                       {proj.projectLabel && <span className="italic text-sm font-normal text-zinc-700 ml-2">[{proj.projectLabel}]</span>}
-                      {proj.link && (
-                        <a href={proj.link.startsWith('http') ? proj.link : `https://${proj.link}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-[10px] text-zinc-600 hover:underline break-all">
-                          {proj.link}
-                        </a>
-                      )}
+                      {proj.link && <a href={proj.link.startsWith('http') ? proj.link : `https://${proj.link}`} target="_blank" rel="noopener noreferrer" className="ml-2 text-[10px] text-zinc-600 hover:underline break-all">{proj.link}</a>}
                     </div>
-                    {proj.description && (
-                      <div className="text-[11px] leading-relaxed text-zinc-900 whitespace-pre-wrap">{proj.description}</div>
-                    )}
+                    {proj.description && <div className="text-[11px] leading-relaxed text-zinc-900 whitespace-pre-wrap">{proj.description}</div>}
                   </div>
                 ))}
               </div>
@@ -2597,9 +2838,18 @@ export const ATSExecutiveTemplate = forwardRef<HTMLDivElement, { data: CvState }
           {/* ── PROJECTS ── */}
           {education.length > 0 && (
             <>
-              <ATSExecSection label="Education" />
-              <div className="space-y-3">
-                {education.map((edu) => (
+              <div className="break-inside-avoid">
+                <ATSExecSection label="Education" />
+                <div className="flex justify-between items-baseline print:break-inside-avoid">
+                  <div>
+                    <span className="text-[12px] font-bold uppercase">{education[0].degree}</span>
+                    {education[0].school && <span className="text-[11px]"> — {education[0].school}</span>}
+                  </div>
+                  {education[0].year && <span className="text-[11px] shrink-0 ml-4">{education[0].year}</span>}
+                </div>
+              </div>
+              <div className="space-y-3 mt-3">
+                {education.slice(1).map((edu) => (
                   <div key={edu.id} className="flex justify-between items-baseline print:break-inside-avoid">
                     <div>
                       <span className="text-[12px] font-bold uppercase">{edu.degree}</span>
@@ -2618,16 +2868,16 @@ export const ATSExecutiveTemplate = forwardRef<HTMLDivElement, { data: CvState }
 
           {/* ── SKILLS ── */}
           {skills.length > 0 && (
-            <>
+            <div className="break-inside-avoid mb-4">
               <ATSExecSection label="Core Competencies" />
-              <ul className="grid grid-cols-2 gap-x-8 gap-y-0.5 pl-5 mb-4">
+              <ul className="grid grid-cols-2 gap-x-8 gap-y-0.5 pl-5">
                 {skills.map((s) => (
                   <li key={s} className="text-[11px] leading-relaxed list-disc">
                     {s}
                   </li>
                 ))}
               </ul>
-            </>
+            </div>
           )}
 
           {/* ── ADDITIONAL INFO ── */}
