@@ -1378,11 +1378,13 @@ export const EditorialTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
                 <div className="space-y-5">
                   {experience.map((exp, i) => (
                     <div key={exp.id} className="print:break-inside-avoid" style={{ pageBreakInside: 'avoid' }}>
-                      {i > 0 && <div className="h-px bg-stone-200 mb-5" />
-                      <div className="flex justify-between items-baseline">
-                        <p className="text-[13px] font-bold text-stone-900">{exp.role}</p>
-                        <span className="text-[9px] font-sans text-stone-400 italic shrink-0">{exp.period}</span>
-                      </div>
+                      <>
+                        {i > 0 && <div className="h-px bg-stone-200 mb-5" />}
+                        <div className="flex justify-between items-baseline">
+                          <p className="text-[13px] font-bold text-stone-900">{exp.role}</p>
+                          <span className="text-[9px] font-sans text-stone-400 italic shrink-0">{exp.period}</span>
+                        </div>
+                      </>
                       <p className="text-[11px] text-stone-500 font-sans mt-0.5">{exp.company}</p>
                       {exp.bullets && (
                         <ul className="mt-2 space-y-1">
