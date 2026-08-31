@@ -146,6 +146,7 @@ export const TEMPLATE_LIST = [
   { id: "atsmodern", label: "ATS Modern", emoji: "▤", isPremium: false },
   { id: "harvardstandard", label: "Harvard Standard", emoji: "⬛", isPremium: false },
   { id: "atsexecutive", label: "Executive ATS", emoji: "📋", isPremium: false },
+  { id: "stanfordats", label: "Stanford ATS", emoji: "🎓", isPremium: false },
 ] as const;
 
 export type TemplateId = (typeof TEMPLATE_LIST)[number]["id"];
