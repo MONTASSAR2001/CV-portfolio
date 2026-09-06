@@ -273,11 +273,14 @@
   }
 
   /* 8. CV root: unconstrain for multi-page flow.
-        Key insight (CSS spec §10.8):
-        • padding-top on a fragmenting block → re-applied at every page start → gap bug.
-        • margin-top on a fragmenting block → rendered ONCE at the block's very start
-          (page 1 only); continuation pages receive NO top margin at all.
-        We use margin-top for the page-1 breathing room and zero padding everywhere. */
+        HOW THE TOP SPACING WORKS:
+        @page { margin: 0 } removes all browser margin space (and its header/footer
+        text). To get breathing room back on EVERY printed page we use
+        box-decoration-break: clone — this makes the browser re-stamp the element's
+        box decorations (padding, border, background) at the start of each page
+        fragment, so padding-top: 16mm appears at the top of page 1, page 2, etc.
+        padding-bottom is intentionally kept at 0 so there is no mirrored
+        clone gap at the bottom of non-final pages. */
   .cv-root,
   .stanford-cv-root {
     width: 100% !important;
@@ -288,16 +291,16 @@
     box-shadow: none !important;
     border-radius: 0 !important;
     transform: none !important;
-    padding: 0 !important;
-    /* margin-top: page-1 top inset; margin-bottom: last-page breathing room.
-       Neither value repeats on intermediate pages. */
-    margin: 18mm 0 14mm 0 !important;
+    margin: 0 !important;
+    padding: 16mm 0 0 0 !important;      /* top-only; cloned per page (see below) */
+    -webkit-box-decoration-break: clone; /* Chrome / Safari / Edge */
+    box-decoration-break: clone;         /* Firefox + future standard */
   }
 
-  /* 8b. Inner content wrappers: strip vertical padding so their own pt-N/pb-N
-         Tailwind classes don't add extra whitespace on top of the margin above.
-         Horizontal padding (px-*) is deliberately left intact — each template
-         manages its own side gutters and we must not double them. */
+  /* 8b. Inner content wrappers: strip the template's own vertical padding (pt-N,
+         pb-N Tailwind classes) so it doesn't stack on top of the cloned padding-top
+         above. Horizontal padding (px-*) is left untouched — every template controls
+         its own side gutters. */
   .cv-root > div:first-child,
   .stanford-cv-root > div:first-child {
     padding-top: 0 !important;
