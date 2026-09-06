@@ -273,8 +273,10 @@
   }
 
   /* 8. CV root: unconstrain for multi-page flow.
-        Padding here replaces the zeroed @page margin so content stays
-        framed without triggering browser header/footer text. */
+        IMPORTANT — NO vertical OR horizontal padding here:
+        • Vertical padding re-applies at every page break (Chromium bug) → gap.
+        • Horizontal padding stacks with each template's own inner px-* classes.
+        All spacing is owned by each template's inner content wrapper instead. */
   .cv-root,
   .stanford-cv-root {
     width: 100% !important;
@@ -285,7 +287,38 @@
     box-shadow: none !important;
     border-radius: 0 !important;
     transform: none !important;
-    padding: 15mm 12mm !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* 8b. Inner content wrappers: preserve their own template padding (px-N py-N)
+         for the screen-side display; on print we only RESET vertical padding and
+         rely on margin-top on the first block child instead.
+         Margin-top (unlike padding-top) is NOT re-applied at page-fragment starts. */
+  .cv-root > div:first-child,
+  .stanford-cv-root > div:first-child {
+    /* Keep template's horizontal padding (px-*) intact.
+       Override only vertical: use margin-top on first child so it appears
+       once at top of page 1 and vanishes naturally on continuation pages. */
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    /* Establish block formatting context to stop child-margin collapse
+       from leaking to the top of page 2 as phantom whitespace. */
+    display: flow-root;
+  }
+
+  /* 8c. First visible block inside the inner wrapper gets the top page margin.
+         Using margin-top here ensures it appears only on page 1 header area
+         and is not duplicated on subsequent pages. */
+  .cv-root > div:first-child > *:first-child,
+  .stanford-cv-root > div:first-child > *:first-child {
+    margin-top: 14mm !important;
+  }
+
+  /* 8d. Last visible block gets bottom breathing room. */
+  .cv-root > div:last-child > *:last-child,
+  .stanford-cv-root > div:last-child > *:last-child {
+    margin-bottom: 14mm !important;
   }
 
   /* 9. Reinforce fragmentation utilities */

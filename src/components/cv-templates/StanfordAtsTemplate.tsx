@@ -48,8 +48,10 @@ const STANFORD_PRINT_STYLES = `
       transform: none !important;
       box-shadow: none !important;
       border-radius: 0 !important;
-      /* padding supplied by .cv-root rule in styles.css via @page: 0 fix */
-      margin: 0 !important;
+      /* Horizontal spacing: provided by the inner px-14 content wrapper.
+         Vertical top: margin-top on the first child (margin-top is NOT
+         re-applied at page-fragment starts, so no gap on page 2).
+         Vertical bottom: margin-bottom on the last child. */
     }
 
     /* Every entry wrapper: never split across a page */
