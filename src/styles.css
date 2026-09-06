@@ -207,10 +207,10 @@
 ═══════════════════════════════════════════════════════════════════ */
 @media print {
 
-  /* 1. Page geometry — defined once globally */
+  /* 1. Page geometry — zero margin removes browser print headers/footers */
   @page {
     size: A4;
-    margin: 15mm 12mm;
+    margin: 0 !important;
   }
 
   /* 2. html/body/#root: unconstrain height and overflow only.
@@ -272,7 +272,9 @@
     display: none !important;
   }
 
-  /* 8. CV root: unconstrain for multi-page flow */
+  /* 8. CV root: unconstrain for multi-page flow.
+        Padding here replaces the zeroed @page margin so content stays
+        framed without triggering browser header/footer text. */
   .cv-root,
   .stanford-cv-root {
     width: 100% !important;
@@ -283,6 +285,7 @@
     box-shadow: none !important;
     border-radius: 0 !important;
     transform: none !important;
+    padding: 15mm 12mm !important;
   }
 
   /* 9. Reinforce fragmentation utilities */

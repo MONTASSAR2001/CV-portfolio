@@ -34,7 +34,7 @@ import { Linkedin, Github, Globe, Mail, Phone, MapPin } from "lucide-react";
 /* ─── Inline print styles ────────────────────────────────────── */
 const STANFORD_PRINT_STYLES = `
   @media print {
-    @page { size: A4; margin: 15mm 14mm; }
+    @page { size: A4; margin: 0 !important; }
     body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 
     /* The cv-root must be fully unconstrained during print */
@@ -48,7 +48,7 @@ const STANFORD_PRINT_STYLES = `
       transform: none !important;
       box-shadow: none !important;
       border-radius: 0 !important;
-      padding: 0 !important;
+      /* padding supplied by .cv-root rule in styles.css via @page: 0 fix */
       margin: 0 !important;
     }
 
