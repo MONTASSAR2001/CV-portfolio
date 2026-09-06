@@ -273,10 +273,11 @@
   }
 
   /* 8. CV root: unconstrain for multi-page flow.
-        IMPORTANT — NO vertical OR horizontal padding here:
-        • Vertical padding re-applies at every page break (Chromium bug) → gap.
-        • Horizontal padding stacks with each template's own inner px-* classes.
-        All spacing is owned by each template's inner content wrapper instead. */
+        Key insight (CSS spec §10.8):
+        • padding-top on a fragmenting block → re-applied at every page start → gap bug.
+        • margin-top on a fragmenting block → rendered ONCE at the block's very start
+          (page 1 only); continuation pages receive NO top margin at all.
+        We use margin-top for the page-1 breathing room and zero padding everywhere. */
   .cv-root,
   .stanford-cv-root {
     width: 100% !important;
@@ -288,38 +289,21 @@
     border-radius: 0 !important;
     transform: none !important;
     padding: 0 !important;
-    margin: 0 !important;
+    /* margin-top: page-1 top inset; margin-bottom: last-page breathing room.
+       Neither value repeats on intermediate pages. */
+    margin: 18mm 0 14mm 0 !important;
   }
 
-  /* 8b. Inner content wrappers: preserve their own template padding (px-N py-N)
-         for the screen-side display; on print we only RESET vertical padding and
-         rely on margin-top on the first block child instead.
-         Margin-top (unlike padding-top) is NOT re-applied at page-fragment starts. */
+  /* 8b. Inner content wrappers: strip vertical padding so their own pt-N/pb-N
+         Tailwind classes don't add extra whitespace on top of the margin above.
+         Horizontal padding (px-*) is deliberately left intact — each template
+         manages its own side gutters and we must not double them. */
   .cv-root > div:first-child,
   .stanford-cv-root > div:first-child {
-    /* Keep template's horizontal padding (px-*) intact.
-       Override only vertical: use margin-top on first child so it appears
-       once at top of page 1 and vanishes naturally on continuation pages. */
     padding-top: 0 !important;
     padding-bottom: 0 !important;
-    /* Establish block formatting context to stop child-margin collapse
-       from leaking to the top of page 2 as phantom whitespace. */
-    display: flow-root;
   }
 
-  /* 8c. First visible block inside the inner wrapper gets the top page margin.
-         Using margin-top here ensures it appears only on page 1 header area
-         and is not duplicated on subsequent pages. */
-  .cv-root > div:first-child > *:first-child,
-  .stanford-cv-root > div:first-child > *:first-child {
-    margin-top: 14mm !important;
-  }
-
-  /* 8d. Last visible block gets bottom breathing room. */
-  .cv-root > div:last-child > *:last-child,
-  .stanford-cv-root > div:last-child > *:last-child {
-    margin-bottom: 14mm !important;
-  }
 
   /* 9. Reinforce fragmentation utilities */
   .break-inside-avoid,
