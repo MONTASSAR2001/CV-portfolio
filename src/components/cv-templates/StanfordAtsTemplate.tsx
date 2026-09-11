@@ -34,7 +34,7 @@ import { Linkedin, Github, Globe, Mail, Phone, MapPin } from "lucide-react";
 /* ─── Inline print styles ────────────────────────────────────── */
 const STANFORD_PRINT_STYLES = `
   @media print {
-    @page { size: A4; margin: 0 !important; }
+    @page { size: A4; margin: 20mm 0 !important; }
     body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 
     /* The cv-root must be fully unconstrained during print */
@@ -48,27 +48,39 @@ const STANFORD_PRINT_STYLES = `
       transform: none !important;
       box-shadow: none !important;
       border-radius: 0 !important;
-      /* Horizontal spacing: provided by the inner px-14 content wrapper.
-         Vertical top: margin-top on the first child (margin-top is NOT
-         re-applied at page-fragment starts, so no gap on page 2).
-         Vertical bottom: margin-bottom on the last child. */
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+
+    .stanford-cv-root > div:first-child {
+      padding-top: 0 !important;
+      padding-bottom: 0 !important;
     }
 
     /* Every entry wrapper: never split across a page */
-    .stanford-entry {
+    .stanford-entry,
+    .break-inside-avoid,
+    .print\\:break-inside-avoid {
+      display: block !important;
       break-inside: avoid !important;
+      break-inside: avoid-page !important;
       page-break-inside: avoid !important;
     }
 
     /* Every section title glued to its first entry */
-    .stanford-section-head {
+    .stanford-section-head,
+    .break-after-avoid,
+    .print\\:break-after-avoid {
       break-after: avoid !important;
+      break-after: avoid-page !important;
       page-break-after: avoid !important;
     }
 
     /* The glue wrapper keeps header + first entry together */
     .stanford-section-glue {
+      display: block !important;
       break-inside: avoid !important;
+      break-inside: avoid-page !important;
       page-break-inside: avoid !important;
     }
 
@@ -84,10 +96,13 @@ const STANFORD_PRINT_STYLES = `
 function SectionTitle({ label }: { label: string }) {
   return (
     /* stanford-section-head → break-after:avoid keeps header + next sibling together */
-    <div className="stanford-section-head mt-1 mb-2">
+    <div
+      className="stanford-section-head break-after-avoid print:break-after-avoid mt-1 mb-2"
+      style={{ breakAfter: "avoid", pageBreakAfter: "avoid" }}
+    >
       <p
         className="text-[10.5px] font-bold uppercase tracking-[0.18em] text-slate-900"
-        style={{ fontVariant: "small-caps", letterSpacing: "0.18em" }}
+        style={{ fontVariant: "small-caps", letterSpacing: "0.18em", breakAfter: "avoid", pageBreakAfter: "avoid" }}
       >
         {label}
       </p>

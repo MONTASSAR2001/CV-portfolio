@@ -207,10 +207,10 @@
 ═══════════════════════════════════════════════════════════════════ */
 @media print {
 
-  /* 1. Page geometry — zero margin removes browser print headers/footers */
+  /* 1. Page geometry — 20mm (2cm) consistent top and bottom margin on EVERY page */
   @page {
     size: A4;
-    margin: 0 !important;
+    margin: 20mm 0 !important;
   }
 
   /* 2. html/body/#root: unconstrain height and overflow only.
@@ -273,14 +273,10 @@
   }
 
   /* 8. CV root: unconstrain for multi-page flow.
-        HOW THE TOP SPACING WORKS:
-        @page { margin: 0 } removes all browser margin space (and its header/footer
-        text). To get breathing room back on EVERY printed page we use
-        box-decoration-break: clone — this makes the browser re-stamp the element's
-        box decorations (padding, border, background) at the start of each page
-        fragment, so padding-top: 16mm appears at the top of page 1, page 2, etc.
-        padding-bottom is intentionally kept at 0 so there is no mirrored
-        clone gap at the bottom of non-final pages. */
+        Top and bottom margins (2cm / 20mm) are consistently applied to EVERY page
+        (Page 1, Page 2, etc.) via @page { size: A4; margin: 20mm 0 !important; }.
+        This replaces the fragile box-decoration-break: clone logic which is not
+        reliably supported for block fragmentation in Chromium. */
   .cv-root,
   .stanford-cv-root {
     width: 100% !important;
@@ -292,14 +288,12 @@
     border-radius: 0 !important;
     transform: none !important;
     margin: 0 !important;
-    padding: 16mm 0 0 0 !important;      /* top-only; cloned per page (see below) */
-    -webkit-box-decoration-break: clone; /* Chrome / Safari / Edge */
-    box-decoration-break: clone;         /* Firefox + future standard */
+    padding: 0 !important;
   }
 
   /* 8b. Inner content wrappers: strip the template's own vertical padding (pt-N,
-         pb-N Tailwind classes) so it doesn't stack on top of the cloned padding-top
-         above. Horizontal padding (px-*) is left untouched — every template controls
+         pb-N Tailwind classes) so it doesn't stack on top of the 20mm @page margin.
+         Horizontal padding (px-*) is left untouched — every template controls
          its own side gutters. */
   .cv-root > div:first-child,
   .stanford-cv-root > div:first-child {
@@ -308,19 +302,31 @@
   }
 
 
-  /* 9. Reinforce fragmentation utilities */
+  /* 9. Reinforce fragmentation utilities & prevent orphaned section headers */
   .break-inside-avoid,
   .print\:break-inside-avoid,
   .stanford-entry,
-  .stanford-section-glue {
+  .stanford-section-glue,
+  .cv-section {
+    display: block !important;
     break-inside: avoid !important;
+    break-inside: avoid-page !important;
     page-break-inside: avoid !important;
   }
 
+  h1, h2, h3, h4, h5, h6,
   .break-after-avoid,
   .print\:break-after-avoid,
-  .stanford-section-head {
+  .stanford-section-head,
+  .cv-section-title,
+  [class*="section-head"],
+  [class*="section-title"],
+  [class*="SectionRule"],
+  [class*="SectionHeader"],
+  [class*="section-header"],
+  [class*="ExecSection"] {
     break-after: avoid !important;
+    break-after: avoid-page !important;
     page-break-after: avoid !important;
   }
 

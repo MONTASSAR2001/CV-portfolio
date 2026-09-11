@@ -54,7 +54,7 @@ export type CvState = {
 /* ─── Shared print styles injected into every template ───── */
 const PRINT_STYLES = `
   @media print {
-    @page { size: A4; margin: 0 !important; }
+    @page { size: A4; margin: 20mm 0 !important; }
     body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     .cv-root {
       width: 210mm !important;
@@ -66,17 +66,43 @@ const PRINT_STYLES = `
       border-radius: 0 !important;
       transform: none !important;
       overflow: visible !important;
+      margin: 0 !important;
+      padding: 0 !important;
       /* NOTE: do NOT add display:block here — it breaks two-column templates */
+    }
+    .cv-root > div:first-child {
+      padding-top: 0 !important;
+      padding-bottom: 0 !important;
     }
     /* Opt-in: templates that explicitly use these classes get block overrides */
     .cv-root .print-block-col { display: block !important; }
     .cv-root .cv-sidebar { display: block !important; width: 100% !important; border: none !important; }
     .cv-root .cv-main   { display: block !important; width: 100% !important; }
-    /* Legacy page-break aliases */
-    .cv-root .print\\:break-inside-avoid { page-break-inside: avoid; break-inside: avoid; }
-    .cv-root .print\\:break-after-avoid  { page-break-after: avoid;  break-after: avoid;  }
-    .cv-section       { page-break-inside: avoid; break-inside: avoid; }
-    .cv-section-title { page-break-after: avoid;  break-after: avoid;  }
+    /* Page-break fragmentation rules */
+    .cv-root .print\\:break-inside-avoid,
+    .cv-root .break-inside-avoid,
+    .cv-section,
+    .stanford-section-glue,
+    .stanford-entry {
+      display: block !important;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+      break-inside: avoid-page !important;
+    }
+    .cv-root h1, .cv-root h2, .cv-root h3, .cv-root h4, .cv-root h5, .cv-root h6,
+    .cv-root .print\\:break-after-avoid,
+    .cv-root .break-after-avoid,
+    .cv-root .stanford-section-head,
+    .cv-section-title,
+    [class*="section-head"],
+    [class*="section-title"],
+    [class*="SectionRule"],
+    [class*="SectionHeader"],
+    [class*="ExecSection"] {
+      page-break-after: avoid !important;
+      break-after: avoid !important;
+      break-after: avoid-page !important;
+    }
   }
 `;
 
@@ -1956,7 +1982,10 @@ VisualTemplate.displayName = "VisualTemplate";
 /* ─── Shared small helpers ───────────────────────────────── */
 function SectionHeader({ label, color }: { label: string; color: string }) {
   return (
-    <div className="flex items-center gap-3 print:break-after-avoid">
+    <div
+      className="flex items-center gap-3 stanford-section-head break-after-avoid print:break-after-avoid"
+      style={{ breakAfter: "avoid", pageBreakAfter: "avoid" }}
+    >
       <span className="text-[9px] font-bold tracking-[0.2em] uppercase" style={{ color }}>
         {label}
       </span>
@@ -1967,7 +1996,10 @@ function SectionHeader({ label, color }: { label: string; color: string }) {
 
 function TechSectionTitle({ label, accent }: { label: string; accent: string }) {
   return (
-    <div className="flex items-center gap-2 print:break-after-avoid">
+    <div
+      className="flex items-center gap-2 stanford-section-head break-after-avoid print:break-after-avoid"
+      style={{ breakAfter: "avoid", pageBreakAfter: "avoid" }}
+    >
       <span className="text-[9px] font-mono font-bold tracking-widest uppercase" style={{ color: accent }}>
         // {label}
       </span>
@@ -1986,7 +2018,10 @@ function ContactRow({ icon, text }: { icon: React.ReactNode; text: string }) {
 
 function CreativeSectionTitle({ label, rose }: { label: string; rose: string }) {
   return (
-    <div className="flex items-center gap-3 mt-2 print:break-after-avoid">
+    <div
+      className="flex items-center gap-3 mt-2 stanford-section-head break-after-avoid print:break-after-avoid"
+      style={{ breakAfter: "avoid", pageBreakAfter: "avoid" }}
+    >
       <span className="h-3 w-1 rounded-full" style={{ backgroundColor: rose }} />
       <span className="text-[10px] font-black tracking-[0.25em] uppercase" style={{ color: rose }}>
         {label}
@@ -1997,7 +2032,10 @@ function CreativeSectionTitle({ label, rose }: { label: string; rose: string }) 
 
 function ExecSectionTitle({ label, gold }: { label: string; gold: string }) {
   return (
-    <div className="print:break-after-avoid">
+    <div
+      className="stanford-section-head break-after-avoid print:break-after-avoid"
+      style={{ breakAfter: "avoid", pageBreakAfter: "avoid" }}
+    >
       <p className="text-[10px] font-bold tracking-[0.25em] uppercase" style={{ color: gold }}>{label}</p>
       <div className="mt-1 h-px" style={{ backgroundColor: gold + "44" }} />
     </div>
@@ -2006,7 +2044,10 @@ function ExecSectionTitle({ label, gold }: { label: string; gold: string }) {
 
 function AcadSectionTitle({ label }: { label: string }) {
   return (
-    <div className="flex items-center gap-3 print:break-after-avoid">
+    <div
+      className="flex items-center gap-3 stanford-section-head break-after-avoid print:break-after-avoid"
+      style={{ breakAfter: "avoid", pageBreakAfter: "avoid" }}
+    >
       <span className="text-[9px] font-bold tracking-[0.25em] uppercase text-zinc-900">{label}</span>
       <div className="flex-1 h-px bg-slate-400" />
     </div>
@@ -2015,7 +2056,10 @@ function AcadSectionTitle({ label }: { label: string }) {
 
 function DarkSectionTitle({ label, neon }: { label: string; neon: string }) {
   return (
-    <div className="flex items-center gap-3 print:break-after-avoid">
+    <div
+      className="flex items-center gap-3 stanford-section-head break-after-avoid print:break-after-avoid"
+      style={{ breakAfter: "avoid", pageBreakAfter: "avoid" }}
+    >
       <span className="text-[9px] font-bold tracking-[0.25em] uppercase" style={{ color: neon }}>{label}</span>
       <div className="flex-1 h-px" style={{ backgroundColor: neon + "33" }} />
     </div>
@@ -2647,7 +2691,10 @@ HarvardStandardTemplate.displayName = "HarvardStandardTemplate";
 /* ─── ATS template small helpers ─────────────────────────── */
 function ATSSectionRule({ label }: { label: string }) {
   return (
-    <div className="print:break-after-avoid">
+    <div
+      className="stanford-section-head break-after-avoid print:break-after-avoid"
+      style={{ breakAfter: "avoid", pageBreakAfter: "avoid" }}
+    >
       <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-800">{label}</p>
       <div className="mt-1 h-px bg-slate-800" />
     </div>
@@ -2656,7 +2703,10 @@ function ATSSectionRule({ label }: { label: string }) {
 
 function ATSModernSectionTitle({ label, accent }: { label: string; accent: string }) {
   return (
-    <div className="flex items-center gap-3 print:break-after-avoid">
+    <div
+      className="flex items-center gap-3 stanford-section-head break-after-avoid print:break-after-avoid"
+      style={{ breakAfter: "avoid", pageBreakAfter: "avoid" }}
+    >
       <div className="w-1 h-4 rounded-full shrink-0" style={{ backgroundColor: accent }} />
       <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-slate-800">{label}</p>
       <div className="flex-1 h-px bg-slate-200" />
@@ -2666,7 +2716,10 @@ function ATSModernSectionTitle({ label, accent }: { label: string; accent: strin
 
 function HarvardSectionTitle({ label }: { label: string }) {
   return (
-    <div className="print:break-after-avoid">
+    <div
+      className="stanford-section-head break-after-avoid print:break-after-avoid"
+      style={{ breakAfter: "avoid", pageBreakAfter: "avoid" }}
+    >
       <p className="text-[11px] font-bold uppercase tracking-[0.15em] text-slate-900"
         style={{ fontVariant: "small-caps" }}>{label}</p>
       <div className="mt-0.5 h-[1.5px] bg-slate-900" />
@@ -2683,7 +2736,10 @@ function HarvardSectionTitle({ label }: { label: string }) {
 
 function ATSExecSection({ label }: { label: string }) {
   return (
-    <div className="mt-5 mb-2 print:break-after-avoid">
+    <div
+      className="mt-5 mb-2 stanford-section-head break-after-avoid print:break-after-avoid"
+      style={{ breakAfter: "avoid", pageBreakAfter: "avoid" }}
+    >
       <p className="text-[12.5px] font-bold uppercase tracking-wider text-black">{label}</p>
       <div className="h-[1px] bg-black mt-0.5" />
     </div>
