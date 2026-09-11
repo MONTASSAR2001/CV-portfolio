@@ -54,7 +54,8 @@ export type CvState = {
 /* ─── Shared print styles injected into every template ───── */
 const PRINT_STYLES = `
   @media print {
-    @page { size: A4; margin: 20mm 0 !important; }
+    @page { size: A4; margin: 10mm 0 0 0 !important; }
+    @page :first { margin: 0 !important; margin-top: 0 !important; }
     body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     .cv-root {
       width: 210mm !important;

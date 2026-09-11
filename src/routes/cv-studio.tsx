@@ -185,6 +185,7 @@ function CvStudioPage() {
   const handlePrint = useReactToPrint({
     contentRef: printRef,
     documentTitle: `${cvData.personalInfo.fullName || "Professional"}_CV`,
+    pageStyle: `@page { size: A4; margin: 10mm 0 0 0 !important; } @page :first { margin: 0 !important; margin-top: 0 !important; }`,
   });
 
   /* ── Cloud save ── */

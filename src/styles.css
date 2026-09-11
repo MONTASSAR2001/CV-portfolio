@@ -207,10 +207,18 @@
 ═══════════════════════════════════════════════════════════════════ */
 @media print {
 
-  /* 1. Page geometry — 20mm (2cm) consistent top and bottom margin on EVERY page */
+  /* 1. Page geometry:
+        - 1cm (10mm) top margin for Page 2+
+        - Flush 0 margin for Page 1 (:first) to suppress browser headers/footers
+        - 0 bottom/side margins to prevent default URL footer */
   @page {
     size: A4;
-    margin: 20mm 0 !important;
+    margin: 10mm 0 0 0 !important; /* 1cm top margin for page 2+ */
+  }
+
+  @page :first {
+    margin: 0 !important;
+    margin-top: 0 !important; /* 0 top margin for the first page */
   }
 
   /* 2. html/body/#root: unconstrain height and overflow only.
