@@ -1,6 +1,7 @@
 import { forwardRef } from "react";
 import type { CvState } from "@/components/cv-studio/types";
 import { Linkedin, Github, Globe, Mail, Phone, MapPin } from "lucide-react";
+import { SkillsSectionContent } from "../cv-templates";
 
 /**
  * Stanford ATS Template
@@ -64,14 +65,14 @@ const STANFORD_PRINT_STYLES = `
 
     .cv-print-spacer-thead {
       display: table-header-group !important;
-      height: 10mm !important;
+      height: 20mm !important;
       padding: 0 !important;
       margin: 0 !important;
       border: none !important;
     }
 
     .cv-print-spacer-cell {
-      height: 10mm !important;
+      height: 20mm !important;
       padding: 0 !important;
       margin: 0 !important;
       border: none !important;
@@ -81,7 +82,7 @@ const STANFORD_PRINT_STYLES = `
     }
 
     .cv-print-spacer-cell > div {
-      height: 10mm !important;
+      height: 20mm !important;
       visibility: hidden !important;
     }
 
@@ -100,7 +101,7 @@ const STANFORD_PRINT_STYLES = `
     }
 
     .cv-print-page-content {
-      margin-top: -10mm !important;
+      margin-top: -20mm !important;
     }
 
     /* Every entry wrapper: never split across a page */
@@ -266,10 +267,10 @@ export const StanfordAtsTemplate = forwardRef<HTMLDivElement, { data: CvState }>
         <style>{STANFORD_PRINT_STYLES}</style>
 
         <table className="cv-print-table w-full border-collapse p-0 m-0 border-none">
-          <thead className="cv-print-spacer-thead">
-            <tr>
-              <td className="cv-print-spacer-cell p-0 m-0 border-none">
-                <div style={{ height: "10mm", width: "100%", visibility: "hidden" }} />
+          <thead className="cv-print-spacer-thead" style={{ height: "20mm", display: "table-header-group", border: "none", padding: 0 }}>
+            <tr style={{ border: "none", padding: 0, margin: 0 }}>
+              <td className="cv-print-spacer-cell p-0 m-0 border-none" style={{ height: "20mm", border: "none", padding: 0, margin: 0, lineHeight: 0, fontSize: 0 }}>
+                <div style={{ height: "20mm", width: "100%", visibility: "hidden" }} />
               </td>
             </tr>
           </thead>
@@ -431,12 +432,12 @@ export const StanfordAtsTemplate = forwardRef<HTMLDivElement, { data: CvState }>
 
           {/* ════ SKILLS ════ */}
           {skills.length > 0 && (
-            <section className="stanford-section mb-4">
+            <section className="stanford-section mb-4 cv-section">
               <div className="stanford-section-glue" style={{ pageBreakInside: "avoid", breakInside: "avoid" }}>
                 <SectionTitle label="Technical Skills" />
-                <p className="text-[10.5px] text-slate-800 leading-relaxed mt-1">
-                  {skills.join("  ·  ")}
-                </p>
+                <div className="text-[10.5px] leading-relaxed">
+                  <SkillsSectionContent skills={skills} />
+                </div>
               </div>
             </section>
           )}

@@ -310,9 +310,9 @@
   }
 
   /* 8b. CV Print Table Pagination Helper:
-         The 10mm thead repeats on every page fragment automatically.
-         On Page 1, .cv-print-page-content pulls up by -10mm so Page 1 remains flush to the top.
-         On Page 2+, the repeated thead provides the 10mm gap cleanly without browser headers. */
+         The 20mm thead repeats on every page fragment automatically.
+         On Page 1, .cv-print-page-content pulls up by -20mm so Page 1 remains flush to the top.
+         On Page 2+, the repeated thead provides the 20mm gap cleanly without browser headers. */
   .cv-print-table {
     display: table !important;
     width: 100% !important;
@@ -324,14 +324,14 @@
 
   .cv-print-spacer-thead {
     display: table-header-group !important;
-    height: 10mm !important;
+    height: 20mm !important;
     padding: 0 !important;
     margin: 0 !important;
     border: none !important;
   }
 
   .cv-print-spacer-cell {
-    height: 10mm !important;
+    height: 20mm !important;
     padding: 0 !important;
     margin: 0 !important;
     border: none !important;
@@ -341,7 +341,7 @@
   }
 
   .cv-print-spacer-cell > div {
-    height: 10mm !important;
+    height: 20mm !important;
     visibility: hidden !important;
   }
 
@@ -361,7 +361,7 @@
   }
 
   .cv-print-page-content {
-    margin-top: -10mm !important;
+    margin-top: -20mm !important;
   }
 
 

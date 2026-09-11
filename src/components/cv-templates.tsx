@@ -83,14 +83,14 @@ const PRINT_STYLES = `
 
     .cv-print-spacer-thead {
       display: table-header-group !important;
-      height: 10mm !important;
+      height: 20mm !important;
       padding: 0 !important;
       margin: 0 !important;
       border: none !important;
     }
 
     .cv-print-spacer-cell {
-      height: 10mm !important;
+      height: 20mm !important;
       padding: 0 !important;
       margin: 0 !important;
       border: none !important;
@@ -100,7 +100,7 @@ const PRINT_STYLES = `
     }
 
     .cv-print-spacer-cell > div {
-      height: 10mm !important;
+      height: 20mm !important;
       visibility: hidden !important;
     }
 
@@ -119,7 +119,7 @@ const PRINT_STYLES = `
     }
 
     .cv-print-page-content {
-      margin-top: -10mm !important;
+      margin-top: -20mm !important;
     }
 
     /* Opt-in: templates that explicitly use these classes get block overrides */
@@ -127,9 +127,10 @@ const PRINT_STYLES = `
     .cv-root .cv-sidebar { display: block !important; width: 100% !important; border: none !important; }
     .cv-root .cv-main   { display: block !important; width: 100% !important; }
     /* Page-break fragmentation rules */
-    .cv-root .print\\:break-inside-avoid,
+    .cv-root .print\:break-inside-avoid,
     .cv-root .break-inside-avoid,
     .cv-section,
+    .cv-entry,
     .stanford-section-glue,
     .stanford-entry {
       display: block !important;
@@ -138,7 +139,7 @@ const PRINT_STYLES = `
       break-inside: avoid-page !important;
     }
     .cv-root h1, .cv-root h2, .cv-root h3, .cv-root h4, .cv-root h5, .cv-root h6,
-    .cv-root .print\\:break-after-avoid,
+    .cv-root .print\:break-after-avoid,
     .cv-root .break-after-avoid,
     .cv-root .stanford-section-head,
     .cv-section-title,
@@ -146,6 +147,7 @@ const PRINT_STYLES = `
     [class*="section-title"],
     [class*="SectionRule"],
     [class*="SectionHeader"],
+    [class*="section-header"],
     [class*="ExecSection"] {
       page-break-after: avoid !important;
       break-after: avoid !important;
@@ -154,7 +156,7 @@ const PRINT_STYLES = `
   }
 `;
 
-/* ─── Print Pagination Table Wrapper (0 Margin + 10mm Page 2+ Gap) ───── */
+/* ─── Print Pagination Table Wrapper (0 Margin + 20mm Page 2+ Gap) ───── */
 export function CvPrintWrapper({
   children,
   className = "",
@@ -164,15 +166,21 @@ export function CvPrintWrapper({
 }) {
   return (
     <table className="cv-print-table w-full border-collapse p-0 m-0 border-none">
-      <thead className="cv-print-spacer-thead">
-        <tr>
-          <td className="cv-print-spacer-cell p-0 m-0 border-none">
-            <div style={{ height: "10mm", width: "100%", visibility: "hidden" }} />
+      <thead
+        className="cv-print-spacer-thead"
+        style={{ height: "20mm", display: "table-header-group", border: "none", padding: 0 }}
+      >
+        <tr style={{ border: "none", padding: 0, margin: 0 }}>
+          <td
+            className="cv-print-spacer-cell p-0 m-0 border-none"
+            style={{ height: "20mm", border: "none", padding: 0, margin: 0, lineHeight: 0, fontSize: 0 }}
+          >
+            <div style={{ height: "20mm", width: "100%", visibility: "hidden" }} />
           </td>
         </tr>
       </thead>
-      <tbody>
-        <tr>
+      <tbody style={{ border: "none", padding: 0, margin: 0 }}>
+        <tr style={{ border: "none", padding: 0, margin: 0 }}>
           <td className="cv-print-body-cell p-0 m-0 border-none align-top">
             <div className={`cv-print-page-content ${className}`}>
               {children}
@@ -181,6 +189,72 @@ export function CvPrintWrapper({
         </tr>
       </tbody>
     </table>
+  );
+}
+
+/* ─── Unified Core Competencies / Skills Parsing & Component ─────────── */
+export function parseSkillsToCategories(skills: string[]): { category: string; items: string }[] {
+  if (!skills || skills.length === 0) return [];
+
+  const categorized: { category: string; items: string }[] = [];
+  const uncategorized: string[] = [];
+
+  for (const item of skills) {
+    if (typeof item !== "string") continue;
+    const trimmed = item.trim();
+    if (!trimmed) continue;
+
+    if (trimmed.includes(":")) {
+      const colonIdx = trimmed.indexOf(":");
+      const cat = trimmed.slice(0, colonIdx).trim();
+      const val = trimmed.slice(colonIdx + 1).trim();
+      if (cat && val) {
+        categorized.push({ category: cat, items: val });
+        continue;
+      }
+    }
+    uncategorized.push(trimmed);
+  }
+
+  if (uncategorized.length > 0) {
+    if (categorized.length === 0) {
+      categorized.push({
+        category: "Core Competencies",
+        items: uncategorized.join(", "),
+      });
+    } else {
+      categorized.push({
+        category: "Technologies & Tools",
+        items: uncategorized.join(", "),
+      });
+    }
+  }
+
+  return categorized;
+}
+
+export function SkillsSectionContent({
+  skills,
+  categoryColorClass = "text-gray-900",
+  itemsColorClass = "text-gray-700",
+}: {
+  skills?: string[];
+  categoryColorClass?: string;
+  itemsColorClass?: string;
+}) {
+  if (!skills || skills.length === 0) return null;
+  const categories = parseSkillsToCategories(skills);
+  if (categories.length === 0) return null;
+
+  return (
+    <div className="cv-skills-content space-y-1 my-1">
+      {categories.map((cat, idx) => (
+        <div key={idx} className="mb-2 break-inside-avoid">
+          <span className={`font-bold ${categoryColorClass} mr-2`}>{cat.category}:</span>
+          <span className={itemsColorClass}>{cat.items}</span>
+        </div>
+      ))}
+    </div>
   );
 }
 
@@ -200,6 +274,7 @@ export const MinimalistTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
       >
         <style>{PRINT_STYLES}</style>
 
+        <CvPrintWrapper>
         <div className="flex flex-col h-full px-16 py-14 print:block">
           {/* Header */}
           <div className="border-b border-slate-200 pb-8 mb-8">
@@ -357,16 +432,15 @@ export const MinimalistTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
 
           {/* Skills */}
           {skills.length > 0 && (
-            <div>
-              <h2 className="text-[9px] font-bold tracking-[0.3em] uppercase text-zinc-700 mb-4 print:break-after-avoid">
-                Skills
+            <div className="cv-section mb-6 break-inside-avoid">
+              <h2 className="text-[9px] font-bold tracking-[0.3em] uppercase text-zinc-700 mb-2 print:break-after-avoid break-after-avoid">
+                Core Competencies
               </h2>
-              <p className="text-[11px] text-zinc-900 leading-relaxed">
-                {skills.join("  ·  ")}
-              </p>
+              <SkillsSectionContent skills={skills} />
             </div>
           )}
         </div>
+        </CvPrintWrapper>
       </div>
     );
   }
@@ -390,6 +464,7 @@ export const CorporateTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
       >
         <style>{PRINT_STYLES}</style>
 
+        <CvPrintWrapper>
         {/* Top bar */}
         <div style={{ backgroundColor: NAVY }} className="px-10 py-8">
           <h1 className="text-3xl font-bold tracking-wide text-white">
@@ -569,20 +644,14 @@ export const CorporateTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
           {/* Side Column */}
           <div className="w-44 shrink-0 space-y-6">
             {skills.length > 0 && (
-              <div>
-                <SectionHeader label="Core Skills" color={NAVY} />
-                <ul className="mt-3 space-y-1.5">
-                  {skills.map((s) => (
-                    <li key={s} className="flex items-center gap-2 text-[11px] text-zinc-900">
-                      <span className="h-1 w-1 rounded-full shrink-0" style={{ backgroundColor: NAVY }} />
-                      {s}
-                    </li>
-                  ))}
-                </ul>
+              <div className="cv-section break-inside-avoid">
+                <SectionHeader label="Core Competencies" color={NAVY} />
+                <SkillsSectionContent skills={skills} />
               </div>
             )}
           </div>
         </div>
+        </CvPrintWrapper>
       </div>
     );
   }
@@ -602,11 +671,13 @@ export const TechTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
     return (
       <div
         ref={ref}
-        className="cv-root w-full h-full bg-white overflow-hidden flex print:block"
+        className="cv-root w-full h-full bg-white overflow-hidden"
         style={{ fontFamily: "'Inter', monospace" }}
       >
         <style>{PRINT_STYLES}</style>
 
+        <CvPrintWrapper>
+        <div className="w-full h-full flex print:block">
         {/* Left sidebar */}
         <div className="w-56 shrink-0 flex flex-col h-full" style={{ backgroundColor: DARK }}>
           {/* Avatar / initials */}
@@ -639,21 +710,15 @@ export const TechTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
 
           {/* Skills */}
           {skills.length > 0 && (
-            <div className="px-5 py-4 border-t border-white/10">
-              <p className="text-[8px] font-bold tracking-[0.25em] uppercase mb-3" style={{ color: ACCENT }}>
-                Tech Stack
+            <div className="px-5 py-4 border-t border-white/10 cv-section break-inside-avoid">
+              <p className="text-[8px] font-bold tracking-[0.25em] uppercase mb-2 break-after-avoid" style={{ color: ACCENT }}>
+                Core Competencies
               </p>
-              <div className="flex flex-wrap gap-1.5">
-                {skills.map((s) => (
-                  <span
-                    key={s}
-                    className="rounded px-1.5 py-0.5 text-[9px] font-mono font-medium"
-                    style={{ backgroundColor: "#1e1e3f", color: "#c4b5fd", border: "1px solid #4c1d95" }}
-                  >
-                    {s}
-                  </span>
-                ))}
-              </div>
+              <SkillsSectionContent
+                skills={skills}
+                categoryColorClass="text-purple-300"
+                itemsColorClass="text-slate-300"
+              />
             </div>
           )}
         </div>
@@ -798,6 +863,8 @@ export const TechTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
             <span className="text-[9px] font-mono text-zinc-700">&lt;/developer&gt;</span>
           </div>
         </div>
+        </div>
+        </CvPrintWrapper>
       </div>
     );
   }
@@ -822,6 +889,7 @@ export const CreativeTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
       >
         <style>{PRINT_STYLES}</style>
 
+        <CvPrintWrapper>
         {/* Bold asymmetric header */}
         <div className="relative px-10 pt-10 pb-8 overflow-hidden" style={{ background: `linear-gradient(135deg, ${ROSE} 0%, ${ORANGE} 100%)` }}>
           {/* Big decorative circle */}
@@ -938,19 +1006,13 @@ export const CreativeTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
 
           {/* Side panel */}
           {skills.length > 0 && (
-            <div className="w-44 shrink-0 px-5 py-7 border-l-4" style={{ borderColor: ROSE + "22", backgroundColor: "#fff8f8" }}>
-              <p className="text-[9px] font-black tracking-[0.3em] uppercase mb-4" style={{ color: ROSE }}>Skills</p>
-              <div className="flex flex-col gap-2">
-                {skills.map((s) => (
-                  <div key={s} className="flex items-center gap-2">
-                    <span className="h-1.5 w-1.5 rounded-full shrink-0" style={{ backgroundColor: ORANGE }} />
-                    <span className="text-[11px] text-zinc-900 font-medium">{s}</span>
-                  </div>
-                ))}
-              </div>
+            <div className="w-44 shrink-0 px-5 py-7 border-l-4 cv-section break-inside-avoid" style={{ borderColor: ROSE + "22", backgroundColor: "#fff8f8" }}>
+              <p className="text-[9px] font-black tracking-[0.3em] uppercase mb-4 break-after-avoid" style={{ color: ROSE }}>Core Competencies</p>
+              <SkillsSectionContent skills={skills} />
             </div>
           )}
         </div>
+        </CvPrintWrapper>
       </div>
     );
   }
@@ -974,6 +1036,7 @@ export const ExecutiveTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
       >
         <style>{PRINT_STYLES}</style>
 
+        <CvPrintWrapper>
         {/* Centered prestige header */}
         <div className="text-center px-16 pt-12 pb-8 border-b-2" style={{ borderColor: GOLD }}>
           <h1 className="text-4xl font-bold tracking-widest text-slate-900 uppercase">
@@ -1093,19 +1156,14 @@ export const ExecutiveTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
               </div>
             )}
             {skills.length > 0 && (
-              <div className="w-52 shrink-0">
-                <ExecSectionTitle label="Areas of Expertise" gold={GOLD} />
-                <div className="mt-4 grid grid-cols-2 gap-x-3 gap-y-1.5">
-                  {skills.map((s) => (
-                    <p key={s} className="text-[11px] text-zinc-900 flex items-center gap-1.5">
-                      <span className="text-[8px]" style={{ color: GOLD }}>◆</span> {s}
-                    </p>
-                  ))}
-                </div>
+              <div className="w-52 shrink-0 cv-section break-inside-avoid">
+                <ExecSectionTitle label="Core Competencies" gold={GOLD} />
+                <SkillsSectionContent skills={skills} />
               </div>
             )}
           </div>
         </div>
+        </CvPrintWrapper>
       </div>
     );
   }
@@ -1128,6 +1186,7 @@ export const StartupTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
       >
         <style>{PRINT_STYLES}</style>
 
+        <CvPrintWrapper>
         {/* Gradient hero */}
         <div
           className="px-10 pt-10 pb-8"
@@ -1265,22 +1324,13 @@ export const StartupTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
 
           {/* Skills sidebar */}
           {skills.length > 0 && (
-            <div className="w-40 shrink-0">
-              <p className="text-[9px] font-bold tracking-[0.25em] uppercase text-indigo-400 mb-3">Skills</p>
-              <div className="flex flex-col gap-2">
-                {skills.map((s) => (
-                  <span
-                    key={s}
-                    className="rounded-xl px-3 py-1.5 text-[11px] font-semibold text-center"
-                    style={{ background: "linear-gradient(135deg, #eef2ff, #f5f3ff)", color: "#4f46e5" }}
-                  >
-                    {s}
-                  </span>
-                ))}
-              </div>
+            <div className="w-40 shrink-0 cv-section break-inside-avoid">
+              <p className="text-[9px] font-bold tracking-[0.25em] uppercase text-indigo-500 mb-2 break-after-avoid">Core Competencies</p>
+              <SkillsSectionContent skills={skills} />
             </div>
           )}
         </div>
+        </CvPrintWrapper>
       </div>
     );
   }
@@ -1301,6 +1351,7 @@ export const AcademicTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
         style={{ fontFamily: "'Times New Roman', 'Georgia', serif" }}
       >
         <style>{PRINT_STYLES}</style>
+        <CvPrintWrapper>
         <div className="px-14 py-10 flex flex-col h-full print:block">
           {/* Centered formal header */}
           <div className="text-center mb-6 pb-4 border-b-2 border-slate-800">
@@ -1401,15 +1452,14 @@ export const AcademicTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
             )}
 
             {skills.length > 0 && (
-              <div>
-                <AcadSectionTitle label="Areas of Competency" />
-                <p className="mt-2 text-[11px] leading-loose text-zinc-900">
-                  {skills.join(", ")}
-                </p>
+              <div className="cv-section break-inside-avoid">
+                <AcadSectionTitle label="Core Competencies" />
+                <SkillsSectionContent skills={skills} />
               </div>
             )}
           </div>
         </div>
+        </CvPrintWrapper>
       </div>
     );
   }
@@ -1433,6 +1483,7 @@ export const EditorialTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
       >
         <style>{PRINT_STYLES}</style>
 
+        <CvPrintWrapper>
         {/* Magazine masthead */}
         <div className="px-12 pt-10 pb-0">
           <div className="flex items-end justify-between border-b-4 border-stone-900 pb-4">
@@ -1585,19 +1636,14 @@ export const EditorialTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
               </div>
             )}
             {skills.length > 0 && (
-              <div className="break-inside-avoid">
-                <p className="text-[8px] tracking-[0.4em] uppercase font-sans text-stone-400 mb-3">Expertise</p>
-                <div className="flex flex-wrap gap-1.5">
-                  {skills.map((s) => (
-                    <span key={s} className="px-2 py-1 text-[9px] uppercase tracking-wider font-sans border border-stone-200 text-stone-600 bg-white">
-                      {s}
-                    </span>
-                  ))}
-                </div>
+              <div className="break-inside-avoid cv-section">
+                <p className="text-[8px] tracking-[0.4em] uppercase font-sans text-stone-400 mb-3 break-after-avoid">Core Competencies</p>
+                <SkillsSectionContent skills={skills} />
               </div>
             )}
           </div>
         </div>
+        </CvPrintWrapper>
       </div>
     );
   }
@@ -1626,6 +1672,7 @@ export const DarkBoldTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
           }
         `}</style>
 
+        <CvPrintWrapper>
         {/* Bold dark header */}
         <div className="px-10 pt-10 pb-8" style={{ background: "#0a0a0f", borderBottom: `3px solid ${NEON}` }}>
           <div className="flex items-start justify-between">
@@ -1789,22 +1836,13 @@ export const DarkBoldTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
 
           {/* Skills sidebar */}
           {skills.length > 0 && (
-            <div className="w-44 shrink-0">
-              <DarkSectionTitle label="Skills" neon={NEON} />
-              <div className="mt-3 flex flex-col gap-2">
-                {skills.map((s) => (
-                  <div
-                    key={s}
-                    className="rounded-lg px-3 py-2 text-[11px] font-bold text-center"
-                    style={{ background: `${NEON}15`, color: NEON, border: `1px solid ${NEON}33` }}
-                  >
-                    {s}
-                  </div>
-                ))}
-              </div>
+            <div className="w-44 shrink-0 cv-section break-inside-avoid">
+              <DarkSectionTitle label="Core Competencies" neon={NEON} />
+              <SkillsSectionContent skills={skills} categoryColorClass="text-cyan-300" itemsColorClass="text-slate-300" />
             </div>
           )}
         </div>
+        </CvPrintWrapper>
       </div>
     );
   }
@@ -1824,11 +1862,13 @@ export const VisualTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
     return (
       <div
         ref={ref}
-        className="cv-root w-full h-full bg-white overflow-hidden flex print:block"
+        className="cv-root w-full h-full bg-white overflow-hidden"
         style={{ fontFamily: "'Inter', sans-serif" }}
       >
         <style>{PRINT_STYLES}</style>
 
+        <CvPrintWrapper>
+        <div className="w-full h-full flex print:block">
         {/* Left sidebar */}
         <div className="w-60 shrink-0 flex flex-col h-full print:block print:w-full" style={{ backgroundColor: TEAL_LIGHT, borderRight: `4px solid ${TEAL}` }}>
           {/* Header block */}
@@ -1852,26 +1892,11 @@ export const VisualTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
             {p.linkedin && (<a href={p.linkedin.startsWith('http') ? p.linkedin : `https://${p.linkedin}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-[10px] text-zinc-900 hover:opacity-70 transition-opacity"><Linkedin size={11} color={TEAL} /> <span className="ml-1">{p.linkedin.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "")}</span></a>)}
           </div>
 
-          {/* Skills as percentage bars */}
+          {/* Skills */}
           {skills.length > 0 && (
-            <div className="px-6 pt-4 pb-5 border-t" style={{ borderColor: `${TEAL}30` }}>
-              <p className="text-[8px] font-black tracking-[0.3em] uppercase mb-4" style={{ color: TEAL }}>Skills</p>
-              <div className="space-y-3">
-                {skills.map((s, i) => {
-                  const pct = Math.max(70, 100 - i * 8);
-                  return (
-                    <div key={s}>
-                      <div className="flex justify-between mb-1">
-                        <span className="text-[10px] font-semibold text-zinc-900">{s}</span>
-                        <span className="text-[9px] text-zinc-700">{pct}%</span>
-                      </div>
-                      <div className="h-1.5 w-full rounded-full bg-white/70">
-                        <div className="h-full rounded-full" style={{ width: `${pct}%`, background: TEAL }} />
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
+            <div className="px-6 pt-4 pb-5 border-t cv-section break-inside-avoid" style={{ borderColor: `${TEAL}30` }}>
+              <p className="text-[8px] font-black tracking-[0.3em] uppercase mb-3 break-after-avoid" style={{ color: TEAL }}>Core Competencies</p>
+              <SkillsSectionContent skills={skills} />
             </div>
           )}
         </div>
@@ -2051,6 +2076,8 @@ export const VisualTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
             )}
           </div>
         </div>
+        </div>
+        </CvPrintWrapper>
       </div>
     );
   }
@@ -2168,6 +2195,7 @@ export const ATSClassicTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
         style={{ fontFamily: "'Arial', 'Helvetica Neue', sans-serif" }}
       >
         <style>{PRINT_STYLES}</style>
+        <CvPrintWrapper>
         <div className="px-12 py-10 flex flex-col h-full gap-0 print:block">
           {/* ── Header ── */}
           <div className="text-center mb-4">
@@ -2314,13 +2342,9 @@ export const ATSClassicTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
 
           {/* ── Skills ── */}
           {skills.length > 0 && (
-            <div className="mb-4 break-inside-avoid">
-              <ATSSectionRule label="Technical Skills" />
-              <div className="mt-2 flex flex-wrap gap-2">
-                {skills.map((s) => (
-                  <span key={s} className="px-2 py-0.5 border border-slate-300 rounded text-[11px] text-zinc-900 bg-slate-50">{s}</span>
-                ))}
-              </div>
+            <div className="mb-4 cv-section break-inside-avoid">
+              <ATSSectionRule label="Core Competencies" />
+              <SkillsSectionContent skills={skills} />
             </div>
           )}
 
@@ -2351,6 +2375,7 @@ export const ATSClassicTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
           )}
 
         </div>
+        </CvPrintWrapper>
       </div>
     );
   }
@@ -2374,6 +2399,7 @@ export const ATSModernTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
         style={{ fontFamily: "'Inter', 'Arial', sans-serif" }}
       >
         <style>{PRINT_STYLES}</style>
+        <CvPrintWrapper>
         <div className="px-12 py-10 flex flex-col h-full print:block">
           {/* ── Header ── */}
           <div className="mb-6">
@@ -2517,13 +2543,9 @@ export const ATSModernTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
 
           {/* ── Skills ── */}
           {skills.length > 0 && (
-            <div className="mb-5 break-inside-avoid">
-              <ATSModernSectionTitle label="Skills" accent={ACCENT} />
-              <div className="mt-3 flex flex-wrap gap-2">
-                {skills.map((s) => (
-                  <span key={s} className="text-[11px] text-zinc-900 font-medium px-2.5 py-1 rounded-full border border-zinc-200">{s}</span>
-                ))}
-              </div>
+            <div className="mb-5 cv-section break-inside-avoid">
+              <ATSModernSectionTitle label="Core Competencies" accent={ACCENT} />
+              <SkillsSectionContent skills={skills} />
             </div>
           )}
 
@@ -2554,6 +2576,7 @@ export const ATSModernTemplate = forwardRef<HTMLDivElement, { data: CvState }>(
           )}
 
         </div>
+        </CvPrintWrapper>
       </div>
     );
   }
@@ -2576,6 +2599,7 @@ export const HarvardStandardTemplate = forwardRef<HTMLDivElement, { data: CvStat
         style={{ fontFamily: "'Times New Roman', 'Georgia', serif" }}
       >
         <style>{PRINT_STYLES}</style>
+        <CvPrintWrapper>
         <div className="px-14 py-10 flex flex-col h-full print:block">
           {/* ── Centred header ── */}
           <div className="text-center mb-5">
@@ -2724,13 +2748,9 @@ export const HarvardStandardTemplate = forwardRef<HTMLDivElement, { data: CvStat
 
           {/* ── Skills ── */}
           {skills.length > 0 && (
-            <div className="mb-4 break-inside-avoid">
-              <HarvardSectionTitle label="Skills" />
-              <div className="mt-2 flex flex-wrap gap-2">
-                {skills.map((s) => (
-                  <span key={s} className="px-2 py-0.5 border border-slate-300 rounded text-[11px] text-zinc-900 bg-slate-50">{s}</span>
-                ))}
-              </div>
+            <div className="mb-4 cv-section break-inside-avoid">
+              <HarvardSectionTitle label="Core Competencies" />
+              <SkillsSectionContent skills={skills} />
             </div>
           )}
 
@@ -2760,6 +2780,7 @@ export const HarvardStandardTemplate = forwardRef<HTMLDivElement, { data: CvStat
           )}
 
         </div>
+        </CvPrintWrapper>
       </div>
     );
   }
@@ -2835,6 +2856,7 @@ export const ATSExecutiveTemplate = forwardRef<HTMLDivElement, { data: CvState }
         style={{ fontFamily: "'Arial', 'Helvetica Neue', Helvetica, sans-serif" }}
       >
         <style>{PRINT_STYLES}</style>
+        <CvPrintWrapper>
         <div className="px-14 pt-10 pb-12">
 
           {/* ── HEADER (centered) ── */}
@@ -3002,15 +3024,9 @@ export const ATSExecutiveTemplate = forwardRef<HTMLDivElement, { data: CvState }
 
           {/* ── SKILLS ── */}
           {skills.length > 0 && (
-            <div className="break-inside-avoid mb-4">
+            <div className="break-inside-avoid cv-section mb-4">
               <ATSExecSection label="Core Competencies" />
-              <ul className="grid grid-cols-2 gap-x-8 gap-y-0.5 pl-5">
-                {skills.map((s) => (
-                  <li key={s} className="text-[11px] leading-relaxed list-disc">
-                    {s}
-                  </li>
-                ))}
-              </ul>
+              <SkillsSectionContent skills={skills} />
             </div>
           )}
 
@@ -3042,6 +3058,7 @@ export const ATSExecutiveTemplate = forwardRef<HTMLDivElement, { data: CvState }
 
 
         </div>
+        </CvPrintWrapper>
       </div>
     );
   }
