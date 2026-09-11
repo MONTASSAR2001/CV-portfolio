@@ -34,7 +34,7 @@ import { Linkedin, Github, Globe, Mail, Phone, MapPin } from "lucide-react";
 /* ─── Inline print styles ────────────────────────────────────── */
 const STANFORD_PRINT_STYLES = `
   @media print {
-    @page { size: A4; margin: 10mm 0 0 0 !important; }
+    @page { size: A4; margin: 0 !important; }
     @page :first { margin: 0 !important; margin-top: 0 !important; }
     body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 
@@ -53,9 +53,54 @@ const STANFORD_PRINT_STYLES = `
       padding: 0 !important;
     }
 
-    .stanford-cv-root > div:first-child {
+    .cv-print-table {
+      display: table !important;
+      width: 100% !important;
+      border-collapse: collapse !important;
+      border: none !important;
+      padding: 0 !important;
+      margin: 0 !important;
+    }
+
+    .cv-print-spacer-thead {
+      display: table-header-group !important;
+      height: 10mm !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      border: none !important;
+    }
+
+    .cv-print-spacer-cell {
+      height: 10mm !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      border: none !important;
+      line-height: 0 !important;
+      font-size: 0 !important;
+      background: transparent !important;
+    }
+
+    .cv-print-spacer-cell > div {
+      height: 10mm !important;
+      visibility: hidden !important;
+    }
+
+    .cv-print-body-cell {
+      display: table-cell !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      border: none !important;
+      vertical-align: top !important;
+    }
+
+    .stanford-cv-root > div:first-child,
+    .cv-print-page-content {
       padding-top: 0 !important;
       padding-bottom: 0 !important;
+    }
+
+    .cv-print-page-content {
+      margin-top: -10mm !important;
     }
 
     /* Every entry wrapper: never split across a page */
@@ -220,8 +265,19 @@ export const StanfordAtsTemplate = forwardRef<HTMLDivElement, { data: CvState }>
       >
         <style>{STANFORD_PRINT_STYLES}</style>
 
-        {/* ── Page padding container ── plain block, no flex */}
-        <div className="px-14 pt-10 pb-12">
+        <table className="cv-print-table w-full border-collapse p-0 m-0 border-none">
+          <thead className="cv-print-spacer-thead">
+            <tr>
+              <td className="cv-print-spacer-cell p-0 m-0 border-none">
+                <div style={{ height: "10mm", width: "100%", visibility: "hidden" }} />
+              </td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td className="cv-print-body-cell p-0 m-0 border-none align-top">
+                {/* ── Page padding container ── plain block, no flex */}
+                <div className="cv-print-page-content px-14 pt-10 pb-12">
 
           {/* ════ HEADER ════ */}
           <div className="text-center mb-5">
@@ -413,7 +469,11 @@ export const StanfordAtsTemplate = forwardRef<HTMLDivElement, { data: CvState }>
             </section>
           )}
 
-        </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     );
   }
